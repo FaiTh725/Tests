@@ -7,5 +7,7 @@ namespace Authorization.Domain.Repositories
         Task<Role?> GetRole(string roleName);
 
         Task<Role> AddRole(Role role);
+
+        Task<IEnumerable<Role>> GetRoles();
     }
 }

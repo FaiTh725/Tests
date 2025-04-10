@@ -27,5 +27,11 @@ namespace Authorization.Dal.Repositories
             return await context.Roles
                 .FirstOrDefaultAsync(x => x.RoleName == roleName);
         }
+
+        public async Task<IEnumerable<Role>> GetRoles()
+        {
+            return await context.Roles
+                .ToListAsync();
+        }
     }
 }

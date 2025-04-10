@@ -28,7 +28,7 @@ namespace Authorization.Application.Commands.UserEntity.Register
             var user = await unitOfWork.UserRepository
                 .GetUserByEmail(request.Email);
         
-            if(user is null)
+            if(user is not null)
             {
                 throw new ConflictException("User already registered");
             }

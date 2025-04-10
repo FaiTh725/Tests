@@ -1,3 +1,5 @@
+using Authorization.API.Extention;
+using Authorization.API.Middlewares;
 using Authorization.Application;
 using Authorization.Dal;
 using Authorization.Infastructure;
@@ -9,7 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
+
 builder.Services
+    .ConfigureApiServices()
     .ConfigureDalServices()
     .ConfigureAppSerrvices()
     .ConfigureInfastructureServices(builder.Configuration);
@@ -21,7 +27,8 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-
 app.MapControllers();
+
+app.UseExceptionHandler();
 
 app.Run();

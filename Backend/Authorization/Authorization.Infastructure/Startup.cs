@@ -1,6 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
+using Authorization.Infastructure.BackgroundServices;
 using Authorization.Infastructure.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,9 @@ namespace Authorization.Infastructure
 
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<IJwtService<UserTokenRequest, UserTokenResponse>, JwtUserService>();
+
+            services.AddHostedService<ApplyMigrationsBackgroundService>();
+            services.AddHostedService<InitializeRolesBackgroundService>();
 
             return services;
         }

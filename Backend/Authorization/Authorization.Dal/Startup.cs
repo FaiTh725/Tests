@@ -12,6 +12,7 @@ namespace Authorization.Dal
             services.AddDbContext<AppDbContext>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IMigrationService, MigrationService>();
 
             return services;
         }

@@ -1,0 +1,50 @@
+﻿using Authorization.Domain.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace Authorization.Infastructure.BackgroundServices
+{
+    public class ApplyMigrationsBackgroundService : BackgroundService
+    {
+        private readonly IServiceScopeFactory scopeFactory;
+
+        public ApplyMigrationsBackgroundService(
+            IServiceScopeFactory scopeFactory)
+        {
+            this.scopeFactory = scopeFactory;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            await WaitDatabase(stoppingToken);
+            var scope = scopeFactory.CreateAsyncScope();
+            var migrationService = scope.ServiceProvider
+                .GetRequiredService<IMigrationService>();
+
+            var pendingMigrations = await migrationService.GetPendingMigrations();
+
+            if (pendingMigrations.Any())
+            {
+                await migrationService.ApplyPendingMigrations();
+            }
+        }
+
+        private async Task WaitDatabase(CancellationToken cancellationToken)
+        {
+            using var scope = scopeFactory.CreateAsyncScope();
+            var unitOfWork = scope.ServiceProvider
+                .GetRequiredService<IUnitOfWork>();
+
+            while(!cancellationToken.IsCancellationRequested)
+            {
+
+                if(await unitOfWork.CanConnectAsync())
+                {
+                    return;
+                }
+
+                await Task.Delay(3000, cancellationToken);
+            }
+        }
+    }
+}
