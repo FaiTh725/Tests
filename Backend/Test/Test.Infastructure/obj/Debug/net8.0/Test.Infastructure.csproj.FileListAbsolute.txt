@@ -1,0 +1,12 @@
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\bin\Debug\net8.0\Test.Infastructure.deps.json
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\bin\Debug\net8.0\Test.Infastructure.dll
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\bin\Debug\net8.0\Test.Infastructure.pdb
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.AssemblyInfoInputs.cache
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.AssemblyInfo.cs
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.csproj.CoreCompileInputs.cache
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.sourcelink.json
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.dll
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\refint\Test.Infastructure.dll
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\Test.Infastructure.pdb
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Infastructure\obj\Debug\net8.0\ref\Test.Infastructure.dll

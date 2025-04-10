@@ -1,0 +1,12 @@
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\bin\Debug\net8.0\TestRating.Application.deps.json
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\bin\Debug\net8.0\TestRating.Application.dll
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\bin\Debug\net8.0\TestRating.Application.pdb
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.AssemblyInfoInputs.cache
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.AssemblyInfo.cs
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.csproj.CoreCompileInputs.cache
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.sourcelink.json
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.dll
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\refint\TestRating.Application.dll
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\TestRating.Application.pdb
+C:\VSProjects\Intership\Tests\Backend\TestRating\TestRating.Application\obj\Debug\net8.0\ref\TestRating.Application.dll

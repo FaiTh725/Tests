@@ -1,0 +1,12 @@
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\bin\Debug\net8.0\Application.Shared.deps.json
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\bin\Debug\net8.0\Application.Shared.dll
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\bin\Debug\net8.0\Application.Shared.pdb
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.AssemblyInfoInputs.cache
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.AssemblyInfo.cs
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.csproj.CoreCompileInputs.cache
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.sourcelink.json
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.dll
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\refint\Application.Shared.dll
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\Application.Shared.pdb
+C:\VSProjects\Intership\Tests\Backend\Application.Shared\obj\Debug\net8.0\ref\Application.Shared.dll
