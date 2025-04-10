@@ -1,6 +1,7 @@
 ﻿using Authorization.Domain.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Authorization.Infastructure.BackgroundServices
 {
@@ -20,13 +21,18 @@ namespace Authorization.Infastructure.BackgroundServices
             var scope = scopeFactory.CreateAsyncScope();
             var migrationService = scope.ServiceProvider
                 .GetRequiredService<IMigrationService>();
+            var logger = scope.ServiceProvider
+                .GetRequiredService<Logger<ApplyMigrationsBackgroundService>>();
 
             var pendingMigrations = await migrationService.GetPendingMigrations();
 
             if (pendingMigrations.Any())
             {
                 await migrationService.ApplyPendingMigrations();
+                logger.LogInformation("Apply Migrations");
             }
+
+            logger.LogInformation("Migrations already replied");
         }
 
         private async Task WaitDatabase(CancellationToken cancellationToken)

@@ -3,14 +3,23 @@
   "WorkspaceRootPath": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.API\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B401C760-754B-41E9-A0D8-9381CDD20572}|..\\Authorization.Infastructure\\Authorization.Infastructure.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.infastructure\\backgroundservices\\initializerolesbackgroundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B401C760-754B-41E9-A0D8-9381CDD20572}|..\\Authorization.Infastructure\\Authorization.Infastructure.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.infastructure\\backgroundservices\\applymigrationsbackgroundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5AE35D78-2285-40DA-83CA-408031B6BD01}|..\\Authorization.Domain\\Authorization.Domain.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.domain\\interfaces\\imigrationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{08C49DFC-A521-41B1-A2E3-871548A7FAF3}|..\\Authorization.Dal\\Authorization.Dal.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.dal\\implementations\\migrationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2D6C93B4-3EFD-455E-8791-5318EBDBE88D}|Authorization.API.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2D6C93B4-3EFD-455E-8791-5318EBDBE88D}|Authorization.API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B401C760-754B-41E9-A0D8-9381CDD20572}|..\\Authorization.Infastructure\\Authorization.Infastructure.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.infastructure\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B401C760-754B-41E9-A0D8-9381CDD20572}|..\\Authorization.Infastructure\\Authorization.Infastructure.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.infastructure\\backgroundservices\\initializerolesbackgroundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5AE35D78-2285-40DA-83CA-408031B6BD01}|..\\Authorization.Domain\\Authorization.Domain.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.domain\\repositories\\irolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -25,19 +34,10 @@
       "AbsoluteMoniker": "D:0:0:{5AE35D78-2285-40DA-83CA-408031B6BD01}|..\\Authorization.Domain\\Authorization.Domain.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.domain\\validators\\rolevalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B401C760-754B-41E9-A0D8-9381CDD20572}|..\\Authorization.Infastructure\\Authorization.Infastructure.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.infastructure\\backgroundservices\\applymigrationsbackgroundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{08C49DFC-A521-41B1-A2E3-871548A7FAF3}|..\\Authorization.Dal\\Authorization.Dal.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.dal\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{08C49DFC-A521-41B1-A2E3-871548A7FAF3}|..\\Authorization.Dal\\Authorization.Dal.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.dal\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{08C49DFC-A521-41B1-A2E3-871548A7FAF3}|..\\Authorization.Dal\\Authorization.Dal.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.dal\\implementations\\migrationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5AE35D78-2285-40DA-83CA-408031B6BD01}|..\\Authorization.Domain\\Authorization.Domain.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.domain\\interfaces\\imigrationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8A322E6-6CED-4E22-A41B-3B99E06A5C0A}|..\\Authorization.Application\\Authorization.Application.csproj|c:\\vsprojects\\intership\\tests\\backend\\authorization\\authorization.application\\commands\\userentity\\register\\registerhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -173,7 +173,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 174,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -197,137 +197,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "InitializeRolesBackgroundService.cs",
               "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\BackgroundServices\\InitializeRolesBackgroundService.cs",
               "RelativeDocumentMoniker": "..\\Authorization.Infastructure\\BackgroundServices\\InitializeRolesBackgroundService.cs",
               "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\BackgroundServices\\InitializeRolesBackgroundService.cs",
               "RelativeToolTip": "..\\Authorization.Infastructure\\BackgroundServices\\InitializeRolesBackgroundService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAowDAAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T22:29:12.985Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IRoleRepository.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
-              "RelativeToolTip": "..\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T09:29:24.303Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\UserRepository.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Dal\\Repositories\\UserRepository.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\UserRepository.cs",
-              "RelativeToolTip": "..\\Authorization.Dal\\Repositories\\UserRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T09:53:56.796Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "RoleRepository.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\RoleRepository.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Dal\\Repositories\\RoleRepository.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\RoleRepository.cs",
-              "RelativeToolTip": "..\\Authorization.Dal\\Repositories\\RoleRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAYAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T09:53:56.994Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Startup.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\Startup.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Infastructure\\Startup.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\Startup.cs",
-              "RelativeToolTip": "..\\Authorization.Infastructure\\Startup.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAABKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:04:24.573Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.API\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.API\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-07T16:56:51.801Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "RoleValidator.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Validators\\RoleValidator.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Domain\\Validators\\RoleValidator.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Validators\\RoleValidator.cs",
-              "RelativeToolTip": "..\\Authorization.Domain\\Validators\\RoleValidator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAABFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T23:24:28.148Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "ApplyMigrationsBackgroundService.cs",
               "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\BackgroundServices\\ApplyMigrationsBackgroundService.cs",
               "RelativeDocumentMoniker": "..\\Authorization.Infastructure\\BackgroundServices\\ApplyMigrationsBackgroundService.cs",
               "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\BackgroundServices\\ApplyMigrationsBackgroundService.cs",
               "RelativeToolTip": "..\\Authorization.Infastructure\\BackgroundServices\\ApplyMigrationsBackgroundService.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAkwC8AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAABcAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T22:29:13.208Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Startup.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Startup.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Dal\\Startup.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Startup.cs",
-              "RelativeToolTip": "..\\Authorization.Dal\\Startup.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "IMigrationService.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
+              "RelativeToolTip": "..\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:01:55.741Z",
+              "WhenOpened": "2025-04-10T22:29:53.924Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Dal\\AppDbContext.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\AppDbContext.cs",
-              "RelativeToolTip": "..\\Authorization.Dal\\AppDbContext.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAACEAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:01:55.554Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 3,
               "Title": "MigrationService.cs",
               "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Implementations\\MigrationService.cs",
               "RelativeDocumentMoniker": "..\\Authorization.Dal\\Implementations\\MigrationService.cs",
@@ -340,15 +262,93 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "IMigrationService.cs",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
-              "RelativeDocumentMoniker": "..\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
-              "RelativeToolTip": "..\\Authorization.Domain\\Interfaces\\IMigrationService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA5AAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\Startup.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Infastructure\\Startup.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Infastructure\\Startup.cs",
+              "RelativeToolTip": "..\\Authorization.Infastructure\\Startup.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T22:29:53.924Z",
+              "WhenOpened": "2025-04-07T17:04:24.573Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IRoleRepository.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
+              "RelativeToolTip": "..\\Authorization.Domain\\Repositories\\IRoleRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T09:29:24.303Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "RoleRepository.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\RoleRepository.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Dal\\Repositories\\RoleRepository.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\RoleRepository.cs",
+              "RelativeToolTip": "..\\Authorization.Dal\\Repositories\\RoleRepository.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAYAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T09:53:56.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Dal\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "..\\Authorization.Dal\\Repositories\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T09:53:56.796Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RoleValidator.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Validators\\RoleValidator.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Domain\\Validators\\RoleValidator.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Domain\\Validators\\RoleValidator.cs",
+              "RelativeToolTip": "..\\Authorization.Domain\\Validators\\RoleValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T23:24:28.148Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Startup.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Dal\\Startup.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\Startup.cs",
+              "RelativeToolTip": "..\\Authorization.Dal\\Startup.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T17:01:55.741Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "..\\Authorization.Dal\\AppDbContext.cs",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Authorization\\Authorization.Dal\\AppDbContext.cs",
+              "RelativeToolTip": "..\\Authorization.Dal\\AppDbContext.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAACEAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-07T17:01:55.554Z",
               "EditorCaption": ""
             },
             {

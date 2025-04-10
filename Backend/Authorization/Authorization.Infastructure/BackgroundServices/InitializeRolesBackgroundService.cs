@@ -4,6 +4,7 @@ using Authorization.Domain.Interfaces;
 using Authorization.Domain.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Authorization.Infastructure.BackgroundServices
 {
@@ -24,7 +25,9 @@ namespace Authorization.Infastructure.BackgroundServices
             using var scope = scopeFactory.CreateAsyncScope();
             var unitOfWork = scope.ServiceProvider
                 .GetRequiredService<IUnitOfWork>();
-        
+            var logger = scope.ServiceProvider
+                .GetRequiredService<Logger<InitializeRolesBackgroundService>>();
+
             var baseRoles = RoleValidator.Roles;
             var existingRoles = await unitOfWork.RoleRepository
                 .GetRoles();
@@ -50,6 +53,7 @@ namespace Authorization.Infastructure.BackgroundServices
                 if(role.IsFailure)
                 {
                     await innerUnitOfWork.RollBackTransactionAsync();
+                    logger.LogError("Error initialize role with name " + x);
                     throw new AppConfigurationException("Initialize roles");
                 }
 
@@ -59,6 +63,7 @@ namespace Authorization.Infastructure.BackgroundServices
 
             await Task.WhenAll(addRolesTasks);
             await unitOfWork.CommitTransactionAsync();
+            logger.LogInformation("Added the required roles");
         }
 
         // TODO: Try to find better way to check db healthcheck
