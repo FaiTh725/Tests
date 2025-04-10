@@ -8,8 +8,23 @@
 
   <ItemGroup>
     <Folder Include="BackgroundServices\" />
-    <Folder Include="Configurations\" />
-    <Folder Include="Implementations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Authorization.Application\Authorization.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Application.Shared">
+      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -10,3 +10,9 @@ C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\ob
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\obj\Debug\net8.0\refint\Authorization.Application.dll
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\obj\Debug\net8.0\Authorization.Application.pdb
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\obj\Debug\net8.0\ref\Authorization.Application.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\bin\Debug\net8.0\Application.Shared.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\bin\Debug\net8.0\Authorization.Domain.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\bin\Debug\net8.0\Authorization.Domain.pdb
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\bin\Debug\net8.0\Application.Shared.pdb
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\obj\Debug\net8.0\Authorization.Application.csproj.AssemblyReference.cache
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Application\obj\Debug\net8.0\Authoriz.7EEC710C.Up2Date

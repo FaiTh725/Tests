@@ -29,6 +29,18 @@ namespace Authorization.Domain.Entities
             Role = role;
         }
 
+        private User(
+            string userName,
+            string email,
+            string passwordHash,
+            string roleName)
+        {
+            UserName = userName;
+            Email = email;
+            PasswordHash = passwordHash;
+            RoleId = roleName;
+        }
+
         public static Result<User> Initialize(
             string userName,
             string email,
@@ -60,6 +72,39 @@ namespace Authorization.Domain.Entities
                 email,
                 passwordHash,
                 role));
+        }
+
+        public static Result<User> Initialize(
+            string userName,
+            string email,
+            string passwordHash,
+            string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return Result.Failure<User>("UserName is emprt or null");
+            }
+
+            if (string.IsNullOrEmpty(passwordHash))
+            {
+                return Result.Failure<User>("PasswordHash is empty or null");
+            }
+
+            if (!UserValidator.IsValidEmail(email))
+            {
+                return Result.Failure<User>("Email is invalid, must contains one letter and one number");
+            }
+
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                return Result.Failure<User>("Role is null");
+            }
+
+            return Result.Success(new User(
+                userName,
+                email,
+                passwordHash,
+                roleName));
         }
     }
 }

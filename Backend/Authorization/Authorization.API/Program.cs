@@ -1,4 +1,6 @@
+using Authorization.Application;
 using Authorization.Dal;
+using Authorization.Infastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +10,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
-    .ConfigureDalServices();
+    .ConfigureDalServices()
+    .ConfigureAppSerrvices()
+    .ConfigureInfastructureServices(builder.Configuration);
 
 var app = builder.Build();
 
