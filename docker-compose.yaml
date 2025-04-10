@@ -1,0 +1,55 @@
+version: "3.8"
+
+name: "Testing"
+
+services:
+  postgres_db:
+    restart: always
+    image: postgres
+    container_name: testing_postgres
+    ports:
+      - "5555:5432"
+    environment:
+      - POSTGRES_PASSWORD=eZQ9XeVGvT
+      - POSTGRES_USER=FaITh725
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - testing_postgres_volume:/var/lib/postgresql/data/pgdata
+    networks:
+      - testing_postgres_net
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: testing_message_broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=FaITh725
+      - RABBITMQ_DEFAULT_PASS=eZQ9XeVGvT
+    networks:
+      - message_broker_net
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: testing_redis_om
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    environment:
+      - REDIS_PASSWORD=eZQ9XeVGvT
+      - REDIS_ARGS=--requirepass eZQ9XeVGvT
+    networks:
+      - redis_net
+
+networks:
+  testing_postgres_net:
+    driver: bridge
+  message_broker_net:
+    driver: bridge
+  redis_net:
+    driver: bridge
+
+volumes:
+  testing_postgres_volume:
+    driver: local
