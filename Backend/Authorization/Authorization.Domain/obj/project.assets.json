@@ -1,11 +1,48 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "CSharpFunctionalExtensions/3.6.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CSharpFunctionalExtensions.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CSharpFunctionalExtensions.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "CSharpFunctionalExtensions/3.6.0": {
+      "sha512": "c+oWbfDKKjpOLPMxn/iPn1GL24YTJMtOiGfj0AsDKZ2v6/Mr6V7BfzfWLg6KqNRx3KRy3KcQE680SwvDTI/jcg==",
+      "type": "package",
+      "path": "csharpfunctionalextensions/3.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "csharpfunctionalextensions.3.6.0.nupkg.sha512",
+        "csharpfunctionalextensions.nuspec",
+        "lib/net6.0/CSharpFunctionalExtensions.dll",
+        "lib/net6.0/CSharpFunctionalExtensions.pdb",
+        "lib/net6.0/CSharpFunctionalExtensions.xml",
+        "lib/net8.0/CSharpFunctionalExtensions.dll",
+        "lib/net8.0/CSharpFunctionalExtensions.pdb",
+        "lib/net8.0/CSharpFunctionalExtensions.xml",
+        "lib/netstandard2.0/CSharpFunctionalExtensions.dll",
+        "lib/netstandard2.0/CSharpFunctionalExtensions.pdb",
+        "lib/netstandard2.0/CSharpFunctionalExtensions.xml"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "CSharpFunctionalExtensions >= 3.6.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\zelen\\.nuget\\packages\\": {},
@@ -56,6 +93,12 @@
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
+        "dependencies": {
+          "CSharpFunctionalExtensions": {
+            "target": "Package",
+            "version": "[3.6.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

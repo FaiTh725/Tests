@@ -10,3 +10,4 @@ C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Domain\obj\Deb
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Domain\obj\Debug\net8.0\refint\Authorization.Domain.dll
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Domain\obj\Debug\net8.0\Authorization.Domain.pdb
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Domain\obj\Debug\net8.0\ref\Authorization.Domain.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Domain\obj\Debug\net8.0\Authorization.Domain.csproj.AssemblyReference.cache
