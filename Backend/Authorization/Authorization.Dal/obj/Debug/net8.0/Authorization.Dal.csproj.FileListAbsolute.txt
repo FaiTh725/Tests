@@ -10,3 +10,11 @@ C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\net8.0\refint\Authorization.Dal.dll
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\net8.0\Authorization.Dal.pdb
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\net8.0\ref\Authorization.Dal.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\bin\Debug\net8.0\Authorization.Dal.runtimeconfig.json
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\bin\Debug\net8.0\Application.Shared.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\bin\Debug\net8.0\Authorization.Domain.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\bin\Debug\net8.0\Authorization.Domain.pdb
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\bin\Debug\net8.0\Application.Shared.pdb
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\net8.0\Authorization.Dal.csproj.AssemblyReference.cache
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\net8.0\Authoriz.4A43310B.Up2Date
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.Dal\obj\Debug\net8.0\Authorization.Dal.genruntimeconfig.cache
