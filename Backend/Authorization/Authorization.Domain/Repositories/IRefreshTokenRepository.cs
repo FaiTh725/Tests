@@ -6,6 +6,12 @@ namespace Authorization.Domain.Repositories
     {
         Task<RefreshToken> AddRefreshToken(RefreshToken refreshToken);
 
-        Task RemoveToken(List<long> refreshTokensList);
+        Task<RefreshToken?> GetRefreshToken(long id);
+
+        Task<RefreshToken?> GetRefreshTokenWithUser(string token);
+
+        Task RemoveToken(string refreshToken);
+
+        Task UpdateRefreshToken(long id, RefreshToken refreshToken);
     }
 }

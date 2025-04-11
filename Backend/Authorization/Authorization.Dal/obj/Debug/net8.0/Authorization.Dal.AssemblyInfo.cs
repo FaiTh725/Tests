@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Authorization.Dal")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+abc758749d8c83aac209bccb29d40849d02c3dbb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d254834650df5d632b731abd5c253c9deb244b55")]
 [assembly: System.Reflection.AssemblyProductAttribute("Authorization.Dal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Authorization.Dal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

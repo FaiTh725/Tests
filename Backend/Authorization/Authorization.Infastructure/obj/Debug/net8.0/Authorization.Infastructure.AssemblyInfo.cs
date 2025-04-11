@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Authorization.Infastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd33b39e17be3cb45e38f8ff5e8fdc9faa80fd77")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d254834650df5d632b731abd5c253c9deb244b55")]
 [assembly: System.Reflection.AssemblyProductAttribute("Authorization.Infastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Authorization.Infastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

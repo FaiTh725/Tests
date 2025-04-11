@@ -24,6 +24,24 @@ namespace Authorization.Domain.Entities
             ExpireOn = expireOn;
         }
 
+        public Result Refresh(
+            string token, DateTime expireOn)
+        {
+            if(string.IsNullOrWhiteSpace(token))
+            {
+                return Result.Failure("Token is empty");
+            }
+            if(expireOn < DateTime.UtcNow)
+            {
+                return Result.Failure("Expire time points on the past");
+            }
+
+            Token = token;
+            ExpireOn = expireOn;
+
+            return Result.Success();
+        }
+
         public static Result<RefreshToken> Initialize(
             string token,
             User user,
@@ -41,7 +59,7 @@ namespace Authorization.Domain.Entities
 
             if(expireOn < DateTime.UtcNow)
             {
-                return Result.Failure<RefreshToken>("Expire time points on th past");
+                return Result.Failure<RefreshToken>("Expire time points on the past");
             }
 
             return Result.Success(new RefreshToken(

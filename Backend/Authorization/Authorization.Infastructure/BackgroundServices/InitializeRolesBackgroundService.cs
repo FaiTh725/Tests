@@ -26,7 +26,7 @@ namespace Authorization.Infastructure.BackgroundServices
             var unitOfWork = scope.ServiceProvider
                 .GetRequiredService<IUnitOfWork>();
             var logger = scope.ServiceProvider
-                .GetRequiredService<Logger<InitializeRolesBackgroundService>>();
+                .GetRequiredService<ILogger<InitializeRolesBackgroundService>>();
 
             var baseRoles = RoleValidator.Roles;
             var existingRoles = await unitOfWork.RoleRepository

@@ -22,7 +22,7 @@ namespace Authorization.Infastructure.BackgroundServices
             var migrationService = scope.ServiceProvider
                 .GetRequiredService<IMigrationService>();
             var logger = scope.ServiceProvider
-                .GetRequiredService<Logger<ApplyMigrationsBackgroundService>>();
+                .GetRequiredService<ILogger<ApplyMigrationsBackgroundService>>();
 
             var pendingMigrations = await migrationService.GetPendingMigrations();
 

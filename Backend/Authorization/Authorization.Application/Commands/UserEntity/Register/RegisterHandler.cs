@@ -1,5 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
+using Authorization.Application.Contracts.User;
 using Authorization.Domain.Entities;
 using Authorization.Domain.Interfaces;
 using Authorization.Domain.Validators;
@@ -8,20 +9,23 @@ using MediatR;
 namespace Authorization.Application.Commands.UserEntity.Register
 {
     public class RegisterHandler :
-        IRequestHandler<RegisterCommand, long>
+        IRequestHandler<RegisterCommand, (long, string)>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IHashService hashService;
+        private readonly IJwtService<UserTokenRequest, UserTokenResponse> tokenService;
 
         public RegisterHandler(
             IUnitOfWork unitOfWork, 
-            IHashService hashService)
+            IHashService hashService,
+            IJwtService<UserTokenRequest, UserTokenResponse> tokenService)
         {
             this.unitOfWork = unitOfWork;
             this.hashService = hashService;
+            this.tokenService = tokenService;
         }
 
-        public async Task<long> Handle(
+        public async Task<(long, string)> Handle(
             RegisterCommand request, 
             CancellationToken cancellationToken)
         {
@@ -53,12 +57,28 @@ namespace Authorization.Application.Commands.UserEntity.Register
                     userEntity.Error);
             }
 
+            await unitOfWork.BeginTransactionAsync();
+
             var userDb = await unitOfWork.UserRepository
                 .AddUser(userEntity.Value);
 
-            await unitOfWork.SaveChangesAsync();
+            var refreshToken = tokenService.GenerateRefreshToken();
+            var refreshTokenEntity = RefreshToken.Initialize(
+                refreshToken, userDb, DateTime.UtcNow.AddDays(15));
 
-            return userDb.Id;
+            if (refreshTokenEntity.IsFailure)
+            {
+                await unitOfWork.RollBackTransactionAsync();
+                throw new InternalServerErrorException("Error initialize refresh token");
+            }
+
+            await unitOfWork.RefreshTokenRepository
+                .AddRefreshToken(refreshTokenEntity.Value);
+
+            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.CommitTransactionAsync();
+
+            return (userDb.Id, refreshToken);
         }
     }
 }

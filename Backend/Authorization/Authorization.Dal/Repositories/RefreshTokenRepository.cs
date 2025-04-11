@@ -22,11 +22,34 @@ namespace Authorization.Dal.Repositories
             return refreshTokenEntity.Entity;
         }
 
-        public async Task RemoveToken(List<long> refreshTokensList)
+        public async Task<RefreshToken?> GetRefreshToken(long id)
+        {
+            return await context.RefreshTokens
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<RefreshToken?> GetRefreshTokenWithUser(string token)
+        {
+            return await context.RefreshTokens
+                .Where(x => x.Token == token)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task RemoveToken(string refreshToken)
         {
             await context.RefreshTokens
-                .Where(x => refreshTokensList.Contains(x.Id))
+                .Where(x => x.Token == refreshToken)
                 .ExecuteDeleteAsync();
+        }
+
+        public async Task UpdateRefreshToken(long id, RefreshToken refreshToken)
+        {
+            await context.RefreshTokens
+                .Where(x => x.Id == id)
+                .ExecuteUpdateAsync(x => x
+                    .SetProperty(y => y.Token, refreshToken.Token)
+                    .SetProperty(y => y.ExpireOn, refreshToken.ExpireOn));
         }
     }
 }

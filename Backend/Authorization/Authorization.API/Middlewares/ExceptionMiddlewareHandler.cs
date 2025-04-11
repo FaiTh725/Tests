@@ -35,6 +35,7 @@ namespace Authorization.API.Middlewares
             httpContext.Response.StatusCode = exception switch
             { 
                 BadRequestException => StatusCodes.Status400BadRequest,
+                UnauthorizeException => StatusCodes.Status401Unauthorized,
                 NotFoundException => StatusCodes.Status404NotFound,
                 ConflictException => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError

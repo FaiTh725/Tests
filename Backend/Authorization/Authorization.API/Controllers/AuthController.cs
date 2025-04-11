@@ -1,7 +1,11 @@
-﻿using Authorization.Application.Commands.UserEntity.Login;
+﻿using Application.Shared.Exceptions;
+using Authorization.Application.Commands.RefreshTokenEntity.DeleteRefreshToken;
+using Authorization.Application.Commands.RefreshTokenEntity.RefreshRefreshToken;
+using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
+using Authorization.Application.Queries.RefreshTokenEntity.GetRefreshTokenWithUser;
 using Authorization.Application.Queries.UserEntity.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -41,14 +45,16 @@ namespace Authorization.API.Controllers
                 Id = userId
             });
 
-            var token = tokenService.GenerateToken(new UserTokenRequest
+            var accessToken = tokenService.GenerateToken(new UserTokenRequest
             {
                 Email = user.Email,
                 Role = user.Role,
                 UserName = user.UserName,
             });
+            var refreshToken = tokenService.GenerateRefreshToken();
 
-            Response.Cookies.Append("token", token, cookieOptions);
+            Response.Cookies.Append("token", accessToken, cookieOptions);
+            Response.Cookies.Append("refresh_token", refreshToken, cookieOptions);
 
             return Ok(user);
         }
@@ -57,11 +63,11 @@ namespace Authorization.API.Controllers
         public async Task<IActionResult> Register(
             RegisterCommand request)
         {
-            var userId = await mediator.Send(request);
+            var userRegistered = await mediator.Send(request);
 
             var user = await mediator.Send(new GetUserByIdQuery
             {
-                Id = userId
+                Id = userRegistered.Item1
             });
 
             var token = tokenService.GenerateToken(new UserTokenRequest
@@ -72,8 +78,67 @@ namespace Authorization.API.Controllers
             });
 
             Response.Cookies.Append("token", token, cookieOptions);
+            Response.Cookies.Append("refresh_token", userRegistered.Item2, cookieOptions);
 
             return Ok(user);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Refresh()
+        {
+            var oldRefreshToken = Request.Cookies["refresh_token"];
+            if(string.IsNullOrWhiteSpace(oldRefreshToken))
+            {
+                throw new UnauthorizeException("Refresh token is missing");
+            }
+
+            var existedRefreshToken = await mediator.Send(
+                new GetRefreshTokenWithUserQuery
+                {
+                    Token = oldRefreshToken
+                });
+            if(existedRefreshToken.ExpireOn < DateTime.UtcNow)
+            {
+                throw new UnauthorizeException("Refresh token is expired");
+            }
+
+            var accessToken = tokenService.GenerateToken(new UserTokenRequest
+            {
+                Email = existedRefreshToken.User.Email,
+                Role = existedRefreshToken.User.Role,
+                UserName = existedRefreshToken.User.UserName
+            });
+            var newRefreshToken = tokenService.GenerateRefreshToken();
+
+            await mediator.Send(new RefreshRefreshTokenCommand
+            {
+                Id = existedRefreshToken.Id,
+                NewToken = newRefreshToken,
+                NewExpireOn = DateTime.UtcNow.AddDays(15),
+            });
+
+            Response.Cookies.Append("token", accessToken, cookieOptions);
+            Response.Cookies.Append("refresh_token", newRefreshToken, cookieOptions);
+
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refresh_token"];
+            if(!string.IsNullOrWhiteSpace(refreshToken))
+            {
+                await mediator.Send(new DeleteRefreshTokenCommand
+                {
+                    RefreshToken = refreshToken
+                });
+
+                Response.Cookies.Delete("refresh_token");
+                Response.Cookies.Delete("token");
+            }
+
+            return NoContent();
         }
     }
 }

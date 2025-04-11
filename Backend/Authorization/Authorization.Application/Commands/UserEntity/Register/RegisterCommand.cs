@@ -2,7 +2,7 @@
 
 namespace Authorization.Application.Commands.UserEntity.Register
 {
-    public class RegisterCommand : IRequest<long>
+    public class RegisterCommand : IRequest<(long, string)>
     {
         public string Email { get; set; } = string.Empty;
 
