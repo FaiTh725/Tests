@@ -19,7 +19,7 @@ namespace Authorization.API.Controllers
         private readonly IMediator mediator;
         private readonly IJwtService<UserTokenRequest, UserTokenResponse> tokenService;
 
-        private CookieOptions cookieOptions = new CookieOptions
+        private readonly CookieOptions cookieOptions = new CookieOptions
         {
             Secure = true,
             SameSite = SameSiteMode.None,
@@ -36,14 +36,16 @@ namespace Authorization.API.Controllers
 
         [HttpGet("[action]")]
         public async Task<IActionResult> Login(
-            [FromQuery]LoginCommand request)
+            [FromQuery]LoginCommand request,
+            CancellationToken cancellationToken)
         {
-            var userId = await mediator.Send(request);
+            var userEntered = await mediator.Send(request, cancellationToken);
 
             var user = await mediator.Send(new GetUserByIdQuery 
             { 
-                Id = userId
-            });
+                Id = userEntered.Item1
+            }, 
+            cancellationToken);
 
             var accessToken = tokenService.GenerateToken(new UserTokenRequest
             {
@@ -51,24 +53,25 @@ namespace Authorization.API.Controllers
                 Role = user.Role,
                 UserName = user.UserName,
             });
-            var refreshToken = tokenService.GenerateRefreshToken();
 
             Response.Cookies.Append("token", accessToken, cookieOptions);
-            Response.Cookies.Append("refresh_token", refreshToken, cookieOptions);
+            Response.Cookies.Append("refresh_token", userEntered.Item2, cookieOptions);
 
             return Ok(user);
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Register(
-            RegisterCommand request)
+            RegisterCommand request,
+            CancellationToken cancellationToken)
         {
-            var userRegistered = await mediator.Send(request);
+            var userRegistered = await mediator.Send(request, cancellationToken);
 
             var user = await mediator.Send(new GetUserByIdQuery
             {
                 Id = userRegistered.Item1
-            });
+            }, 
+            cancellationToken);
 
             var token = tokenService.GenerateToken(new UserTokenRequest
             {
@@ -84,7 +87,8 @@ namespace Authorization.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Refresh()
+        public async Task<IActionResult> Refresh(
+            CancellationToken cancellationToken)
         {
             var oldRefreshToken = Request.Cookies["refresh_token"];
             if(string.IsNullOrWhiteSpace(oldRefreshToken))
@@ -96,7 +100,8 @@ namespace Authorization.API.Controllers
                 new GetRefreshTokenWithUserQuery
                 {
                     Token = oldRefreshToken
-                });
+                },
+                cancellationToken);
             if(existedRefreshToken.ExpireOn < DateTime.UtcNow)
             {
                 throw new UnauthorizeException("Refresh token is expired");
@@ -113,9 +118,9 @@ namespace Authorization.API.Controllers
             await mediator.Send(new RefreshRefreshTokenCommand
             {
                 Id = existedRefreshToken.Id,
-                NewToken = newRefreshToken,
-                NewExpireOn = DateTime.UtcNow.AddDays(15),
-            });
+                NewToken = newRefreshToken
+            },
+            cancellationToken);
 
             Response.Cookies.Append("token", accessToken, cookieOptions);
             Response.Cookies.Append("refresh_token", newRefreshToken, cookieOptions);
@@ -124,7 +129,8 @@ namespace Authorization.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(
+            CancellationToken cancellationToken)
         {
             var refreshToken = Request.Cookies["refresh_token"];
             if(!string.IsNullOrWhiteSpace(refreshToken))
@@ -132,7 +138,8 @@ namespace Authorization.API.Controllers
                 await mediator.Send(new DeleteRefreshTokenCommand
                 {
                     RefreshToken = refreshToken
-                });
+                }, 
+                cancellationToken);
 
                 Response.Cookies.Delete("refresh_token");
                 Response.Cookies.Delete("token");

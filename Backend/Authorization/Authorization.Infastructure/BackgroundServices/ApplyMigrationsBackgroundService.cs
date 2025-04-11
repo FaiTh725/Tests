@@ -24,11 +24,11 @@ namespace Authorization.Infastructure.BackgroundServices
             var logger = scope.ServiceProvider
                 .GetRequiredService<ILogger<ApplyMigrationsBackgroundService>>();
 
-            var pendingMigrations = await migrationService.GetPendingMigrations();
+            var pendingMigrations = await migrationService.GetPendingMigrations(stoppingToken);
 
             if (pendingMigrations.Any())
             {
-                await migrationService.ApplyPendingMigrations();
+                await migrationService.ApplyPendingMigrations(stoppingToken);
                 logger.LogInformation("Apply Migrations");
             }
 
@@ -44,7 +44,7 @@ namespace Authorization.Infastructure.BackgroundServices
             while(!cancellationToken.IsCancellationRequested)
             {
 
-                if(await unitOfWork.CanConnectAsync())
+                if(await unitOfWork.CanConnectAsync(cancellationToken))
                 {
                     return;
                 }

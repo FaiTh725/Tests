@@ -4,10 +4,10 @@ namespace Authorization.Domain.Repositories
 {
     public interface IUserRepository
     {
-        Task<User?> GetUserByEmail(string email);
+        Task<User?> GetUserByEmail(string email, CancellationToken cancellationToken = default);
 
-        Task<User?> GetUserById(long id);
+        Task<User?> GetUserById(long id, CancellationToken cancellationToken = default);
 
-        Task<User> AddUser(User user);
+        Task<User> AddUser(User user, CancellationToken cancellationToken = default);
     }
 }

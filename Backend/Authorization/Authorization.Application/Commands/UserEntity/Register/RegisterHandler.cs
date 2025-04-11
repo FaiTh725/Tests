@@ -5,6 +5,7 @@ using Authorization.Domain.Entities;
 using Authorization.Domain.Interfaces;
 using Authorization.Domain.Validators;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 
 namespace Authorization.Application.Commands.UserEntity.Register
 {
@@ -14,15 +15,18 @@ namespace Authorization.Application.Commands.UserEntity.Register
         private readonly IUnitOfWork unitOfWork;
         private readonly IHashService hashService;
         private readonly IJwtService<UserTokenRequest, UserTokenResponse> tokenService;
+        private readonly IConfiguration configuration;
 
         public RegisterHandler(
             IUnitOfWork unitOfWork, 
             IHashService hashService,
-            IJwtService<UserTokenRequest, UserTokenResponse> tokenService)
+            IJwtService<UserTokenRequest, UserTokenResponse> tokenService,
+            IConfiguration configuration)
         {
             this.unitOfWork = unitOfWork;
             this.hashService = hashService;
             this.tokenService = tokenService;
+            this.configuration = configuration;
         }
 
         public async Task<(long, string)> Handle(
@@ -30,7 +34,7 @@ namespace Authorization.Application.Commands.UserEntity.Register
             CancellationToken cancellationToken)
         {
             var user = await unitOfWork.UserRepository
-                .GetUserByEmail(request.Email);
+                .GetUserByEmail(request.Email, cancellationToken);
         
             if(user is not null)
             {
@@ -57,28 +61,39 @@ namespace Authorization.Application.Commands.UserEntity.Register
                     userEntity.Error);
             }
 
-            await unitOfWork.BeginTransactionAsync();
-
-            var userDb = await unitOfWork.UserRepository
-                .AddUser(userEntity.Value);
-
-            var refreshToken = tokenService.GenerateRefreshToken();
-            var refreshTokenEntity = RefreshToken.Initialize(
-                refreshToken, userDb, DateTime.UtcNow.AddDays(15));
-
-            if (refreshTokenEntity.IsFailure)
+            try
             {
-                await unitOfWork.RollBackTransactionAsync();
-                throw new InternalServerErrorException("Error initialize refresh token");
+                await unitOfWork.BeginTransactionAsync(cancellationToken);
+
+                var userDb = await unitOfWork.UserRepository
+                    .AddUser(userEntity.Value, cancellationToken);
+
+                var tokenLifeTime = configuration
+                    .GetValue<int>("JwtSettings:ExpirationTimeRefreshTokenInDays");
+
+                var refreshToken = tokenService.GenerateRefreshToken();
+                var refreshTokenEntity = RefreshToken.Initialize(
+                    refreshToken, userDb, DateTime.UtcNow.AddDays(tokenLifeTime));
+
+                if (refreshTokenEntity.IsFailure)
+                {
+                    await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                    throw new InternalServerErrorException("Error initialize refresh token");
+                }
+
+                await unitOfWork.RefreshTokenRepository
+                    .AddRefreshToken(refreshTokenEntity.Value, cancellationToken);
+
+                await unitOfWork.SaveChangesAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                
+                return (userDb.Id, refreshToken);
             }
-
-            await unitOfWork.RefreshTokenRepository
-                .AddRefreshToken(refreshTokenEntity.Value);
-
-            await unitOfWork.SaveChangesAsync();
-            await unitOfWork.CommitTransactionAsync();
-
-            return (userDb.Id, refreshToken);
+            catch
+            {
+                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                throw;
+            }
         }
     }
 }

@@ -14,24 +14,27 @@ namespace Authorization.Dal.Repositories
             this.context = context;
         }
 
-        public async Task<Role> AddRole(Role role)
+        public async Task<Role> AddRole(
+            Role role, CancellationToken cancellationToken = default)
         {
             var roleEntity = await context.Roles
-                .AddAsync(role);
+                .AddAsync(role, cancellationToken);
 
             return roleEntity.Entity;
         }
 
-        public async Task<Role?> GetRole(string roleName)
+        public async Task<Role?> GetRole(
+            string roleName, CancellationToken cancellationToken = default)
         {
             return await context.Roles
-                .FirstOrDefaultAsync(x => x.RoleName == roleName);
+                .FirstOrDefaultAsync(x => x.RoleName == roleName, 
+                cancellationToken);
         }
 
-        public async Task<IEnumerable<Role>> GetRoles()
+        public async Task<IEnumerable<Role>> GetRoles(CancellationToken cancellationToken = default)
         {
             return await context.Roles
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }

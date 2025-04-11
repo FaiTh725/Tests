@@ -20,7 +20,7 @@ namespace Authorization.Application.Queries.RefreshTokenEntity.GetRefreshTokenWi
         public async Task<UserRefreshTokenResponse> Handle(GetRefreshTokenWithUserQuery request, CancellationToken cancellationToken)
         {
             var refreshToken = await unitOfWork.RefreshTokenRepository
-                .GetRefreshTokenWithUser(request.Token);
+                .GetRefreshTokenWithUser(request.Token, cancellationToken);
 
             if (refreshToken is null)
             {

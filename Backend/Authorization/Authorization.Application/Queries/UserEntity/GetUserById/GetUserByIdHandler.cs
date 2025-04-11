@@ -19,7 +19,7 @@ namespace Authorization.Application.Queries.UserEntity.GetUserById
         public async Task<UserResponse> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
             var user = await unitOfWork.UserRepository
-                .GetUserById(request.Id);
+                .GetUserById(request.Id, cancellationToken);
         
             if(user is null)
             {

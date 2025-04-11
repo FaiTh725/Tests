@@ -7,7 +7,5 @@ namespace Authorization.Application.Commands.RefreshTokenEntity.RefreshRefreshTo
         public long Id { get; set; }
 
         public string NewToken { get; set; } = string.Empty;
-
-        public DateTime NewExpireOn { get; set; }
     }
 }

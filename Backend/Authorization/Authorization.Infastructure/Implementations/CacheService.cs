@@ -10,7 +10,7 @@ namespace Authorization.Infastructure.Implementations
     {
         private readonly IDistributedCache cache;
 
-        private JsonSerializerOptions serializerOptions = new JsonSerializerOptions
+        private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = null,
             WriteIndented = true,
@@ -24,9 +24,10 @@ namespace Authorization.Infastructure.Implementations
             this.cache = cache;
         }
 
-        public async Task<Result<T>> GetData<T>(string key)
+        public async Task<Result<T>> GetData<T>(
+            string key, CancellationToken cancellationToken = default)
         {
-            var jsonData = await cache.GetStringAsync(key);
+            var jsonData = await cache.GetStringAsync(key, cancellationToken);
 
             if(jsonData is null)
             {
@@ -43,12 +44,13 @@ namespace Authorization.Infastructure.Implementations
             return Result.Success(data);
         }
 
-        public async Task RemoveData(string key)
+        public async Task RemoveData(string key, CancellationToken cancellationToken = default)
         {
-            await cache.RemoveAsync(key);
+            await cache.RemoveAsync(key, cancellationToken);
         }
 
-        public async Task SetData<T>(string key, T data, int expirationTime)
+        public async Task SetData<T>(
+            string key, T data, int expirationTime, CancellationToken cancellationToken = default)
         {
             var cacheOptions = new DistributedCacheEntryOptions
             {
@@ -57,7 +59,7 @@ namespace Authorization.Infastructure.Implementations
 
             var jsonData = JsonSerializer.Serialize(data, serializerOptions);
 
-            await cache.SetStringAsync(key, jsonData, cacheOptions);
+            await cache.SetStringAsync(key, jsonData, cacheOptions, cancellationToken);
         }
     }
 }

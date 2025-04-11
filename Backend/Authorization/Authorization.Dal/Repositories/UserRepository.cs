@@ -14,23 +14,29 @@ namespace Authorization.Dal.Repositories
             this.context = context;
         }
 
-        public async Task<User> AddUser(User user)
+        public async Task<User> AddUser(
+            User user, CancellationToken cancellationToken = default)
         {
-            var userEntity = await context.Users.AddAsync(user);
+            var userEntity = await context.Users
+                .AddAsync(user, cancellationToken);
 
             return userEntity.Entity;
         }
 
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmail(
+            string email, CancellationToken cancellationToken = default)
         {
             return await context.Users
-                .FirstOrDefaultAsync(x => x.Email == email);
+                .FirstOrDefaultAsync(x => x.Email == email, 
+                cancellationToken);
         }
 
-        public async Task<User?> GetUserById(long id)
+        public async Task<User?> GetUserById(
+            long id, CancellationToken cancellationToken = default)
         {
             return await context.Users
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id, 
+                cancellationToken);
         }
     }
 }

@@ -166,3 +166,4 @@ C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.API\bin\Debug\
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.API\bin\Debug\net8.0\FluentValidation.dll
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.API\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
 C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.API\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\VSProjects\Intership\Tests\Backend\Authorization\Authorization.API\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Binder.dll

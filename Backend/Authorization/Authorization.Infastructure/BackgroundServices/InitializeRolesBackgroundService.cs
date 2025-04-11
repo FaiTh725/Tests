@@ -30,9 +30,9 @@ namespace Authorization.Infastructure.BackgroundServices
 
             var baseRoles = RoleValidator.Roles;
             var existingRoles = await unitOfWork.RoleRepository
-                .GetRoles();
+                .GetRoles(stoppingToken);
 
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(stoppingToken);
 
             var addRolesTasks = baseRoles.Select(async x =>
             {
@@ -52,7 +52,7 @@ namespace Authorization.Infastructure.BackgroundServices
 
                 if(role.IsFailure)
                 {
-                    await innerUnitOfWork.RollBackTransactionAsync();
+                    await innerUnitOfWork.RollBackTransactionAsync(stoppingToken);
                     logger.LogError("Error initialize role with name " + x);
                     throw new AppConfigurationException("Initialize roles");
                 }
@@ -62,7 +62,7 @@ namespace Authorization.Infastructure.BackgroundServices
             }).ToList();
 
             await Task.WhenAll(addRolesTasks);
-            await unitOfWork.CommitTransactionAsync();
+            await unitOfWork.CommitTransactionAsync(stoppingToken);
             logger.LogInformation("Added the required roles");
         }
 
@@ -76,7 +76,7 @@ namespace Authorization.Infastructure.BackgroundServices
             while (!cancellationToken.IsCancellationRequested)
             {
 
-                if (await unitOfWork.CanConnectAsync())
+                if (await unitOfWork.CanConnectAsync(cancellationToken))
                 {
                     return;
                 }

@@ -36,9 +36,10 @@ namespace Authorization.Dal.Implementations
             transaction = context.Database.BeginTransaction();
         }
 
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            transaction = await context.Database.BeginTransactionAsync();
+            transaction = await context.Database
+                .BeginTransactionAsync(cancellationToken);
         }
 
         public bool CanConnect()
@@ -46,9 +47,11 @@ namespace Authorization.Dal.Implementations
             return context.Database.CanConnect();
         }
 
-        public async Task<bool> CanConnectAsync()
+        public async Task<bool> CanConnectAsync(
+            CancellationToken cancellationToken = default)
         {
-            return await context.Database.CanConnectAsync();
+            return await context.Database
+                .CanConnectAsync(cancellationToken);
         }
 
         public void CommitTransaction()
@@ -59,11 +62,12 @@ namespace Authorization.Dal.Implementations
             transaction.Dispose();
         }
 
-        public async Task CommitTransactionAsync()
+        public async Task CommitTransactionAsync(
+            CancellationToken cancellationToken = default)
         {
             AssuranceTransaction();
 
-            await transaction.CommitAsync();
+            await transaction.CommitAsync(cancellationToken);
             await transaction.DisposeAsync();
         }
 
@@ -75,11 +79,12 @@ namespace Authorization.Dal.Implementations
             transaction.Dispose();
         }
 
-        public async Task RollBackTransactionAsync()
+        public async Task RollBackTransactionAsync(
+            CancellationToken cancellationToken = default)
         {
             AssuranceTransaction();
 
-            await transaction.RollbackAsync();
+            await transaction.RollbackAsync(cancellationToken);
             await transaction.DisposeAsync();
         }
 
@@ -88,9 +93,10 @@ namespace Authorization.Dal.Implementations
             return context.SaveChanges();
         }
 
-        public async Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync(
+            CancellationToken cancellationToken = default)
         {
-            return await context.SaveChangesAsync();
+            return await context.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

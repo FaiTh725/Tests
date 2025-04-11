@@ -14,10 +14,14 @@ namespace Authorization.Application.Commands.RefreshTokenEntity.DeleteRefreshTok
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(DeleteRefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task Handle(
+            DeleteRefreshTokenCommand request, 
+            CancellationToken cancellationToken)
         {
             await unitOfWork.RefreshTokenRepository
-                .RemoveToken(request.RefreshToken);
+                .RemoveToken(request.RefreshToken, cancellationToken);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

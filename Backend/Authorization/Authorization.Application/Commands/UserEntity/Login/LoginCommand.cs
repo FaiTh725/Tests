@@ -2,7 +2,7 @@
 
 namespace Authorization.Application.Commands.UserEntity.Login
 {
-    public class LoginCommand : IRequest<long>
+    public class LoginCommand : IRequest<(long, string)>
     {
         public string Email { get; set; } = string.Empty;
 
