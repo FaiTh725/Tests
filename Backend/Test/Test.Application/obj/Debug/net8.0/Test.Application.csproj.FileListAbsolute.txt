@@ -1,0 +1,12 @@
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\bin\Debug\net8.0\Test.Application.deps.json
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\bin\Debug\net8.0\Test.Application.dll
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\bin\Debug\net8.0\Test.Application.pdb
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.AssemblyInfoInputs.cache
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.AssemblyInfo.cs
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.csproj.CoreCompileInputs.cache
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.sourcelink.json
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.dll
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\refint\Test.Application.dll
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\Test.Application.pdb
+C:\VSProjects\Intership\Tests\Backend\Test\Test.Application\obj\Debug\net8.0\ref\Test.Application.dll
