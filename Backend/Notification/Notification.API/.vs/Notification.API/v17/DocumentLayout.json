@@ -17,21 +17,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 174,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Notification.Application",
-              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Notification\\Notification.Application\\Notification.Application.csproj",
-              "RelativeDocumentMoniker": "..\\Notification.Application\\Notification.Application.csproj",
-              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Notification\\Notification.Application\\Notification.Application.csproj",
-              "RelativeToolTip": "..\\Notification.Application\\Notification.Application.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-04-07T17:29:12.379Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -54,6 +41,19 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Notification.Application.csproj",
+              "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Notification\\Notification.Application\\Notification.Application.csproj",
+              "RelativeDocumentMoniker": "..\\Notification.Application\\Notification.Application.csproj",
+              "ToolTip": "C:\\VSProjects\\Intership\\Tests\\Backend\\Notification\\Notification.Application\\Notification.Application.csproj",
+              "RelativeToolTip": "..\\Notification.Application\\Notification.Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-04-07T17:29:12.379Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\VSProjects\\Intership\\Tests\\Backend\\Notification\\Notification.API\\Program.cs",
@@ -62,8 +62,7 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T17:28:07.886Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-07T17:28:07.886Z"
             }
           ]
         }
