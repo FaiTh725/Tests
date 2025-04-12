@@ -11,6 +11,7 @@ using Authorization.Application.Queries.RefreshTokenEntity.GetRefreshTokenWithUs
 using Authorization.Application.Queries.UserEntity.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Authorization.API.Controllers
 {
@@ -151,6 +152,7 @@ namespace Authorization.API.Controllers
         }
 
         [HttpPost("[action]")]
+        [EnableRateLimiting("confirm_email")]
         public async Task<IActionResult> SendEmailConfirmationCode(
             SendConfirmCodeCommand request, CancellationToken cancellationToken)
         {
