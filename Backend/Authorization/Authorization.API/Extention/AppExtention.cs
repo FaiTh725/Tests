@@ -3,6 +3,7 @@ using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using System.Threading.RateLimiting;
 
 namespace Authorization.API.Extention
 {
@@ -12,7 +13,8 @@ namespace Authorization.API.Extention
             this IServiceCollection services)
         {
             services
-                .AddFlientValidation();
+                .AddFlientValidation()
+                .AddRateLimits();
 
             return services;
         }
@@ -23,6 +25,27 @@ namespace Authorization.API.Extention
             services.AddFluentValidationAutoValidation();
             services.AddScoped<IValidator<RegisterCommand>, RegisterUserValidator>();
             services.AddScoped<IValidator<LoginCommand>, LoginUserValidator>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddRateLimits(
+            this IServiceCollection services)
+        {
+            services.AddRateLimiter(options =>
+             {
+                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                 options.AddPolicy("confirm_email", httpContext =>
+                     RateLimitPartition.GetFixedWindowLimiter(
+                         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+                         factory: partition => new FixedWindowRateLimiterOptions
+                         {
+                             Window = TimeSpan.FromSeconds(60),
+                             PermitLimit = 1
+                         })
+                 );
+             });
 
             return services;
         }

@@ -3,6 +3,67 @@ version: "3.8"
 name: "Testing"
 
 services:
+  testing_authorizetion_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Authorization
+    container_name: testing_authorizetion_api
+    ports:
+      - "5201:5201"
+      - "5202:5202"
+    environment:
+      - ConnectionStrings__RedisCacheConnection=redis:6379,password=eZQ9XeVGvT
+      - ConnectionStrings__NpgConnection=Host=postgres_db;UserName=FaITh725;Password=eZQ9XeVGvT;Database=Authorize;Port=5432
+      - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
+      - JwtSettings__Issuer=FaITh
+      - JwtSettings__ExpirationTimeRefreshTokenInDays=15
+      - JwtSettings__ExpirationTimeInMinutes=15
+      - JwtSettings__Audience=Audience
+      - RabbitMqSettings__User=FaITh725
+      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - RabbitMqSettings__Host=rabbitmq
+      - ASPNETCORE_URLS=https://+:5202;http://+:5201
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - testing_postgres_net
+      - message_broker_net
+      - redis_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres_db:
+        condition: service_healthy
+
+  testing_notification_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Notification
+    container_name: testing_notification_api
+    ports:
+      - "5101:5101"
+      - "5102:5102"
+    environment:
+      - RabbitMqSettings__User=FaITh725
+      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - RabbitMqSettings__Host=rabbitmq
+      - EmailSettings__ReciverEmail=sasha.zelenukho.2016@mail.ru
+      - EmailSettings__Password=HK0ifnR0VWXjmbxNVj0X
+      - ASPNETCORE_URLS=https://+:5102;http://+:5101
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - message_broker_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
   postgres_db:
     restart: always
     image: postgres
@@ -17,6 +78,11 @@ services:
       - testing_postgres_volume:/var/lib/postgresql/data/pgdata
     networks:
       - testing_postgres_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U FaITh725"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:management
@@ -29,6 +95,11 @@ services:
       - RABBITMQ_DEFAULT_PASS=eZQ9XeVGvT
     networks:
       - message_broker_net
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis/redis-stack:latest
@@ -41,6 +112,11 @@ services:
       - REDIS_ARGS=--requirepass eZQ9XeVGvT
     networks:
       - redis_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
 networks:
   testing_postgres_net:

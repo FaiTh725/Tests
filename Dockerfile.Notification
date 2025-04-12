@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+
+WORKDIR /src
+
+
+COPY ["Backend/Notification/", "Notification/"]
+COPY ["Backend/Application.Shared/", "Application.Shared/"]
+
+
+RUN dotnet restore 'Notification/Notification.API/Notification.API.csproj'
+
+COPY . .
+
+WORKDIR /src/Notification/Notification.API
+RUN dotnet build "Notification.API.csproj" -c Release -o /app/build
+
+FROM build as publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 
+ENV ASPNETCORE_HTTP_PORTS=5101
+ENV ASPNETCORE_HTTPS_PORTS=5102
+EXPOSE 5101
+EXPOSE 5102
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [ "dotnet", "Notification.API.dll" ]

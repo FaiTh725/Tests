@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+
+WORKDIR /src
+
+
+COPY ["Backend/Authorization/", "Authorization/"]
+COPY ["Backend/Application.Shared/", "Application.Shared/"]
+COPY ["Backend/Notification/Notification.Contracts", "Notification/Notification.Contracts"]
+
+
+RUN dotnet restore 'Authorization/Authorization.API/Authorization.API.csproj'
+
+COPY . .
+
+WORKDIR /src/Authorization/Authorization.API
+RUN dotnet build "Authorization.API.csproj" -c Release -o /app/build
+
+FROM build as publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 
+ENV ASPNETCORE_HTTP_PORTS=5201
+ENV ASPNETCORE_HTTPS_PORTS=5202
+EXPOSE 5201
+EXPOSE 5202
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [ "dotnet", "Authorization.API.dll" ]
