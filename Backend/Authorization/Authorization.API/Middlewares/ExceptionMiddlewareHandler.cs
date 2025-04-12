@@ -36,6 +36,7 @@ namespace Authorization.API.Middlewares
             { 
                 BadRequestException => StatusCodes.Status400BadRequest,
                 UnauthorizeException => StatusCodes.Status401Unauthorized,
+                ForbiddenAccessException => StatusCodes.Status403Forbidden,
                 NotFoundException => StatusCodes.Status404NotFound,
                 ConflictException => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError

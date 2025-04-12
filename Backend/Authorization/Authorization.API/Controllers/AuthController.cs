@@ -1,4 +1,6 @@
 ﻿using Application.Shared.Exceptions;
+using Authorization.Application.Commands.Email.SendConfirmCode;
+using Authorization.Application.Commands.Email.VerifyCode;
 using Authorization.Application.Commands.RefreshTokenEntity.DeleteRefreshToken;
 using Authorization.Application.Commands.RefreshTokenEntity.RefreshRefreshToken;
 using Authorization.Application.Commands.UserEntity.Login;
@@ -146,6 +148,24 @@ namespace Authorization.API.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> SendEmailConfirmationCode(
+            SendConfirmCodeCommand request, CancellationToken cancellationToken)
+        {
+            await mediator.Send(request, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> VerifyConfirmationCode(
+            VerifyCodeCommand request, CancellationToken cancellationToken)
+        {
+            await mediator.Send(request, cancellationToken);
+
+            return Ok();
         }
     }
 }
