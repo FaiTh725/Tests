@@ -10,8 +10,8 @@ services:
     ports:
       - "5555:5432"
     environment:
-      - POSTGRES_PASSWORD=eZQ9XeVGvT
-      - POSTGRES_USER=FaITh725
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_USER}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - testing_postgres_volume:/var/lib/postgresql/data/pgdata
@@ -25,8 +25,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=FaITh725
-      - RABBITMQ_DEFAULT_PASS=eZQ9XeVGvT
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     networks:
       - message_broker_net
 
@@ -37,8 +37,8 @@ services:
       - "6379:6379"
       - "8001:8001"
     environment:
-      - REDIS_PASSWORD=eZQ9XeVGvT
-      - REDIS_ARGS=--requirepass eZQ9XeVGvT
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
     networks:
       - redis_net
 
