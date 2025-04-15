@@ -1,9 +1,9 @@
 ﻿namespace Application.Shared.Exceptions
 {
-    public class ConflictException : ApiException
+    public class ApiException : Exception
     {
-        public ConflictException(
-            string message) :
+        public ApiException(
+            string message):
             base(message)
         {
             
