@@ -1,6 +1,6 @@
 ﻿namespace Application.Shared.Exceptions
 {
-    public class ForbiddenAccessException : Exception
+    public class ForbiddenAccessException : ApiException
     {
         public ForbiddenAccessException(
             string message) :

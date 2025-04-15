@@ -1,6 +1,6 @@
 ﻿namespace Application.Shared.Exceptions
 {
-    public class BadRequestException : Exception
+    public class BadRequestException : ApiException
     {
         public BadRequestException(
             string message) : 
