@@ -30,6 +30,8 @@ namespace Authorization.API.Middlewares
                 logger.LogError("Error with configuration, " +
                     "confifuration section with error - " + 
                     appException.SectionWithError);
+
+                host.StopApplication();
             }
 
             httpContext.Response.StatusCode = exception switch

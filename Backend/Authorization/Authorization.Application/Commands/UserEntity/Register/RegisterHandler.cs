@@ -6,6 +6,7 @@ using Authorization.Domain.Interfaces;
 using Authorization.Domain.Validators;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Test.Contracts.Profile;
 
 namespace Authorization.Application.Commands.UserEntity.Register
 {
@@ -16,17 +17,20 @@ namespace Authorization.Application.Commands.UserEntity.Register
         private readonly IHashService hashService;
         private readonly IJwtService<UserTokenRequest, UserTokenResponse> tokenService;
         private readonly IConfiguration configuration;
+        private readonly IExternalService<ProfileRequest, ProfileResponse> externalService;
 
         public RegisterHandler(
             IUnitOfWork unitOfWork, 
             IHashService hashService,
             IJwtService<UserTokenRequest, UserTokenResponse> tokenService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IExternalService<ProfileRequest, ProfileResponse> externalService)
         {
             this.unitOfWork = unitOfWork;
             this.hashService = hashService;
             this.tokenService = tokenService;
             this.configuration = configuration;
+            this.externalService = externalService;
         }
 
         public async Task<(long, string)> Handle(
@@ -67,6 +71,18 @@ namespace Authorization.Application.Commands.UserEntity.Register
 
                 var userDb = await unitOfWork.UserRepository
                     .AddUser(userEntity.Value, cancellationToken);
+
+                var profile = await externalService.GetData(new ProfileRequest 
+                { 
+                    Email = request.Email,
+                    Name = request.UserName
+                });
+
+                if(profile.IsFailure)
+                {
+                    await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                    throw new InternalServerErrorException("Error with service communication");
+                }
 
                 var tokenLifeTime = configuration
                     .GetValue<int>("JwtSettings:ExpirationTimeRefreshTokenInDays");

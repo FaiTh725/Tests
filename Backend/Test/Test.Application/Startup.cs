@@ -1,12 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Test.Application
 {
-    class Startup
+    public static class Startup
     {
+        public static IServiceCollection ConfigureAppServices(
+            this IServiceCollection services)
+        {
+
+            return services;
+        }
+
+        public static IServiceCollection AddMediatorProvider(
+            this IServiceCollection services)
+        {
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(AssemplyReference).Assembly);
+            });
+
+            return services;
+        }
     }
 }

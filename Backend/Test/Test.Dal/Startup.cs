@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Test.Dal.Services;
+using Test.Domain.Intrefaces;
 
 namespace Test.Dal
 {
-    class Startup
+    public static class Startup
     {
+        public static IServiceCollection ConfigureDalServices(
+            this IServiceCollection services)
+        {
+            services.AddSingleton<AppDbContext>();
+
+            services.AddScoped<INoSQLUnitOfWork, UnitOfWork>();
+
+            return services;
+        }
     }
 }

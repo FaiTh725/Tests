@@ -1,6 +1,6 @@
 ﻿namespace Application.Shared.Exceptions
 {
-    public class InternalServerErrorException : Exception
+    public class InternalServerErrorException : ApiException
     {
         public InternalServerErrorException(
             string message) :

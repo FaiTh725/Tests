@@ -8,13 +8,20 @@
 
   <ItemGroup>
     <Folder Include="Behaviors\" />
-    <Folder Include="Commands\" />
     <Folder Include="Common\Implementations\" />
     <Folder Include="Common\Interfaces\" />
     <Folder Include="Consumers\" />
-    <Folder Include="Contracts\" />
     <Folder Include="EventHandler\" />
-    <Folder Include="Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Test.Domain\Test.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Application.Shared">
+      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

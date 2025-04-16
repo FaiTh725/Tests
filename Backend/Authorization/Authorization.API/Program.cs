@@ -15,7 +15,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 
 builder.Services
-    .ConfigureApiServices()
+    .ConfigureApiServices(builder.Configuration)
     .ConfigureDalServices()
     .ConfigureAppSerrvices()
     .ConfigureInfastructureServices(builder.Configuration);
