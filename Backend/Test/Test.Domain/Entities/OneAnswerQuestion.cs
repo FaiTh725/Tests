@@ -10,8 +10,9 @@ namespace Test.Domain.Entities
         private OneAnswerQuestion(
             string testQuestion, 
             int questionWeight,
+            long testId,
             long questionAnswerId) : 
-            base(testQuestion, questionWeight)
+            base(testQuestion, questionWeight, testId)
         {
             QuestionAnswerId = questionAnswerId;
         }
@@ -19,6 +20,7 @@ namespace Test.Domain.Entities
         public static Result<OneAnswerQuestion> Initialize(
             string testQuestion,
             int questionWeight,
+            long testId,
             long questionAnswerId)
         {
             if(string.IsNullOrWhiteSpace(testQuestion) ||
@@ -37,6 +39,7 @@ namespace Test.Domain.Entities
             return Result.Success(new OneAnswerQuestion(
                 testQuestion,
                 questionWeight,
+                testId,
                 questionAnswerId));
         }
     }

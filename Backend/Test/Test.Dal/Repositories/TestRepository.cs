@@ -1,17 +1,47 @@
-﻿using Test.Domain.Repositories;
+﻿using MongoDB.Driver;
+using Test.Dal.Persistences;
+using Test.Domain.Repositories;
+using TestEntity = Test.Domain.Entities.Test;
 
 namespace Test.Dal.Repositories
 {
     public class TestRepository : ITestRepository
     {
-        public Task<Domain.Entities.Test> AddTest(Domain.Entities.Test test, CancellationToken cancellationToken = default)
+        private readonly AppDbContext context;
+
+        public TestRepository(
+            AppDbContext context)
         {
-            throw new NotImplementedException();
+            this.context = context;
         }
 
-        public Task<Domain.Entities.Test?> GetTest(long id, CancellationToken cancellationToken = default)
+        public async Task<TestEntity> AddTest(
+            TestEntity test, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var mongoTest = new MongoTest();
+            mongoTest.ConvertToMongoEntity(test);
+            var nextId = context.GetNextId(AppDbContext.TESTS_COLLECTION_NAME);
+            mongoTest.Id = nextId;
+
+            var insertOptions = new InsertOneOptions
+            {
+                BypassDocumentValidation = true
+            };
+
+            await context.Tests.InsertOneAsync(
+                mongoTest, insertOptions, cancellationToken);
+
+            return mongoTest.ConvertToDomainEntity();
+        }
+
+        public async Task<TestEntity?> GetTest(
+            long id, CancellationToken cancellationToken = default)
+        {
+            var mongoTest = await context.Tests
+                .Find(x => x.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return mongoTest?.ConvertToDomainEntity();
         }
     }
 }

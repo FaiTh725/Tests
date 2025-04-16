@@ -9,9 +9,6 @@ namespace Test.Dal.Persistences
         [BsonId]
         public long Id { get; set; }
 
-        [BsonIgnore]
-        public string ImageFolder { get => $"Answer-{Id}"; }
-
         public string Answer { get; set; } = string.Empty;
 
         public bool IsCorrect { get; set; }
@@ -20,12 +17,32 @@ namespace Test.Dal.Persistences
 
         public QuestionAnswer ConvertToDomainEntity()
         {
-            throw new NotImplementedException();
+            var questionAnswerEntity = QuestionAnswer.Initialize(
+                Answer, IsCorrect, QuestionId);
+
+            if (questionAnswerEntity.IsFailure)
+            {
+                throw new InvalidDataException("Convert db entity to mongo entity");
+            }
+
+            // set Id
+            var type = typeof(QuestionAnswer);
+            var property = type.GetProperty("Id");
+            var setMethod = property!.GetSetMethod(true);
+            setMethod!.Invoke(questionAnswerEntity.Value, [Id]);
+
+            return questionAnswerEntity.Value;
         }
 
-        public MongoQuestionAnswer ConvertToMongoEntity(QuestionAnswer entity)
+        public MongoQuestionAnswer ConvertToMongoEntity(
+            QuestionAnswer questionAnswer)
         {
-            throw new NotImplementedException();
+            Id = questionAnswer.Id;
+            Answer = questionAnswer.Answer;
+            IsCorrect = questionAnswer.IsCorrect;
+            QuestionId = questionAnswer.QuestionId;
+
+            return this;
         }
     }
 }

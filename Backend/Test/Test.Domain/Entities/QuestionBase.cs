@@ -10,12 +10,16 @@ namespace Test.Domain.Entities
 
         public int QuestionWeight { get; private set; }
 
+        public long TestId { get; private set; }
+
         protected QuestionBase(
             string testQuestion,
-            int questionWeight)
+            int questionWeight,
+            long testId)
         {
             TestQuestion = testQuestion;
             QuestionWeight = questionWeight;
+            TestId = testId;
         }
     }
 }

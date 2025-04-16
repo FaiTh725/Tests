@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Test.Domain.Entities;
 using Test.Domain.Enums;
 using TestEntity = Test.Domain.Entities.Test;
 
@@ -26,12 +27,36 @@ namespace Test.Dal.Persistences
 
         public TestEntity ConvertToDomainEntity()
         {
-            throw new NotImplementedException();
+            var testEntity = TestEntity.Initialize(
+                Name, Description, ProfileId, 
+                TestType, IsPublic, QuestionsId);
+
+            if(testEntity.IsFailure)
+            {
+                throw new InvalidDataException("Convert db entity to mongo entity");
+            }
+
+            // set id
+            var type = typeof(TestEntity);
+            var property = type.GetProperty("Id");
+            var setMethod = property!.GetSetMethod(true);
+            setMethod!.Invoke(testEntity.Value, [Id]);
+
+            return testEntity.Value;
         }
 
-        public MongoTest ConvertToMongoEntity(TestEntity entity)
+        public MongoTest ConvertToMongoEntity(TestEntity test)
         {
-            throw new NotImplementedException();
+            Id = test.Id;
+            Name = test.Name;
+            Description = test.Description;
+            CreatedTime = test.CreatedTime;
+            IsPublic = test.IsPublic;
+            TestType = test.TestType;
+            ProfileId = test.ProfileId;
+            QuestionsId = [.. test.QuestionsId];
+
+            return this;
         }
     }
 }

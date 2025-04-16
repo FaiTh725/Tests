@@ -34,12 +34,12 @@ namespace Test.Dal.Persistences
             return profileEntity.Value;
         }
 
-        public MongoProfile ConvertToMongoEntity(Profile entity)
+        public MongoProfile ConvertToMongoEntity(Profile profile)
         {
-            Id = entity.Id;
-            Name = entity.Name;
-            Email = entity.Email;
-            CreatedTestsId = entity.CreatedTestsId;
+            Id = profile.Id;
+            Name = profile.Name;
+            Email = profile.Email;
+            CreatedTestsId = [.. profile.CreatedTestsId];
 
             return this;
         }
