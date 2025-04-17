@@ -6,6 +6,6 @@ namespace Test.Domain.Repositories
     {
         Task<TestEntity> AddTest(TestEntity test, CancellationToken cancellationToken = default);
 
-        Task<TestEntity?> GetTest(long id, CancellationToken cancellationToken = default);
+        Task<TestEntity?> GetTest(long id, CancellationToken cancellationToken = default);    
     }
 }

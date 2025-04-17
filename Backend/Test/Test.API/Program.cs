@@ -1,9 +1,10 @@
 using Test.Dal;
-using Test.Application;
 using Test.API.Middlewares;
-using Test.API.Grpc;
 using Test.API.Grpc.Services;
 using Test.API.Extentions;
+using Test.Infastructure;
+using MediatR;
+using Test.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,8 @@ builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 
 builder.Services
     .ConfigureApiServices()
-    .AddMediatorProvider()
+    .ConfigureAppServices()
+    .ConfigureInfastructureServices(builder.Configuration)
     .ConfigureDalServices();
 
 var app = builder.Build();
@@ -32,6 +34,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

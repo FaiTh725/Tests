@@ -1,6 +1,9 @@
-﻿namespace Test.Application.Common.Interfaces
+﻿using CSharpFunctionalExtensions;
+
+namespace Test.Application.Common.Interfaces
 {
-    public interface ITokenService
+    public interface ITokenService<TTokenObject>
     {
+        Result<TTokenObject> DecodeToken(string token);
     }
 }

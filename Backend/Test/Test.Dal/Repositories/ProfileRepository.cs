@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
 using Test.Domain.Repositories;
@@ -41,7 +42,7 @@ namespace Test.Dal.Repositories
             var mongorProfile =  await context.Profiles
                 .Find(x => x.Id == id)
                 .FirstOrDefaultAsync(cancellationToken);
-        
+
             return mongorProfile?.ConvertToDomainEntity();
         }
 

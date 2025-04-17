@@ -15,14 +15,5 @@ namespace Test.API.Controllers
         {
             this.mediator = mediator;
         }
-
-        [HttpPost("[action]")]
-        public async Task<IActionResult> CreateProfile(
-            CreateProfileCommand request, CancellationToken cancellationToken)
-        {
-            var profileId = await mediator.Send(request, cancellationToken);
-
-            return Ok(profileId);
-        }
     }
 }

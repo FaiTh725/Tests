@@ -108,7 +108,7 @@ namespace Authorization.Application.Commands.UserEntity.Register
             catch
             {
                 await unitOfWork.RollBackTransactionAsync(cancellationToken);
-                throw;
+                throw new InternalServerErrorException("Critical Server Error");
             }
         }
     }

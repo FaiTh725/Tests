@@ -21,7 +21,9 @@ namespace Test.Dal.Persistences
 
         public TestType TestType { get; set; }
 
-        public long ProfileId { get; private set; }
+        [BsonIgnore]
+        public MongoProfile? Profile { get; set; }
+        public long ProfileId { get; set; }
 
         public List<long> QuestionsId { get; set; } = new List<long>();
 

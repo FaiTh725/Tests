@@ -119,6 +119,16 @@ services:
       timeout: 5s
       retries: 5
 
+  azurite_storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: testing_blob_storage
+    ports:
+      - "10000:10000"
+    environment:
+      - "AZURITE_ACCOUNTS=FaITh725:ZGV2c3RvcmVhY2NvdW50Mw=="
+    volumes:
+      - testing_blob_volume:/data
+
   rabbitmq:
     image: rabbitmq:management
     container_name: testing_message_broker
@@ -167,4 +177,6 @@ volumes:
   testing_postgres_volume:
     driver: local
   testing_mongo_volume:
+    driver: local
+  testing_blob_volume:
     driver: local

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using Test.Application.Contracts.Test;
 
 namespace Test.Application.Queries.TestEntity.GetTestInfoById
 {
-    class GetTestInfoByIdQuery
+    public class GetTestInfoByIdQuery : IRequest<TestInfo>
     {
+        public long Id { get; set; }
     }
 }

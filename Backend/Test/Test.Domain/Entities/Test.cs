@@ -16,6 +16,7 @@ namespace Test.Domain.Entities
 
         public TestType TestType { get; private set; }
 
+        public Profile Profile { get; private set; }
         public long ProfileId { get; private set; }
 
         public List<long> QuestionsId { get ; private set; }

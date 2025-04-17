@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test.Application.Commands.TestEntity.CreateTest
+namespace Test.Application.Contracts.ManyAnswerQuestion
 {
-    class CreateTestCommand
+    class ManyAnswerQuestionResponse
     {
     }
 }

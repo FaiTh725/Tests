@@ -7,11 +7,12 @@ namespace Test.Application
         public static IServiceCollection ConfigureAppServices(
             this IServiceCollection services)
         {
+            services.AddMediatorProvider();
 
             return services;
         }
 
-        public static IServiceCollection AddMediatorProvider(
+        private static IServiceCollection AddMediatorProvider(
             this IServiceCollection services)
         {
             services.AddMediatR(cfg =>
