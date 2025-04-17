@@ -3,7 +3,7 @@
     public class ApiException : Exception
     {
         public ApiException(
-            string message):
+            string message) :
             base(message)
         {
             
