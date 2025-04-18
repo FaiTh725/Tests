@@ -13,6 +13,9 @@ namespace Test.Dal.Services
         private bool isTransactionStarted;
 
         private Lazy<IProfileRepository> profileRepository;
+        private Lazy<ITestRepository> testRepository;
+        private Lazy<IQuestionRepository> questionRepository;
+        private Lazy<IQuestionAnswerRepository> questionAnswerRepository;
 
         public UnitOfWork(
             AppDbContext context)
@@ -20,17 +23,18 @@ namespace Test.Dal.Services
             this.context = context;
 
             profileRepository = new Lazy<IProfileRepository>(() => new ProfileRepository(context));
+            testRepository = new Lazy<ITestRepository>(() => new TestRepository(context));
+            questionAnswerRepository = new Lazy<IQuestionAnswerRepository>(() => new QuestionAnswerRepository(context));
+            questionRepository = new Lazy<IQuestionRepository>(() => new QuestionRepository(context));
         }
 
         public IProfileRepository ProfileRepository => profileRepository.Value;
 
-        public ITestRepository TestRepository => throw new NotImplementedException();
+        public ITestRepository TestRepository => testRepository.Value;
 
-        public IManyAnswersQuestionRepository ManyAnswersQuestionRepository => throw new NotImplementedException();
+        public IQuestionRepository QuestionRepository => questionRepository.Value;
 
-        public IOneAnswerQuestionRepository OneAnswerQuestionRepository => throw new NotImplementedException();
-
-        public IQuestionAnswerRepository QuestionAnswerRepository => throw new NotImplementedException();
+        public IQuestionAnswerRepository QuestionAnswerRepository => questionAnswerRepository.Value;
 
         public void BeginTransaction()
         {

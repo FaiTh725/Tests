@@ -63,5 +63,18 @@ namespace Test.API.Controllers
 
             return Ok(test);
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetTestInfo(
+            long testId, CancellationToken cancellationToken)
+        {
+            var test = await mediator.Send(new GetTestInfoByIdQuery
+            {
+                Id = testId
+            }, 
+            cancellationToken);
+
+            return Ok(test);
+        }
     }
 }

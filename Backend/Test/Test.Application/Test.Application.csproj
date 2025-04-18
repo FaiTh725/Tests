@@ -9,8 +9,11 @@
   <ItemGroup>
     <Folder Include="Behaviors\" />
     <Folder Include="Common\Implementations\" />
-    <Folder Include="Consumers\" />
-    <Folder Include="EventHandler\" />
+    <Folder Include="Consumers\FileConsumers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>

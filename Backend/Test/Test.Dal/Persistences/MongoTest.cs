@@ -21,17 +21,13 @@ namespace Test.Dal.Persistences
 
         public TestType TestType { get; set; }
 
-        [BsonIgnore]
-        public MongoProfile? Profile { get; set; }
         public long ProfileId { get; set; }
-
-        public List<long> QuestionsId { get; set; } = new List<long>();
 
         public TestEntity ConvertToDomainEntity()
         {
             var testEntity = TestEntity.Initialize(
                 Name, Description, ProfileId, 
-                TestType, IsPublic, QuestionsId);
+                TestType, IsPublic);
 
             if(testEntity.IsFailure)
             {
@@ -56,7 +52,6 @@ namespace Test.Dal.Persistences
             IsPublic = test.IsPublic;
             TestType = test.TestType;
             ProfileId = test.ProfileId;
-            QuestionsId = [.. test.QuestionsId];
 
             return this;
         }

@@ -34,6 +34,11 @@ namespace Test.Dal.Repositories
             return mongoTest.ConvertToDomainEntity();
         }
 
+        public async Task DeleteTest(long id, CancellationToken cancellationToken = default)
+        {
+            await context.Tests.DeleteOneAsync(x => x.Id == id, cancellationToken);
+        }
+
         public async Task<TestEntity?> GetTest(
             long id, CancellationToken cancellationToken = default)
         {

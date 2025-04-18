@@ -11,8 +11,7 @@ namespace Test.Dal
     {
         public const string PROFILES_COLLECTION_NAME = "profiles";
         public const string TESTS_COLLECTION_NAME = "tests";
-        public const string MANY_ANSWERS_COLLECTION_NAME = "many_answer_questions";
-        public const string ONE_ANSWER_COLLECTION_NAME = "one_answer_question";
+        public const string QUESTION_COLLECTION_NAME = "questions";
         public const string ANSWER_COLLECTION_NAME = "answers";
 
         private readonly IMongoClient client;
@@ -24,7 +23,7 @@ namespace Test.Dal
             IConfiguration configuration)
         {
             var mongoConnection = configuration
-                .GetConnectionString("MongoDbConnection") ??
+                .GetConnectionString("MongoDbConnection1") ??
                 throw new AppConfigurationException("MongoDb Connection String");
         
             client = new MongoClient(mongoConnection);
@@ -47,14 +46,9 @@ namespace Test.Dal
             get => database.GetCollection<MongoTest>(TESTS_COLLECTION_NAME); 
         }
 
-        public IMongoCollection<MongoManyAnswerQuestion> ManyAnswerQuestions 
-        { 
-            get => database.GetCollection<MongoManyAnswerQuestion>(MANY_ANSWERS_COLLECTION_NAME); 
-        }
-
-        public IMongoCollection<MongoOneAnswerQuestion> OneAnswerQuestion 
-        { 
-            get => database.GetCollection<MongoOneAnswerQuestion>(ONE_ANSWER_COLLECTION_NAME); 
+        public IMongoCollection<MongoQuestion> Questions
+        {
+            get => database.GetCollection<MongoQuestion>(QUESTION_COLLECTION_NAME);
         }
 
         public IMongoCollection<MongoQuestionAnswer> Answers 

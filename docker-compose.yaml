@@ -71,9 +71,10 @@ services:
     container_name: testing_mongo_db
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_PASSWORD=eZQ9XeVGvT
-      - MONGO_INITDB_ROOT_USERNAME=FaITh725
+    # environment:
+    #   - MONGO_INITDB_ROOT_PASSWORD=eZQ9XeVGvT
+    #   - MONGO_INITDB_ROOT_USERNAME=FaITh725
+    command: ["--replSet", "rs0", "--bind_ip_all"]
     volumes:
       - testing_mongo_volume:/data/db
     networks:

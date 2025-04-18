@@ -6,7 +6,7 @@ namespace Test.Application.Common.Interfaces
     {
         Task<string> UploadBlob(FileModel file, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<string>> UploadBlobs(List<FileModel> files, CancellationToken cancellationToken = default);
+        Task<IEnumerable<string>> UploadBlobs(string pathFolder, List<FileModel> files, CancellationToken cancellationToken = default);
 
         Task<string?> GetBlobUrl(string path, CancellationToken cancellationToken = default);
 

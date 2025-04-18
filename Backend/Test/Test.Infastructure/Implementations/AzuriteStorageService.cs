@@ -79,10 +79,16 @@ namespace Test.Infastructure.Implementations
             return blobclient.Uri.AbsoluteUri;
         }
 
-        public async Task<IEnumerable<string>> UploadBlobs(List<FileModel> files, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<string>> UploadBlobs(string pathFolder, List<FileModel> files, CancellationToken cancellationToken = default)
         {
             var uploadFileTasks = files.Select(x => 
-                UploadBlob(x, cancellationToken))
+                UploadBlob( 
+                    new FileModel { 
+                        Stream = x.Stream,
+                        Name = Path.Combine(pathFolder, x.Name),
+                        ContentType = x.ContentType
+                    }, 
+                    cancellationToken))
                 .ToList();
 
             var blobUrls = await Task.WhenAll(uploadFileTasks);

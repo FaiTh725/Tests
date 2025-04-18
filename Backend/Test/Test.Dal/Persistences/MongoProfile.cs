@@ -13,12 +13,10 @@ namespace Test.Dal.Persistences
 
         public string Email { get; set; } = string.Empty;
 
-        public List<long> CreatedTestsId { get; set; } = new List<long>();
-
         public Profile ConvertToDomainEntity()
         {
             var profileEntity = Profile.Initialize(
-                Name, Email, CreatedTestsId);
+                Name, Email);
 
             if(profileEntity.IsFailure)
             {
@@ -39,7 +37,6 @@ namespace Test.Dal.Persistences
             Id = profile.Id;
             Name = profile.Name;
             Email = profile.Email;
-            CreatedTestsId = [.. profile.CreatedTestsId];
 
             return this;
         }

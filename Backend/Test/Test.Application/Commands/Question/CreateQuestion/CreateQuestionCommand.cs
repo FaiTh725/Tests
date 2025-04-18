@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Test.Application.Contracts.File;
 using Test.Application.Contracts.QuestionAnswerEntity;
+using Test.Domain.Enums;
 
-namespace Test.Application.Commands.OneAnswerQuestionEntity.CreateQuestion
+namespace Test.Application.Commands.Question.CreateQuestion
 {
-    public class CreateQuestionCommand : 
-        IRequest<long>
+    public class CreateQuestionCommand : IRequest<long>
     {
         public List<FileModel> QuestionImages { get; set; } = new List<FileModel>();
 
@@ -13,8 +13,10 @@ namespace Test.Application.Commands.OneAnswerQuestionEntity.CreateQuestion
 
         public int QuestionWeight { get; set; }
 
+        public QuestionType QuestionType { get; set; }
+
         public long TestId { get; set; }
 
-        public required CreateQuestionAnswer Answer { get; set; }
+        public List<CreateQuestionAnswer> Answers { get; set; } = new List<CreateQuestionAnswer>();
     }
 }

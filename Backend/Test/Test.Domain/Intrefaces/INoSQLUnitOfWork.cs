@@ -8,9 +8,7 @@ namespace Test.Domain.Intrefaces
 
         public ITestRepository TestRepository { get; }
 
-        public IManyAnswersQuestionRepository ManyAnswersQuestionRepository { get; }
-
-        public IOneAnswerQuestionRepository OneAnswerQuestionRepository { get; }
+        public IQuestionRepository QuestionRepository { get; }
 
         public IQuestionAnswerRepository QuestionAnswerRepository { get; }
 

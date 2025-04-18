@@ -28,7 +28,7 @@ namespace Test.Application.Queries.TestEntity.GetTestInfoById
             }
 
             var testOwner = await unitOfWork.ProfileRepository
-                .GetProfile(test.ProfileId);
+                .GetProfile(test.ProfileId, cancellationToken);
 
             if(testOwner is null)
             {
@@ -45,6 +45,7 @@ namespace Test.Application.Queries.TestEntity.GetTestInfoById
                 TestType = test.TestType.ToString(),
                 Owner = new ProfileResponse
                 { 
+                    Id = testOwner.Id,
                     Name = testOwner.Name,
                     Email = testOwner.Email
                 }

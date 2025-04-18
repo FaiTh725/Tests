@@ -8,7 +8,11 @@ namespace Test.Domain.Repositories
             QuestionAnswer questionAnswer, 
             CancellationToken cancellationToken = default);
 
-        Task<QuestionAnswer> GetQuestionAnswer(
+        Task<IEnumerable<QuestionAnswer>> AddQuestionAnswers(
+            List<QuestionAnswer> questionAnswers,
+            CancellationToken cancellationToken = default);
+
+        Task<QuestionAnswer?> GetQuestionAnswer(
             long id, 
             CancellationToken cancellationToken = default);
     }

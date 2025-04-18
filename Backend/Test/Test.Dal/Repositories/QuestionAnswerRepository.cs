@@ -32,10 +32,36 @@ namespace Test.Dal.Repositories
             await context.Answers
                 .InsertOneAsync(mongoQuestionAnswer, insertOptions, cancellationToken);
         
-            return questionAnswer;
+            return mongoQuestionAnswer.ConvertToDomainEntity();
         }
 
-        public async Task<QuestionAnswer> GetQuestionAnswer(
+        public async Task<IEnumerable<QuestionAnswer>> AddQuestionAnswers(
+            List<QuestionAnswer> questionAnswers, CancellationToken cancellationToken = default)
+        {
+            var mongoQuestions = questionAnswers.Select(x =>
+            {
+                var questionAnswer = new MongoQuestionAnswer();
+                questionAnswer.ConvertToMongoEntity(x);
+                var nextId = context.GetNextId(AppDbContext.ANSWER_COLLECTION_NAME);
+                questionAnswer.QuestionId = nextId;
+                return questionAnswer;
+            });
+
+            var insertQuestion = new InsertManyOptions
+            {
+                BypassDocumentValidation = true,
+                IsOrdered = false,
+            };
+
+            await context.Answers.InsertManyAsync(
+                mongoQuestions, insertQuestion, cancellationToken);
+
+            return mongoQuestions
+                .Select(x => x.ConvertToDomainEntity())
+                .AsEnumerable();
+        }
+
+        public async Task<QuestionAnswer?> GetQuestionAnswer(
             long id, 
             CancellationToken cancellationToken = default)
         {
