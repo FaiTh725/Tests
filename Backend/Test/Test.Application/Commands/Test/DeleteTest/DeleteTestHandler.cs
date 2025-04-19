@@ -29,6 +29,7 @@ namespace Test.Application.Commands.Test.DeleteTest
                 .DeleteTest(request.Id, cancellationToken);
 
             test.Delete();
+            unitOfWork.TrackEntity(test);
         }
     }
 }

@@ -1,27 +1,21 @@
-﻿using Test.Domain.Repositories;
+﻿using Test.Domain.Primitives;
+using Test.Domain.Repositories;
 
 namespace Test.Domain.Intrefaces
 {
-    public interface INoSQLUnitOfWork: IDisposable
+    public interface INoSQLUnitOfWork: IBaseUnitOfWork
     {
-        public IProfileRepository ProfileRepository { get; }
+        IProfileRepository ProfileRepository { get; }
 
-        public ITestRepository TestRepository { get; }
+        ITestRepository TestRepository { get; }
 
-        public IQuestionRepository QuestionRepository { get; }
+        IQuestionRepository QuestionRepository { get; }
 
-        public IQuestionAnswerRepository QuestionAnswerRepository { get; }
+        IQuestionAnswerRepository QuestionAnswerRepository { get; }
 
-        void BeginTransaction();
+        IReadOnlyCollection<DomainEventEntity> GetTrackedEntities();
 
-        Task BeginTransactionAsync(CancellationToken cancellationToken = default);
-
-        void CommitTransaction();
-
-        Task CommitTransactionAsync(CancellationToken cancellationToken = default);
-
-        void RollBackTransaction();
-
-        Task RollBackTransactionAsync(CancellationToken cancellationToken = default);
+        // is used to add an entity to its event tracking
+        void TrackEntity(DomainEventEntity entity);
     }
 }

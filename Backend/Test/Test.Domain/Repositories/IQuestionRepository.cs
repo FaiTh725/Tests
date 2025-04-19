@@ -10,5 +10,7 @@ namespace Test.Domain.Repositories
         Task<Question?> GetQuestion(long id, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Question>> GetQuestionsByCriteria(BaseSpecification<Question> specification, CancellationToken cancellationToken = default);
+
+        Task DeleteQuestions(List<long> questionIdList, CancellationToken cancellationToken = default);
     }
 }

@@ -1,8 +1,7 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Test.Dal.ExpressionRewriters;
 using Test.Dal.Persistences;
-using Test.Dal.Specifications;
-using Test.Dal.Specifications.ExpressionConverters;
 using Test.Domain.Entities;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -34,7 +33,15 @@ namespace Test.Dal.Repositories
 
             await context.Questions
                 .InsertOneAsync(mongoQuestion, insertOptions, cancellationToken);
+            
             return mongoQuestion.ConvertToDomainEntity();
+        }
+
+        public async Task DeleteQuestions(List<long> questionIdList, CancellationToken cancellationToken = default)
+        {
+            await context.Questions
+                .DeleteManyAsync(x => questionIdList.Contains(x.Id), 
+                cancellationToken);
         }
 
         public async Task<Question?> GetQuestion(
@@ -51,14 +58,16 @@ namespace Test.Dal.Repositories
             BaseSpecification<Question> specification, 
             CancellationToken cancellationToken = default)
         {
-            var predicate = specification.Criteria is null ?
-                _ => true :
-                QuestionExpressionConverter.Convert(specification.Criteria);
+            var filter = specification.Criteria is null ?
+                Builders<MongoQuestion>.Filter.Empty :
+                new QuestionToMongoRewriter().Rewrite(specification.Criteria);
 
-            return await context.Questions
-                .Find(predicate)
-                .Project(x => x.ConvertToDomainEntity())
+            var mongoQuestions = await context.Questions
+                .Find(filter)
                 .ToListAsync(cancellationToken);
+
+            return mongoQuestions
+                .Select(x => x.ConvertToDomainEntity());
         }
     }
 }

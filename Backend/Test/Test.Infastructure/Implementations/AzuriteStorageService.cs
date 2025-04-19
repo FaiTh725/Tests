@@ -27,6 +27,8 @@ namespace Test.Infastructure.Implementations
 
         public async Task DeleteBlobFolder(string path, CancellationToken cancellationToken = default)
         {
+            var deleteTasks = new List<Task>();
+            
             await foreach (var blobItem in blobContainer
                 .GetBlobsAsync(
                     prefix: path,
@@ -34,8 +36,11 @@ namespace Test.Infastructure.Implementations
             {
                 var blobClient = blobContainer.GetBlobClient(blobItem.Name);
 
-                await blobClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+                deleteTasks.Add(blobClient
+                    .DeleteIfExistsAsync(cancellationToken: cancellationToken));
             }
+
+            await Task.WhenAll(deleteTasks);
         }
 
         public async Task<IEnumerable<string>> GetBlobFolder(string path, CancellationToken cancellationToken = default)

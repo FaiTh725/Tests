@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
 using Test.Application.Commands.Test.CreateTest;
+using Test.Application.Commands.Test.DeleteTest;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
@@ -64,6 +65,7 @@ namespace Test.API.Controllers
             return Ok(test);
         }
 
+        // add access
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTestInfo(
             long testId, CancellationToken cancellationToken)
@@ -75,6 +77,20 @@ namespace Test.API.Controllers
             cancellationToken);
 
             return Ok(test);
+        }
+
+        [HttpDelete("[action]")]
+        [Authorize]
+        public async Task<IActionResult> DeleteTest(
+            long testId, CancellationToken cancellationToken)
+        {
+            await mediator.Send(new DeleteTestCommand
+            {
+                Id  = testId
+            },
+            cancellationToken);
+
+            return Ok();
         }
     }
 }

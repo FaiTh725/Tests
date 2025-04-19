@@ -2,8 +2,16 @@
 
 namespace Test.Domain.Intrefaces
 {
-    public interface IUnitOfWork : INoSQLUnitOfWork
+    public interface IUnitOfWork : IBaseUnitOfWork
     {
+        IProfileRepository ProfileRepository { get; }
+
+        ITestRepository TestRepository { get; }
+
+        IQuestionRepository QuestionRepository { get; }
+
+        IQuestionAnswerRepository QuestionAnswerRepository { get; }
+
         int SaveChanges();
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

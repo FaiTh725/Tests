@@ -25,7 +25,7 @@ namespace Test.Dal
             var mongoConnection = configuration
                 .GetConnectionString("MongoDbConnection1") ??
                 throw new AppConfigurationException("MongoDb Connection String");
-        
+            
             client = new MongoClient(mongoConnection);
             database =  client.GetDatabase("Testing");
 

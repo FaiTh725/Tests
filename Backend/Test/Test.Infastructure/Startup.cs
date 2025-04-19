@@ -15,6 +15,7 @@ using Test.Application.Contracts.ProfileEntity;
 using Test.Infastructure.Configurations;
 using Test.Infastructure.Implementations;
 using MassTransit;
+using Test.Application.Consumers.FileConsumers;
 
 namespace Test.Infastructure
 {
@@ -147,6 +148,8 @@ namespace Test.Infastructure
             services.AddMassTransit(conf =>
             {
                 conf.SetKebabCaseEndpointNameFormatter();
+
+                conf.AddConsumer<ClearStorageConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

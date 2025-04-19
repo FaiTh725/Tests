@@ -1,8 +1,8 @@
 ﻿using Application.Shared.Exceptions;
-using MassTransit;
 using MediatR;
 using Test.Application.Common.Interfaces;
 using Test.Domain.Entities;
+using Test.Domain.Enums;
 using Test.Domain.Intrefaces;
 using QuestionEntity = Test.Domain.Entities.Question;
 
@@ -34,7 +34,18 @@ namespace Test.Application.Commands.Question.CreateQuestion
                 throw new BadRequestException("Test doesnt exist");
             }
 
-            
+            var rightQuestions = request.Answers
+                .Where(x => x.IsCorrect);
+
+            if (!(request.QuestionType == QuestionType.OneAnswer &&
+                rightQuestions.Count() == 1 ||
+                request.QuestionType == QuestionType.ManyAnswers &&
+                rightQuestions.Any()))
+            {
+                throw new BadRequestException("Answer should have 1 correcct answer if the type is OneAnswer " +
+                    "or at least one answer");
+            }
+
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
@@ -51,20 +62,7 @@ namespace Test.Application.Commands.Question.CreateQuestion
 
                 var questionEntity = await unitOfWork.QuestionRepository
                     .AddQuestion(question.Value, cancellationToken);
-
-                // спотыкаемся здесь, так как hangfire не может сериализовать stream
-                // короче меняем на masstransit
-                //backgroundJobService.CreateFireAndForgetJob<IBlobService>(x => 
-                //    x.UploadBlobs(question.Value.ImageFolder, request.QuestionImages, cancellationToken));
-                // тут тоже спотыкаемся тк он тоже не сможет мне сериализовать stream
-                //await bus.Publish(new UploadFilesMessage
-                //{
-                //    Folder = question.Value.ImageFolder,
-                //    Files = request.QuestionImages
-                //}, cancellationToken);
-
-                // загрузка blob ов
-                // таски на загрузку файлов                    
+                   
                 var uploadFilesTasks = new List<Task<IEnumerable<string>>>();
                 foreach (var questionAnswer in request.Answers)
                 {

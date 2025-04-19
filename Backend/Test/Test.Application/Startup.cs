@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Test.Application.Behaviors;
 
 namespace Test.Application
 {
@@ -18,6 +19,7 @@ namespace Test.Application
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(AssemplyReference).Assembly);
+                cfg.AddOpenBehavior(typeof(DomainEventsDispatcherBehavior<,>));
             });
 
             return services;

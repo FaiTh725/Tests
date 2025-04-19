@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.ExpressionRewriters;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -61,6 +63,24 @@ namespace Test.Dal.Repositories
                 .AsEnumerable();
         }
 
+        public async Task DeleteAnswers(List<long> idList, CancellationToken cancellationToken = default)
+        {
+            await context.Answers
+                .DeleteManyAsync(x => idList.Contains(x.Id), cancellationToken);
+        }
+
+        public async Task DeleteManyByCriteria(
+            BaseSpecification<QuestionAnswer> specification, 
+            CancellationToken cancellationToken = default)
+        {
+
+            var filter = specification.Criteria is null ?
+                Builders<MongoQuestionAnswer>.Filter.Empty :
+                new QuestionAnswerToMongoRewriter().Rewrite(specification.Criteria);
+
+            await context.Answers.DeleteManyAsync(filter, cancellationToken);
+        }
+
         public async Task<QuestionAnswer?> GetQuestionAnswer(
             long id, 
             CancellationToken cancellationToken = default)
@@ -70,6 +90,19 @@ namespace Test.Dal.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
 
             return mongoQuestionAnswer?.ConvertToDomainEntity();
+        }
+
+        public async Task<IEnumerable<QuestionAnswer>> GetQuestionAnswersByCriteria(BaseSpecification<QuestionAnswer> specification, CancellationToken cancellationToken = default)
+        {
+            var filter = specification.Criteria is null ?
+                Builders<MongoQuestionAnswer>.Filter.Empty :
+                new QuestionAnswerToMongoRewriter().Rewrite(specification.Criteria);
+
+            var answers = await context.Answers
+                .Find(filter)
+                .ToListAsync(cancellationToken);
+
+            return answers.Select(x => x.ConvertToDomainEntity());
         }
     }
 }

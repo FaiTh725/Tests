@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Behaviors\" />
     <Folder Include="Common\Implementations\" />
-    <Folder Include="Consumers\FileConsumers\" />
   </ItemGroup>
 
   <ItemGroup>

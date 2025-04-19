@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using Test.Dal.Repositories;
 using Test.Domain.Intrefaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Services
@@ -16,6 +17,8 @@ namespace Test.Dal.Services
         private Lazy<ITestRepository> testRepository;
         private Lazy<IQuestionRepository> questionRepository;
         private Lazy<IQuestionAnswerRepository> questionAnswerRepository;
+
+        private List<DomainEventEntity> trackedEntities = new List<DomainEventEntity>();
 
         public UnitOfWork(
             AppDbContext context)
@@ -97,6 +100,16 @@ namespace Test.Dal.Services
             {
                 throw new InvalidOperationException("Transaction is not started");
             }
+        }
+
+        public IReadOnlyCollection<DomainEventEntity> GetTrackedEntities()
+        {
+            return trackedEntities.AsReadOnly();
+        }
+
+        public void TrackEntity(DomainEventEntity entity)
+        {
+            trackedEntities.Add(entity);
         }
     }
 }
