@@ -12,5 +12,9 @@ namespace Test.Domain.Repositories
         Task<IEnumerable<Question>> GetQuestionsByCriteria(BaseSpecification<Question> specification, CancellationToken cancellationToken = default);
 
         Task DeleteQuestions(List<long> questionIdList, CancellationToken cancellationToken = default);
+
+        Task DeleteQuestion(long id, CancellationToken cancellationToken = default);
+
+        Task UpdateQuestion(long id, Question updatedQuestion, CancellationToken cancellationToken = default);
     }
 }

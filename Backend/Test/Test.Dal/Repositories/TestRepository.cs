@@ -1,5 +1,7 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.ExpressionRewriters;
 using Test.Dal.Persistences;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 using TestEntity = Test.Domain.Entities.Test;
 
@@ -47,6 +49,40 @@ namespace Test.Dal.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
 
             return mongoTest?.ConvertToDomainEntity();
+        }
+
+        public async Task<TestEntity?> GetTestByCriteria(
+            BaseSpecification<TestEntity> specification, 
+            CancellationToken cancellationToken)
+        {
+            var filter = specification.Criteria is null ?
+                Builders<MongoTest>.Filter.Empty :
+                new TestToMongoRewriter().Rewrite(specification.Criteria);
+
+            var test = await context.Tests
+                .Find(filter)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return test?.ConvertToDomainEntity();
+        }
+
+        public async Task UpdateTest(long id, TestEntity updatedTest, 
+            CancellationToken cancellationToken = default)
+        {
+            var mongoTest = new MongoTest();
+            mongoTest.ConvertToMongoEntity(updatedTest);
+
+            var filter = Builders<MongoTest>.Filter
+                .Eq(x => x.Id, id);
+
+            var update = Builders<MongoTest>.Update
+                .Set(x => x.Name, mongoTest.Name)
+                .Set(x => x.Description, mongoTest.Description)
+                .Set(x => x.IsPublic, mongoTest.IsPublic)
+                .Set(x => x.TestType, mongoTest.TestType);
+                
+            await context.Tests
+                .UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
         }
     }
 }

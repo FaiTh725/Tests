@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
 using Test.Application.Commands.Test.CreateTest;
 using Test.Application.Commands.Test.DeleteTest;
+using Test.Application.Commands.Test.UpdateTest;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
-using Test.Application.Queries.TestEntity.GetTestInfoById;
+using Test.Application.Queries.Test.GetTestInfoById;
 
 namespace Test.API.Controllers
 {
@@ -84,13 +85,53 @@ namespace Test.API.Controllers
         public async Task<IActionResult> DeleteTest(
             long testId, CancellationToken cancellationToken)
         {
+            var token = Request.Cookies["token"] ??
+                throw new UnauthorizedAccessException("User isnt authorized");
+
+            var profileToken = tokenService.DecodeToken(token);
+
+            if (profileToken.IsFailure)
+            {
+                throw new InternalServerErrorException("Invalid token signature");
+            }
+
             await mediator.Send(new DeleteTestCommand
             {
-                Id  = testId
+                TestId = testId,
+                Email = profileToken.Value.Email,
+                Role = profileToken.Value.Role
             },
             cancellationToken);
 
             return Ok();
+        }
+
+        [HttpPatch("[action]")]
+        [Authorize]
+        public async Task<IActionResult> UpdateTest(
+            UpdateTestRequest request, CancellationToken cancellationToken)
+        {
+            var token = Request.Cookies["token"] ??
+                throw new UnauthorizedAccessException("User isnt authorized");
+
+            var profileToken = tokenService.DecodeToken(token);
+
+            if(profileToken.IsFailure)
+            {
+                throw new InternalServerErrorException("Invalid token signature");
+            }
+
+            var updatedTestId = await mediator.Send(new UpdateTestCommand
+            {
+                TestId = request.TestId,
+                Description = request.Description,
+                IsPublic = request.IsPublic,
+                Name = request.Name,
+                Email = profileToken.Value.Email,
+                Role = profileToken.Value.Role
+            }, cancellationToken);
+
+            return Ok(updatedTestId);
         }
     }
 }

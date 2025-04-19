@@ -4,7 +4,7 @@ using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.Test;
 using Test.Domain.Intrefaces;
 
-namespace Test.Application.Queries.TestEntity.GetTestInfoById
+namespace Test.Application.Queries.Test.GetTestInfoById
 {
     public class GetTestInfoByIdHandler :
         IRequestHandler<GetTestInfoByIdQuery, TestInfo>

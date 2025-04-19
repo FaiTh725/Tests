@@ -1,10 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using Test.Domain.Enums;
+using Test.Domain.Events;
+using Test.Domain.Primitives;
 using Test.Domain.Validators;
 
 namespace Test.Domain.Entities
 {
-    public class Question : Entity
+    public class Question : DomainEventEntity
     {
         public string ImageFolder { get => $"Question-{Id}"; }
 
@@ -28,23 +30,43 @@ namespace Test.Domain.Entities
             TestId = testId;
         }
 
+        public void Delete()
+        {
+            RaiseDomainEvent(new QuestionDeletedEvent(Id));
+        }
+
+        public Result Update(
+            string testQuestion,
+            int questionWeight)
+        {
+            var isValid = Validate(
+                testQuestion,
+                questionWeight);
+
+            if(isValid.IsFailure)
+            {
+                return Result.Failure(isValid.Error);
+            }
+
+            TestQuestion = testQuestion;
+            QuestionWeight = questionWeight;
+
+            return Result.Success();
+        }
+
         public static Result<Question> Initialize(
             string testQuestion,
             int questionWeight,
             QuestionType questionType,
             long testId)
         {
-            if (string.IsNullOrWhiteSpace(testQuestion) ||
-                testQuestion.Length < QuestionValidator.MIN_QUESTION_LENGHT ||
-                testQuestion.Length > QuestionValidator.MAX_QUESTION_LENGHT)
-            {
-                return Result.Failure<Question>("QUestion is null or white space " +
-                    $"or lenght outside of {QuestionValidator.MIN_QUESTION_LENGHT} - {QuestionValidator.MAX_QUESTION_LENGHT}");
-            }
+            var isValid = Validate(
+                testQuestion,
+                questionWeight);
 
-            if (questionWeight < QuestionValidator.MIN_QUESTION_WEIGHT)
+            if(isValid.IsFailure)
             {
-                return Result.Failure<Question>($"Question weight less than {QuestionValidator.MIN_QUESTION_WEIGHT}");
+                return Result.Failure<Question>(isValid.Error);
             }
 
             return Result.Success(new Question(
@@ -52,6 +74,26 @@ namespace Test.Domain.Entities
                 questionWeight,
                 questionType,
                 testId));
+        }
+
+        private static Result Validate(
+            string testQuestion,
+            int questionWeight)
+        {
+            if (string.IsNullOrWhiteSpace(testQuestion) ||
+                testQuestion.Length < QuestionValidator.MIN_QUESTION_LENGHT ||
+                testQuestion.Length > QuestionValidator.MAX_QUESTION_LENGHT)
+            {
+                return Result.Failure("QUestion is null or white space " +
+                    $"or lenght outside of {QuestionValidator.MIN_QUESTION_LENGHT} - {QuestionValidator.MAX_QUESTION_LENGHT}");
+            }
+
+            if (questionWeight < QuestionValidator.MIN_QUESTION_WEIGHT)
+            {
+                return Result.Failure($"Question weight less than {QuestionValidator.MIN_QUESTION_WEIGHT}");
+            }
+
+            return Result.Success();
         }
     }
 }

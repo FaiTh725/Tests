@@ -1,9 +1,14 @@
 ﻿using MediatR;
+using Test.Application.Common.BehaviorsIntrfaces;
 
 namespace Test.Application.Commands.Test.DeleteTest
 {
-    public class DeleteTestCommand : IRequest
+    public class DeleteTestCommand : 
+        IRequest,
+        IOwnerAndAdminTestAccess
     {
-        public long Id { get; set; }
+        public long TestId { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }

@@ -18,7 +18,7 @@ namespace Test.Application.Commands.Test.DeleteTest
         public async Task Handle(DeleteTestCommand request, CancellationToken cancellationToken)
         {
             var test = await unitOfWork.TestRepository
-                .GetTest(request.Id, cancellationToken);
+                .GetTest(request.TestId, cancellationToken);
 
             if(test is null)
             {
@@ -26,7 +26,7 @@ namespace Test.Application.Commands.Test.DeleteTest
             }
 
             await unitOfWork.TestRepository
-                .DeleteTest(request.Id, cancellationToken);
+                .DeleteTest(request.TestId, cancellationToken);
 
             test.Delete();
             unitOfWork.TrackEntity(test);

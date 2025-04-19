@@ -20,6 +20,8 @@ namespace Test.Application
             {
                 cfg.RegisterServicesFromAssembly(typeof(AssemplyReference).Assembly);
                 cfg.AddOpenBehavior(typeof(DomainEventsDispatcherBehavior<,>));
+                cfg.AddOpenBehavior(typeof(OwnerAndAdminTestAccessBehavior<,>));
+                cfg.AddOpenBehavior(typeof(OwnerAndAdminQuestionAccessBehavior<,>));
             });
 
             return services;

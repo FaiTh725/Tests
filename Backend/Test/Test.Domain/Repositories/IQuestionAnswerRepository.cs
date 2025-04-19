@@ -13,8 +13,6 @@ namespace Test.Domain.Repositories
 
         Task<IEnumerable<QuestionAnswer>> GetQuestionAnswersByCriteria(BaseSpecification<QuestionAnswer> specification, CancellationToken cancellationToken = default);
 
-        Task DeleteManyByCriteria(BaseSpecification<QuestionAnswer> specification, CancellationToken cancellationToken = default);
-
         Task DeleteAnswers(List<long> idList, CancellationToken cancellationToken = default);
     }
 }

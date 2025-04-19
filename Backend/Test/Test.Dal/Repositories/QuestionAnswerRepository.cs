@@ -69,18 +69,6 @@ namespace Test.Dal.Repositories
                 .DeleteManyAsync(x => idList.Contains(x.Id), cancellationToken);
         }
 
-        public async Task DeleteManyByCriteria(
-            BaseSpecification<QuestionAnswer> specification, 
-            CancellationToken cancellationToken = default)
-        {
-
-            var filter = specification.Criteria is null ?
-                Builders<MongoQuestionAnswer>.Filter.Empty :
-                new QuestionAnswerToMongoRewriter().Rewrite(specification.Criteria);
-
-            await context.Answers.DeleteManyAsync(filter, cancellationToken);
-        }
-
         public async Task<QuestionAnswer?> GetQuestionAnswer(
             long id, 
             CancellationToken cancellationToken = default)

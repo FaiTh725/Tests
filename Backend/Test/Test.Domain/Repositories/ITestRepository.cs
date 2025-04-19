@@ -1,4 +1,5 @@
-﻿using TestEntity = Test.Domain.Entities.Test;
+﻿using Test.Domain.Primitives;
+using TestEntity = Test.Domain.Entities.Test;
 
 namespace Test.Domain.Repositories
 {
@@ -9,5 +10,9 @@ namespace Test.Domain.Repositories
         Task<TestEntity?> GetTest(long id, CancellationToken cancellationToken = default);
 
         Task DeleteTest(long id, CancellationToken cancellationToken = default);
+
+        Task UpdateTest(long id, TestEntity updatedTest, CancellationToken cancellationToken = default);
+
+        Task<TestEntity?> GetTestByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken);
     }
 }

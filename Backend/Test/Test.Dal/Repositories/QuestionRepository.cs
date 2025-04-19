@@ -37,7 +37,14 @@ namespace Test.Dal.Repositories
             return mongoQuestion.ConvertToDomainEntity();
         }
 
-        public async Task DeleteQuestions(List<long> questionIdList, CancellationToken cancellationToken = default)
+        public async Task DeleteQuestion(long id, CancellationToken cancellationToken = default)
+        {
+            await context.Questions.DeleteManyAsync(x => x.Id == id, 
+                cancellationToken);
+        }
+
+        public async Task DeleteQuestions(List<long> questionIdList, 
+            CancellationToken cancellationToken = default)
         {
             await context.Questions
                 .DeleteManyAsync(x => questionIdList.Contains(x.Id), 
@@ -68,6 +75,23 @@ namespace Test.Dal.Repositories
 
             return mongoQuestions
                 .Select(x => x.ConvertToDomainEntity());
+        }
+
+        public async Task UpdateQuestion(long id, Question updatedQuestion, 
+            CancellationToken cancellationToken = default)
+        {
+            var mongoQuestion = new MongoQuestion();
+            mongoQuestion.ConvertToMongoEntity(updatedQuestion);
+
+            var filter = Builders<MongoQuestion>.Filter
+                .Eq(x => x.Id, id);
+
+            var update = Builders<MongoQuestion>.Update
+                .Set(x => x.TestQuestion, updatedQuestion.TestQuestion)
+                .Set(x => x.QuestionWeight, updatedQuestion.QuestionWeight);
+
+            await context.Questions.UpdateOneAsync(filter, update, 
+                cancellationToken: cancellationToken);
         }
     }
 }

@@ -17,9 +17,12 @@ namespace Test.Infastructure.Implementations
                 .FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
             var name = jwtToken.Claims
                 .FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-        
-            if(email is null ||
-                name is null)
+            var role = jwtToken.Claims
+                .FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+
+            if (email is null ||
+                name is null ||
+                role is null)
             {
                 return Result.Failure<ProfileToken>("Invalid token signature");
             }
