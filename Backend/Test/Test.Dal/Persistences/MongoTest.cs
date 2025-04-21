@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Test.Domain.Entities;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using Test.Domain.Enums;
 using TestEntity = Test.Domain.Entities.Test;
 
@@ -23,11 +21,13 @@ namespace Test.Dal.Persistences
 
         public long ProfileId { get; set; }
 
+        public double? DurationInMinutes { get; set; }
+
         public TestEntity ConvertToDomainEntity()
         {
             var testEntity = TestEntity.Initialize(
                 Name, Description, ProfileId, 
-                TestType, IsPublic);
+                TestType, IsPublic, DurationInMinutes);
 
             if(testEntity.IsFailure)
             {
@@ -52,6 +52,7 @@ namespace Test.Dal.Persistences
             IsPublic = test.IsPublic;
             TestType = test.TestType;
             ProfileId = test.ProfileId;
+            DurationInMinutes = test.DurationInMinutes;
 
             return this;
         }

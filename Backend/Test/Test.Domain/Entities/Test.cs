@@ -20,12 +20,15 @@ namespace Test.Domain.Entities
 
         public long ProfileId { get; private set; }
 
+        public double? DurationInMinutes { get; private set; }
+
         private Test(
             string name,
             string description,
             long profileId,
             TestType testType,
-            bool isPublic = true)
+            bool isPublic = true,
+            double? durationInMinutes = null)
         {
             Name = name;
             Description = description;
@@ -34,6 +37,7 @@ namespace Test.Domain.Entities
             IsPublic = isPublic;
 
             CreatedTime = DateTime.UtcNow;
+            DurationInMinutes = durationInMinutes;
         }
 
         public void Delete()
@@ -44,11 +48,15 @@ namespace Test.Domain.Entities
         public Result Update(
             string name,
             string description,
-            bool isPublic)
+            bool isPublic,
+            TestType testType,
+            double durationInMinutes)
         {
             var isValid = Validate(
                 name,
-                description);
+                description,
+                testType,
+                durationInMinutes);
 
             if (isValid.IsFailure)
             {
@@ -67,11 +75,14 @@ namespace Test.Domain.Entities
             string description,
             long profileId,
             TestType testType,
-            bool isPublic = true)
+            bool isPublic = true,
+            double? durationInMinutes = null)
         {
             var isValid = Validate(
                 name,
-                description);
+                description,
+                testType,
+                durationInMinutes);
 
             if(isValid.IsFailure)
             {
@@ -88,7 +99,9 @@ namespace Test.Domain.Entities
 
         private static Result Validate(
             string name,
-            string description)
+            string description,
+            TestType testType,
+            double? durationInMinutes = null)
         {
             if (string.IsNullOrWhiteSpace(name) ||
                name.Length < TestValidator.MIN_NAME_LENGHT ||
@@ -103,6 +116,18 @@ namespace Test.Domain.Entities
             {
                 return Result.Failure("Description is empty or " +
                     $"lenght greater than {TestValidator.MAX_DESCRIPTION_LENGHT}");
+            }
+
+            if(testType == TestType.Timed &&
+                durationInMinutes == null)
+            {
+                return Result.Failure("If TestType has timed status than duration is requred");
+            }
+
+            if(durationInMinutes < TestValidator.MIN_TEST_DURATION)
+            {
+                return Result.Failure("Test duration should be greater than " +
+                    TestValidator.MIN_TEST_DURATION.ToString());
             }
 
             return Result.Success();

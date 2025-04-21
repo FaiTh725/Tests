@@ -92,7 +92,8 @@ namespace Test.Dal.Repositories
                 .Set(x => x.Name, mongoTest.Name)
                 .Set(x => x.Description, mongoTest.Description)
                 .Set(x => x.IsPublic, mongoTest.IsPublic)
-                .Set(x => x.TestType, mongoTest.TestType);
+                .Set(x => x.TestType, mongoTest.TestType)
+                .Set(x => x.DurationInMinutes, mongoTest.DurationInMinutes);
                 
             await context.Tests
                 .UpdateOneAsync(filter, update, cancellationToken: cancellationToken);

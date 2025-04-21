@@ -17,6 +17,9 @@ namespace Test.Dal.Services
         private Lazy<ITestRepository> testRepository;
         private Lazy<IQuestionRepository> questionRepository;
         private Lazy<IQuestionAnswerRepository> questionAnswerRepository;
+        private Lazy<IProfileAnswerRepository> profileAnswerRepository;
+        private Lazy<IProfileGroupRepository> profileGroupRepository;
+        private Lazy<ITestSessionRepository> testSessionRepository;
 
         private List<DomainEventEntity> trackedEntities = new List<DomainEventEntity>();
 
@@ -29,6 +32,9 @@ namespace Test.Dal.Services
             testRepository = new Lazy<ITestRepository>(() => new TestRepository(context));
             questionAnswerRepository = new Lazy<IQuestionAnswerRepository>(() => new QuestionAnswerRepository(context));
             questionRepository = new Lazy<IQuestionRepository>(() => new QuestionRepository(context));
+            profileAnswerRepository = new Lazy<IProfileAnswerRepository>(() => new ProfileAnswerRepository(context));
+            profileGroupRepository = new Lazy<IProfileGroupRepository>(() => new ProfileGroupRepository(context));
+            testSessionRepository = new Lazy<ITestSessionRepository>(() => new TestSessionRepository(context));
         }
 
         public IProfileRepository ProfileRepository => profileRepository.Value;
@@ -38,6 +44,12 @@ namespace Test.Dal.Services
         public IQuestionRepository QuestionRepository => questionRepository.Value;
 
         public IQuestionAnswerRepository QuestionAnswerRepository => questionAnswerRepository.Value;
+
+        public ITestSessionRepository SessionRepository => testSessionRepository.Value;
+
+        public IProfileAnswerRepository ProfileAnswerRepository => profileAnswerRepository.Value;
+
+        public IProfileGroupRepository ProfileGroupRepository => profileGroupRepository.Value;
 
         public void BeginTransaction()
         {

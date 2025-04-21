@@ -13,6 +13,12 @@ namespace Test.Domain.Intrefaces
 
         IQuestionAnswerRepository QuestionAnswerRepository { get; }
 
+        ITestSessionRepository SessionRepository { get; }
+
+        IProfileAnswerRepository ProfileAnswerRepository { get; }
+
+        IProfileGroupRepository ProfileGroupRepository { get; }
+
         IReadOnlyCollection<DomainEventEntity> GetTrackedEntities();
 
         // is used to add an entity to its event tracking
