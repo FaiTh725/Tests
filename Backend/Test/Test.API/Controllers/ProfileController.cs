@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Test.Application.Commands.ProfileEntity.CreateProfile;
+using Test.Application.Queries.Test.GetProfileTests;
 
 namespace Test.API.Controllers
 {
@@ -14,6 +14,19 @@ namespace Test.API.Controllers
             IMediator mediator)
         {
             this.mediator = mediator;
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetProfileTests(
+            long profileId, CancellationToken cancellationToken)
+        {
+            var tests = await mediator.Send(new GetProfileTestsQuery
+            {
+                ProfileId = profileId,
+            },
+            cancellationToken);
+
+            return Ok(tests);
         }
     }
 }

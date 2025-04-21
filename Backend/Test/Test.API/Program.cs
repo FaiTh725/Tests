@@ -5,7 +5,6 @@ using Test.API.Extentions;
 using Test.Infastructure;
 using Test.Application;
 using Hangfire;
-using Hangfire.Dashboard;
 using Test.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);

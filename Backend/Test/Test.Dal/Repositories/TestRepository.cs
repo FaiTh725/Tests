@@ -66,6 +66,19 @@ namespace Test.Dal.Repositories
             return test?.ConvertToDomainEntity();
         }
 
+        public async Task<IEnumerable<TestEntity>> GetTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken)
+        {
+            var filter = specification.Criteria is null ?
+                Builders<MongoTest>.Filter.Empty :
+                new TestToMongoRewriter().Rewrite(specification.Criteria);
+
+            var tests = await context.Tests
+                .Find(filter)
+                .ToListAsync(cancellationToken);
+
+            return tests.Select(x => x.ConvertToDomainEntity());
+        }
+
         public async Task UpdateTest(long id, TestEntity updatedTest, 
             CancellationToken cancellationToken = default)
         {

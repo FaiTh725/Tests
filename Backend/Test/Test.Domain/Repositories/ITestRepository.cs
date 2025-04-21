@@ -14,5 +14,7 @@ namespace Test.Domain.Repositories
         Task UpdateTest(long id, TestEntity updatedTest, CancellationToken cancellationToken = default);
 
         Task<TestEntity?> GetTestByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken);
+
+        Task<IEnumerable<TestEntity>> GetTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken);
     }
 }

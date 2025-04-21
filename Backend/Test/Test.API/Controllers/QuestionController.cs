@@ -10,6 +10,7 @@ using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.File;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.QuestionAnswerEntity;
+using Test.Application.Queries.QuestionEntity.GetQuestionWithAnswers;
 
 namespace Test.API.Controllers
 {
@@ -69,9 +70,15 @@ namespace Test.API.Controllers
                 Email = profileToken.Value.Email,
                 Role = profileToken.Value.Role
             };
+
             var questionId = await mediator.Send(createQuestionCommand, cancellationToken);
 
-            return Ok(questionId);
+            var question = await mediator.Send(new GetQuestionWithAnswersQuery
+            {
+                Id = questionId,
+            }, cancellationToken);
+
+            return Ok(question);
         }
 
         [HttpDelete("[action]")]
@@ -125,7 +132,12 @@ namespace Test.API.Controllers
             }, 
             cancellationToken);
 
-            return Ok(questionId);
+            var question = await mediator.Send(new GetQuestionWithAnswersQuery
+            {
+                Id = questionId,
+            }, cancellationToken);
+
+            return Ok(question);
         }
     }
 }
