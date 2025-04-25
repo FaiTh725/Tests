@@ -30,7 +30,9 @@ namespace Test.Application.Commands.Test.UpdateTest
             var isValidUpdate = test.Update(
                 request.Name,
                 request.Description,
-                request.IsPublic);
+                request.IsPublic,
+                request.TestType,
+                request.DurationInMinutes);
 
             if(isValidUpdate.IsFailure)
             {

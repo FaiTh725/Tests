@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Test.Domain.Validators;
 
 namespace Test.Domain.Entities
 {
@@ -14,6 +15,8 @@ namespace Test.Domain.Entities
 
         public bool IsEnded { get; private set; }
 
+        public int Percent {  get; private set; }
+
         private TestSession(
             long testId,
             long profileId)
@@ -25,15 +28,24 @@ namespace Test.Domain.Entities
             IsEnded = false;
         }
 
-        public Result CloseSession()
+        public Result CloseSession(
+            int percent)
         {
             if(IsEnded)
             {
                 return Result.Failure("Session has already ended");
             }
 
+            if(percent < TestSessionValidator.MIN_PERCENT ||
+                percent > TestSessionValidator.MAX_PERCENT)
+            {
+                return Result.Failure("Percent outside from range " +
+                    $"[{TestSessionValidator.MIN_PERCENT}, {TestSessionValidator.MAX_PERCENT}]");
+            }
+
             EndTime = DateTime.UtcNow;
             IsEnded = true;
+            Percent = percent;
 
             return Result.Success();
         }

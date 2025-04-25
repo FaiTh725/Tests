@@ -1,4 +1,5 @@
-﻿using Test.Domain.Entities;
+﻿using Test.Dal.Persistences;
+using Test.Domain.Entities;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -13,9 +14,24 @@ namespace Test.Dal.Repositories
             this.context = context;
         }
 
-        public Task<IEnumerable<ProfileAnswer>> AddProfileAnswers(List<ProfileAnswer> profileAnswers, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ProfileAnswer>> AddProfileAnswers(
+            List<ProfileAnswer> profileAnswers, 
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var mongoProfileAnswers = profileAnswers.Select(x =>
+            {
+                var mongoProfileAnswer = new MongoProfileAnswer();
+                mongoProfileAnswer.ConvertToMongoEntity(x);
+                var nextId = context.GetNextId(AppDbContext.PROFILE_ANSWERS_COLLECTION_NAME);
+                mongoProfileAnswer.Id = nextId;
+                
+                return mongoProfileAnswer;
+            });
+
+            await context.ProfileAnswers
+                .InsertManyAsync(mongoProfileAnswers, cancellationToken: cancellationToken);
+
+            return mongoProfileAnswers.Select(x => x.ConvertToDomainEntity());
         }
     }
 }

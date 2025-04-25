@@ -3,6 +3,7 @@ using MediatR;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.Test;
 using Test.Application.Queries.Test.Specifications;
+using Test.Domain.Entities;
 using Test.Domain.Intrefaces;
 
 namespace Test.Application.Queries.Test.GetProfileTests
@@ -41,6 +42,7 @@ namespace Test.Application.Queries.Test.GetProfileTests
                 Description = x.Description,
                 IsPublic = x.IsPublic,
                 TestType = x.TestType.ToString(),
+                DurationInMinutes = x.DurationInMinutes,
                 Owner = new ProfileResponse
                 {
                     Id = profile.Id,

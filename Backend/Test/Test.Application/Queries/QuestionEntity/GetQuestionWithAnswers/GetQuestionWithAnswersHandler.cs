@@ -36,7 +36,7 @@ namespace Test.Application.Queries.QuestionEntity.GetQuestionWithAnswers
 
             var questionAnswers = await unitOfWork.QuestionAnswerRepository
                 .GetQuestionAnswersByCriteria(
-                new AnswersByQuestionsIdSpecification([question.Id]), 
+                new AnswersByQuestionIdSpecification(question.Id), 
                 cancellationToken);
 
             var answersResponseTasks = questionAnswers.Select(async x => new QuestionAnswerResponse

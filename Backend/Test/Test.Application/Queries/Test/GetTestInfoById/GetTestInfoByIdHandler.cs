@@ -43,6 +43,7 @@ namespace Test.Application.Queries.Test.GetTestInfoById
                 IsPublic = test.IsPublic,
                 Description = test.Description,
                 TestType = test.TestType.ToString(),
+                DurationInMinutes = test.DurationInMinutes,
                 Owner = new ProfileResponse
                 { 
                     Id = testOwner.Id,

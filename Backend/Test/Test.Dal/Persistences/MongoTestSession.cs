@@ -18,6 +18,8 @@ namespace Test.Dal.Persistences
 
         public bool IsEnded { get; set; }
 
+        public int Percent {  get; set; }
+
         public TestSession ConvertToDomainEntity()
         {
             var testSessionEntity = TestSession.Initialize(
@@ -50,6 +52,11 @@ namespace Test.Dal.Persistences
             setMethod = property!.GetSetMethod(true);
             setMethod?.Invoke(testSessionEntity.Value, [IsEnded]);
 
+            // Set Percent
+            property = type.GetProperty("Percent");
+            setMethod = property!.GetSetMethod(true);
+            setMethod?.Invoke(testSessionEntity.Value, [Percent]);
+
             return testSessionEntity.Value;
         }
 
@@ -61,6 +68,7 @@ namespace Test.Dal.Persistences
             StartTime = testSession.StartTime;
             EndTime = testSession.EndTime;
             IsEnded = testSession.IsEnded;
+            Percent = testSession.Percent;
 
             return this;
         }

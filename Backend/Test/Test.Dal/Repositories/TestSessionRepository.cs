@@ -1,4 +1,6 @@
-﻿using Test.Domain.Entities;
+﻿using MongoDB.Driver;
+using Test.Dal.Persistences;
+using Test.Domain.Entities;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -13,14 +15,54 @@ namespace Test.Dal.Repositories
             this.context = context;
         }
 
-        public Task<TestSession> AddTestSession(TestSession testSession, CancellationToken cancellationToken = default)
+        public async Task<TestSession> AddTestSession(
+            TestSession testSession, 
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var mongoTestSession = new MongoTestSession();
+            mongoTestSession.ConvertToMongoEntity(testSession);
+            var nextId = context.GetNextId(AppDbContext.TEST_SESSIONS_COLLECTION_NAME);
+            mongoTestSession.Id = nextId;
+
+            var insertOptions = new InsertOneOptions
+            {
+                BypassDocumentValidation = true
+            };
+
+            await context.Sessions.InsertOneAsync(
+                mongoTestSession,
+                insertOptions,
+                cancellationToken);
+
+            return mongoTestSession.ConvertToDomainEntity();
         }
 
-        public Task<TestSession?> GetTestSession(long testSessionId, CancellationToken cancellationToken = default)
+        public async Task<TestSession?> GetTestSession(
+            long testSessionId, 
+            CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var mongoTestSession = await context.Sessions
+                .Find(x => x.Id == testSessionId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return mongoTestSession?.ConvertToDomainEntity();
+        }
+
+        public async Task UpdateTestSession(
+            long id, 
+            TestSession updatedSession, 
+            CancellationToken cancellationToken = default)
+        {
+            var filter = Builders<MongoTestSession>.Filter
+                .Eq(x => x.Id, id);
+
+            var update = Builders<MongoTestSession>.Update
+                .Set(x => x.EndTime, updatedSession.EndTime)
+                .Set(x => x.IsEnded, updatedSession.IsEnded)
+                .Set(x => x.Percent, updatedSession.Percent);
+
+            await context.Sessions
+                .UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
         }
     }
 }

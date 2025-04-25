@@ -28,7 +28,8 @@ namespace Test.Application.Commands.Test.CreateTest
 
             var testEntity = TestEntity.Initialize(
                 request.Name, request.Description, 
-                profile.Id, request.TestType, request.IsPublic);
+                profile.Id, request.TestType,
+                request.DurationInMinutes, request.IsPublic);
     
             if(testEntity.IsFailure)
             {

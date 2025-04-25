@@ -27,7 +27,7 @@ namespace Test.Dal.Persistences
         {
             var testEntity = TestEntity.Initialize(
                 Name, Description, ProfileId, 
-                TestType, IsPublic, DurationInMinutes);
+                TestType, DurationInMinutes, IsPublic);
 
             if(testEntity.IsFailure)
             {

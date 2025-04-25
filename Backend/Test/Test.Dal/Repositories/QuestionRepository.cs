@@ -61,6 +61,25 @@ namespace Test.Dal.Repositories
             return question?.ConvertToDomainEntity();
         }
 
+        public async Task<Dictionary<long, IEnumerable<QuestionAnswer>>> GetQuestionCorrectAnswers(
+            long testId, 
+            CancellationToken cancellationToken = default)
+        {
+            var questionsId = await context.Questions
+                .Find(x => x.TestId == testId)
+                .Project(x => x.Id)
+                .ToListAsync(cancellationToken);
+
+            var correctAnswersQuestion = await context.Answers
+                .Find(x => questionsId.Contains(x.QuestionId) && x.IsCorrect)
+                .ToListAsync(cancellationToken);
+
+            return correctAnswersQuestion
+                .GroupBy(x => x.QuestionId)
+                .ToDictionary(x => x.Key, x => x.Select(y => 
+                    y.ConvertToDomainEntity()));
+        }
+
         public async Task<IEnumerable<Question>> GetQuestionsByCriteria(
             BaseSpecification<Question> specification, 
             CancellationToken cancellationToken = default)

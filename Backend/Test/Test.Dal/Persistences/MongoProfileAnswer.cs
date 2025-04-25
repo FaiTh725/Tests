@@ -12,16 +12,19 @@ namespace Test.Dal.Persistences
 
         public long QuestionId { get; set; }
 
-        public long QuestionAnswerId { get; set; }
+        public List<long> QuestionAnswersId { get; set; } = new List<long>();
 
         public DateTime SendTime { get; set; }
+
+        public bool IsCorrect { get; set; }
 
         public ProfileAnswer ConvertToDomainEntity()
         {
             var profileAnswerEntity = ProfileAnswer.Initialize(
                 SessionId,
                 QuestionId,
-                QuestionAnswerId);
+                QuestionAnswersId,
+                IsCorrect);
 
             if(profileAnswerEntity.IsFailure)
             {
@@ -47,8 +50,9 @@ namespace Test.Dal.Persistences
             Id = profileAnswer.Id; 
             SessionId = profileAnswer.SessionId; 
             QuestionId = profileAnswer.QuestionId; 
-            QuestionAnswerId = profileAnswer.QuestionAnswerId;
+            QuestionAnswersId = profileAnswer.QuestionAnswersId;
             SendTime = profileAnswer.SendTime;
+            IsCorrect = profileAnswer.IsCorrect;
 
             return this;
         }

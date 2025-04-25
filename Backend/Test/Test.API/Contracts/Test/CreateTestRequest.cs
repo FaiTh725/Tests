@@ -11,5 +11,7 @@ namespace Test.API.Contracts.Test
         public bool IsPublic { get; set; }
 
         public TestType TestType { get; set; }
+
+        public double? DurationInMinutes { get; set; }
     }
 }

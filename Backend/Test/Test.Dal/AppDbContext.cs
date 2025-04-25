@@ -13,6 +13,9 @@ namespace Test.Dal
         public const string TESTS_COLLECTION_NAME = "tests";
         public const string QUESTION_COLLECTION_NAME = "questions";
         public const string ANSWER_COLLECTION_NAME = "answers";
+        public const string TEST_SESSIONS_COLLECTION_NAME = "sessions";
+        public const string PROFILE_ANSWERS_COLLECTION_NAME = "profile_answers";
+        public const string GROUPS_COLLECTION_NAME = "groups";
 
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
@@ -55,7 +58,22 @@ namespace Test.Dal
         { 
             get => database.GetCollection<MongoQuestionAnswer>(ANSWER_COLLECTION_NAME); 
         }
-    
+
+        public IMongoCollection<MongoTestSession> Sessions
+        {
+            get => database.GetCollection<MongoTestSession>(TEST_SESSIONS_COLLECTION_NAME);
+        }
+
+        public IMongoCollection<MongoProfileAnswer> ProfileAnswers
+        {
+            get => database.GetCollection<MongoProfileAnswer>(PROFILE_ANSWERS_COLLECTION_NAME);
+        }
+
+        public IMongoCollection<MongoProfileGroup> Groups
+        {
+            get => database.GetCollection<MongoProfileGroup>(GROUPS_COLLECTION_NAME);
+        }
+
         public long GetNextId(string entityName)
         {
             var filter = Builders<BsonDocument>

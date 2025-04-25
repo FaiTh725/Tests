@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Test.Application.Behaviors;
+using Test.Application.Common.Implementations;
+using Test.Application.Common.Interfaces;
+using Test.Application.Common.Mediator;
 
 namespace Test.Application
 {
@@ -9,6 +12,10 @@ namespace Test.Application
             this IServiceCollection services)
         {
             services.AddMediatorProvider();
+
+            services.AddScoped<MediatorWrapper>();
+
+            services.AddScoped<ITestEvaluatorService, TestEvaliatorService>();
 
             return services;
         }

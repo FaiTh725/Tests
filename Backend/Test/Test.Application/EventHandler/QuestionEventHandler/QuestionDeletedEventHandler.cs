@@ -27,7 +27,7 @@ namespace Test.Application.EventHandler.QuestionEventHandler
         {
             var questionAnswer = await unitOfWork.QuestionAnswerRepository
                 .GetQuestionAnswersByCriteria(
-                new AnswersByQuestionsIdSpecification([notification.QuestionId]), 
+                new AnswersByQuestionIdSpecification(notification.QuestionId), 
                 cancellationToken);
 
             await unitOfWork.QuestionAnswerRepository.DeleteAnswers(

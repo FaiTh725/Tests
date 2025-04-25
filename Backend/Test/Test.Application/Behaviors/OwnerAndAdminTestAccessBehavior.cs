@@ -33,10 +33,10 @@ namespace Test.Application.Behaviors
             var profile = await unitOfWork.ProfileRepository
                 .GetProfile(test.ProfileId, cancellationToken);
 
-            if(profile is null ||
-                request.Role != "Admin")
+            if (request.Role != "Admin" &&
+                (profile is null || profile.Email != request.Email))
             {
-                throw new ForbiddenAccessException("Only a owner and admin have access to the test");
+                throw new ForbiddenAccessException("Only the owner or an admin has access to the test");
             }
 
             return await next(cancellationToken);

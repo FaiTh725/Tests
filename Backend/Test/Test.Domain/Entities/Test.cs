@@ -35,9 +35,9 @@ namespace Test.Domain.Entities
             ProfileId = profileId;
             TestType = testType;
             IsPublic = isPublic;
+            DurationInMinutes = durationInMinutes;
 
             CreatedTime = DateTime.UtcNow;
-            DurationInMinutes = durationInMinutes;
         }
 
         public void Delete()
@@ -50,7 +50,7 @@ namespace Test.Domain.Entities
             string description,
             bool isPublic,
             TestType testType,
-            double durationInMinutes)
+            double? durationInMinutes)
         {
             var isValid = Validate(
                 name,
@@ -66,6 +66,7 @@ namespace Test.Domain.Entities
             Name = name;
             Description = description;
             IsPublic = isPublic;
+            DurationInMinutes = durationInMinutes;
 
             return Result.Success();
         }
@@ -75,8 +76,8 @@ namespace Test.Domain.Entities
             string description,
             long profileId,
             TestType testType,
-            bool isPublic = true,
-            double? durationInMinutes = null)
+            double? durationInMinutes,
+            bool isPublic = true)
         {
             var isValid = Validate(
                 name,
@@ -94,14 +95,15 @@ namespace Test.Domain.Entities
                 description,
                 profileId,
                 testType,
-                isPublic));
+                isPublic,
+                durationInMinutes));
         }
 
         private static Result Validate(
             string name,
             string description,
             TestType testType,
-            double? durationInMinutes = null)
+            double? durationInMinutes)
         {
             if (string.IsNullOrWhiteSpace(name) ||
                name.Length < TestValidator.MIN_NAME_LENGHT ||

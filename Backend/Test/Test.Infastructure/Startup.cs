@@ -16,6 +16,9 @@ using Test.Infastructure.Configurations;
 using Test.Infastructure.Implementations;
 using MassTransit;
 using Test.Application.Consumers.FileConsumers;
+using Redis.OM;
+using Test.Infastructure.BackgroundServices;
+using Test.Application.Contracts.TestSession;
 
 namespace Test.Infastructure
 {
@@ -29,12 +32,16 @@ namespace Test.Infastructure
                 .AddAzuriteProvider(configuration)
                 .AddJwtAuthorization(configuration)
                 .AddHangfireProvider(configuration)
-                .AddMasstransitProvider(configuration);
+                .AddMasstransitProvider(configuration)
+                .AddRedisProvider(configuration);
 
             services.AddScoped<IBackgroundJobService, HangFireJobService>();
+            services.AddScoped<ITempDbService<TempTestSession>, RedisTempDbService>();
 
             services.AddSingleton<IBlobService, AzuriteStorageService> ();
             services.AddSingleton<ITokenService<ProfileToken>, ProfileTokenService> ();
+
+            services.AddHostedService<CreateRedisOmIndexes>();
 
             return services;
         }
@@ -162,6 +169,19 @@ namespace Test.Infastructure
                     configurator.ConfigureEndpoints(context);
                 });
             });
+
+            return services;
+        }
+
+        private static IServiceCollection AddRedisProvider(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var redisConnection = configuration
+                .GetConnectionString("RedisConnection") ??
+                throw new AppConfigurationException("Connection string to redis");
+
+            services.AddSingleton(new RedisConnectionProvider(redisConnection));
 
             return services;
         }

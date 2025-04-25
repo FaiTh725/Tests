@@ -8,18 +8,22 @@ namespace Test.Domain.Entities
 
         public long QuestionId { get; private set; }
 
-        public long QuestionAnswerId { get; private set; }
+        public List<long> QuestionAnswersId { get; set; } = new List<long>();
 
         public DateTime SendTime { get; private set; }
+
+        public bool IsCorrect {  get; private set; }
 
         private ProfileAnswer(
             long sessionId,
             long questionId,
-            long questionAnswerId)
+            List<long> questionAnswersId,
+            bool isCorrect)
         {
             SessionId = sessionId;
             QuestionId = questionId;
-            QuestionAnswerId = questionAnswerId;
+            QuestionAnswersId = questionAnswersId;
+            IsCorrect = isCorrect;
 
             SendTime = DateTime.UtcNow;
         }
@@ -27,12 +31,14 @@ namespace Test.Domain.Entities
         public static Result<ProfileAnswer> Initialize(
             long sessionId,
             long questionId,
-            long questionAnswerId)
+            List<long> questionAnswersId,
+            bool isCorrect)
         {
             return Result.Success(new ProfileAnswer(
                 sessionId,
                 questionId,
-                questionAnswerId));
+                questionAnswersId,
+                isCorrect));
         }
     }
 }

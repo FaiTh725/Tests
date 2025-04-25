@@ -16,5 +16,7 @@ namespace Test.Domain.Repositories
         Task DeleteQuestion(long id, CancellationToken cancellationToken = default);
 
         Task UpdateQuestion(long id, Question updatedQuestion, CancellationToken cancellationToken = default);
+
+        Task<Dictionary<long, IEnumerable<QuestionAnswer>>> GetQuestionCorrectAnswers(long testId, CancellationToken cancellationToken = default);
     }
 }

@@ -5,11 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
 using Test.Application.Commands.Test.CreateTest;
 using Test.Application.Commands.Test.DeleteTest;
+using Test.Application.Commands.Test.StartTest;
+using Test.Application.Commands.Test.StopTest;
 using Test.Application.Commands.Test.UpdateTest;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
 using Test.Application.Queries.Test.GetTestInfoById;
+using Test.Application.Queries.Test.GetTestToPass;
 
 namespace Test.API.Controllers
 {
@@ -54,7 +57,8 @@ namespace Test.API.Controllers
                 Name = request.Name,
                 Description = request.Description,
                 IsPublic = request.IsPublic,
-                TestType = request.TestType
+                TestType = request.TestType,
+                DurationInMinutes = request.DurationInMinutes
             }, cancellationToken);
 
             var test = await mediator.Send(new GetTestInfoByIdQuery

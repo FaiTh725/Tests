@@ -24,6 +24,11 @@ namespace Test.Infastructure.Implementations
             return backgroundJobClient.Schedule(methodCall, timeSpan);
         }
 
+        public string CreateDelaydedJob<T>(Expression<Func<T, Task>> methodCall, TimeSpan timeSpan)
+        {
+            return backgroundJobClient.Schedule(methodCall, timeSpan);
+        }
+
         public string CreateFireAndForgetJob<T>(Expression<Action<T>> methodCall)
         {
             return backgroundJobClient.Enqueue(methodCall);
