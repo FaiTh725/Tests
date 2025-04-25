@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.Globalization;
 
 namespace Authorization.Application.Commands.RefreshTokenEntity.DeleteRefreshToken
 {

@@ -4,9 +4,9 @@ using Authorization.Application.Commands.UserEntity.Register;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
-namespace Authorization.API.Extention
+namespace Authorization.API.Extension
 {
-    public static class AppExtention
+    public static class AppExtension
     {
         public static IServiceCollection ConfigureApiServices(
             this IServiceCollection services)

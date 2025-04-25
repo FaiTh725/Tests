@@ -1,11 +1,7 @@
-﻿using Application.Shared.Exceptions;
-using Authorization.Application.Commands.RefreshTokenEntity.DeleteRefreshToken;
-using Authorization.Application.Commands.RefreshTokenEntity.RefreshRefreshToken;
-using Authorization.Application.Commands.UserEntity.Login;
+﻿using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
-using Authorization.Application.Queries.RefreshTokenEntity.GetRefreshTokenWithUser;
 using Authorization.Application.Queries.UserEntity.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +14,7 @@ namespace Authorization.API.Controllers
     {
         private readonly IMediator mediator;
         private readonly IJwtService<UserTokenRequest, UserTokenResponse> tokenService;
+        private readonly IAuthService authService;
 
         private readonly CookieOptions cookieOptions = new CookieOptions
         {
@@ -28,10 +25,12 @@ namespace Authorization.API.Controllers
 
         public AuthController(
             IMediator mediator,
-            IJwtService<UserTokenRequest, UserTokenResponse> tokenService)
+            IJwtService<UserTokenRequest, UserTokenResponse> tokenService,
+            IAuthService authService)
         {
             this.mediator = mediator;
             this.tokenService = tokenService;
+            this.authService = authService;
         }
 
         [HttpGet("[action]")]
@@ -91,36 +90,9 @@ namespace Authorization.API.Controllers
             CancellationToken cancellationToken)
         {
             var oldRefreshToken = Request.Cookies["refresh_token"];
-            if(string.IsNullOrWhiteSpace(oldRefreshToken))
-            {
-                throw new UnauthorizeException("Refresh token is missing");
-            }
 
-            var existedRefreshToken = await mediator.Send(
-                new GetRefreshTokenWithUserQuery
-                {
-                    Token = oldRefreshToken
-                },
-                cancellationToken);
-            if(existedRefreshToken.ExpireOn < DateTime.UtcNow)
-            {
-                throw new UnauthorizeException("Refresh token is expired");
-            }
-
-            var accessToken = tokenService.GenerateToken(new UserTokenRequest
-            {
-                Email = existedRefreshToken.User.Email,
-                Role = existedRefreshToken.User.Role,
-                UserName = existedRefreshToken.User.UserName
-            });
-            var newRefreshToken = tokenService.GenerateRefreshToken();
-
-            await mediator.Send(new RefreshRefreshTokenCommand
-            {
-                Id = existedRefreshToken.Id,
-                NewToken = newRefreshToken
-            },
-            cancellationToken);
+            var (accessToken, newRefreshToken) = await authService
+                .Refresh(oldRefreshToken, cancellationToken);
 
             Response.Cookies.Append("token", accessToken, cookieOptions);
             Response.Cookies.Append("refresh_token", newRefreshToken, cookieOptions);
@@ -133,17 +105,11 @@ namespace Authorization.API.Controllers
             CancellationToken cancellationToken)
         {
             var refreshToken = Request.Cookies["refresh_token"];
-            if(!string.IsNullOrWhiteSpace(refreshToken))
-            {
-                await mediator.Send(new DeleteRefreshTokenCommand
-                {
-                    RefreshToken = refreshToken
-                }, 
-                cancellationToken);
 
-                Response.Cookies.Delete("refresh_token");
-                Response.Cookies.Delete("token");
-            }
+            await authService.Logout(refreshToken, cancellationToken);
+            
+            Response.Cookies.Delete("refresh_token");
+            Response.Cookies.Delete("token");
 
             return NoContent();
         }

@@ -15,12 +15,12 @@ namespace Authorization.API.Validators.UserEntity
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .MinimumLength(UserValidator.MIN_PASSWORD_LENGHT)
+                .MinimumLength(UserValidator.MIN_PASSWORD_LENGTH)
                     .WithMessage("Min password length is " +
-                    UserValidator.MIN_PASSWORD_LENGHT.ToString())
-                .MaximumLength(UserValidator.MAX_PASSWORD_LENGHT)
+                    UserValidator.MIN_PASSWORD_LENGTH.ToString())
+                .MaximumLength(UserValidator.MAX_PASSWORD_LENGTH)
                     .WithMessage("Max password length is " +
-                    UserValidator.MAX_PASSWORD_LENGHT.ToString())
+                    UserValidator.MAX_PASSWORD_LENGTH.ToString())
                 .Must(UserValidator.IsValidPassword)
                     .WithMessage("Password must has one letter and one number");
         }

@@ -28,8 +28,10 @@ namespace Authorization.API.Middlewares
             if(exception is AppConfigurationException appException)
             {
                 logger.LogError("Error with configuration, " +
-                    "confifuration section with error - " + 
+                    "configuration section with error - " + 
                     appException.SectionWithError);
+
+                host.StopApplication();
             }
 
             httpContext.Response.StatusCode = exception switch
@@ -47,7 +49,7 @@ namespace Authorization.API.Middlewares
                 ProblemDetails = new ProblemDetails
                 {
                     Type = exception.GetType().Name,
-                    Title = "Error Occured",
+                    Title = "Error Occurred",
                     Detail = exception.Message,
                     Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
                 }

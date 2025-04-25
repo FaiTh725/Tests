@@ -1,8 +1,8 @@
-using Authorization.API.Extention;
+using Authorization.API.Extension;
 using Authorization.API.Middlewares;
 using Authorization.Application;
 using Authorization.Dal;
-using Authorization.Infastructure;
+using Authorization.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +17,7 @@ builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 builder.Services
     .ConfigureApiServices()
     .ConfigureDalServices()
-    .ConfigureAppSerrvices()
+    .ConfigureAppServices()
     .ConfigureInfastructureServices(builder.Configuration);
 
 var app = builder.Build();
