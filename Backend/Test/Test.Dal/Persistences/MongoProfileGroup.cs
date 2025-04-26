@@ -39,6 +39,7 @@ namespace Test.Dal.Persistences
         {
             Id = group.Id;
             GroupName = group.GroupName;
+            OwnerId = group.OwnerId;
             MembersId = [.. group.MembersId];
 
             return this;

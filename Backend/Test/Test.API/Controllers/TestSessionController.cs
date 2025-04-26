@@ -37,6 +37,7 @@ namespace Test.API.Controllers
             var token = Request.Cookies["token"] ??
                 throw new UnauthorizedAccessException("User isnt authorized");
 
+            // TODO: put the logic in a separate service
             var profileToken = tokenService.DecodeToken(token);
 
             if (profileToken.IsFailure)

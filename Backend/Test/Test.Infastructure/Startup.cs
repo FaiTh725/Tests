@@ -110,8 +110,8 @@ namespace Test.Infastructure
             IConfiguration configuration)
         {
             var mongoConnectionString = configuration
-                .GetConnectionString("MongoDbConnection1") ??
-                throw new AppConfigurationException("Posgress connection string");
+                .GetConnectionString("MongoDbConnection") ??
+                throw new AppConfigurationException("Mongo connection string");
 
             var jsonSettings = new JsonSerializerSettings
             {

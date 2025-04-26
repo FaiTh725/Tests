@@ -26,9 +26,12 @@ namespace Test.Application
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(AssemplyReference).Assembly);
+
                 cfg.AddOpenBehavior(typeof(DomainEventsDispatcherBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminTestAccessBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminQuestionAccessBehavior<,>));
+                cfg.AddOpenBehavior(typeof(OwnerAndAdminGroupAccessBehavior<,>));
+                //cfg.AddOpenBehavior(typeof(TestAccessBehavior<,>));
             });
 
             return services;

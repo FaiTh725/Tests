@@ -1,9 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
+using Test.Domain.Events;
+using Test.Domain.Primitives;
 using Test.Domain.Validators;
 
 namespace Test.Domain.Entities
 {
-    public class ProfileGroup: Entity
+    public class ProfileGroup: DomainEventEntity
     {
         public string GroupName { get; private set; }
 
@@ -28,6 +31,31 @@ namespace Test.Domain.Entities
             this(gropName, ownerId)
         {
             MembersId = membersId;
+        }
+
+        public void AddMember(long memberId)
+        {
+            MembersId.Add(memberId);
+
+            RaiseDomainEvent(new AddedNewGroupMember
+            {
+                ProfileId = memberId,
+                GroupId = Id
+            });
+        }
+
+        public Result DeleteMembers(List<long> membersId)
+        {
+            if (!membersId
+                .ToHashSet()
+                .IsSubsetOf(MembersId))
+            {
+                return Result.Failure("Some members arent in the group");
+            }
+
+            MembersId = [.. MembersId.Where(x => !membersId.Contains(x))];
+        
+            return Result.Success();
         }
 
         public static Result<ProfileGroup> Initialize(

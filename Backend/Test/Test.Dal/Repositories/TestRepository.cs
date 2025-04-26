@@ -66,7 +66,9 @@ namespace Test.Dal.Repositories
             return test?.ConvertToDomainEntity();
         }
 
-        public async Task<IEnumerable<TestEntity>> GetTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TestEntity>> GetTestsByCriteria(
+            BaseSpecification<TestEntity> specification, 
+            CancellationToken cancellationToken)
         {
             var filter = specification.Criteria is null ?
                 Builders<MongoTest>.Filter.Empty :

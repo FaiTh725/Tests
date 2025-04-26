@@ -19,14 +19,14 @@ namespace Test.Dal
 
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
-        // Store last insert index for entities, useing for generate next id entity
+        // Store last insert index for entities, using for generate next id entity
         private readonly IMongoCollection<BsonDocument> counters;
 
         public AppDbContext(
             IConfiguration configuration)
         {
             var mongoConnection = configuration
-                .GetConnectionString("MongoDbConnection1") ??
+                .GetConnectionString("MongoDbConnection") ??
                 throw new AppConfigurationException("MongoDb Connection String");
             
             client = new MongoClient(mongoConnection);

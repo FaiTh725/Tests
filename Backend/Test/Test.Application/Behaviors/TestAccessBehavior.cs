@@ -5,13 +5,13 @@ using Test.Domain.Intrefaces;
 
 namespace Test.Application.Behaviors
 {
-    public class OwnerAndAdminTestAccessBehavior<TRequest, TResponse> :
+    public class TestAccessBehavior<TRequest, TResponse> :
         IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IOwnerAndAdminTestAccess
+        where TRequest : ITestVisibleAccess
     {
         private readonly INoSQLUnitOfWork unitOfWork;
 
-        public OwnerAndAdminTestAccessBehavior(
+        public TestAccessBehavior(
             INoSQLUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
@@ -24,21 +24,18 @@ namespace Test.Application.Behaviors
         {
             var test = await unitOfWork.TestRepository
                 .GetTest(request.TestId, cancellationToken);
-
-            if (test is null)
+        
+            if(test is null)
             {
-                throw new NotFoundException("Test doesnt exist");
+                throw new BadRequestException("Test doesnt exist");
             }
 
-            var profile = await unitOfWork.ProfileRepository
-                .GetProfile(test.ProfileId, cancellationToken);
-
-            if (request.Role != "Admin" &&
-                (profile is null || profile.Email != request.Email))
+            if(test.IsPublic)
             {
-                throw new ForbiddenAccessException("Only the owner or an admin have access to the test");
+                return await next(cancellationToken);
             }
 
+            // TODO
             return await next(cancellationToken);
         }
     }
