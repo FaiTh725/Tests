@@ -3,11 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
+using Test.API.Contracts.TestAccess;
 using Test.Application.Commands.Test.CreateTest;
 using Test.Application.Commands.Test.DeleteTest;
 using Test.Application.Commands.Test.StartTest;
 using Test.Application.Commands.Test.StopTest;
 using Test.Application.Commands.Test.UpdateTest;
+using Test.Application.Commands.TestAccessEntity.GiveAccessTest;
+using Test.Application.Commands.TestAccessEntity.LimitTestAccess;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
@@ -136,6 +139,62 @@ namespace Test.API.Controllers
             }, cancellationToken);
 
             return Ok(updatedTestId);
+        }
+
+        [HttpPost("[action]")]
+        [Authorize]
+        public async Task<IActionResult> ProviderTestAccess(
+            ProvideTestAccessRequest request, CancellationToken cancellationToken)
+        {
+            var token = Request.Cookies["token"] ??
+               throw new UnauthorizedAccessException("User isnt authorized");
+
+            var profileToken = tokenService.DecodeToken(token);
+
+            if (profileToken.IsFailure)
+            {
+                throw new InternalServerErrorException("Invalid token signature");
+            }
+
+            var testAccessId = await mediator.Send(new GiveAccessTestCommand
+                {
+                    AccessTargetEntityId = request.TargetEntityId,
+                    TargetEntity = request.TargetAccessEntityType,
+                    TestId = request.TestId,
+                    Email = profileToken.Value.Email,
+                    Role = profileToken.Value.Role
+                },
+                cancellationToken);
+
+            return Ok(testAccessId);
+        }
+
+        [HttpPost("[action]")]
+        [Authorize]
+        public async Task<IActionResult> LimitTestAccess(
+            LimitTestAccessRequest request, CancellationToken cancellationToken)
+        {
+            var token = Request.Cookies["token"] ??
+               throw new UnauthorizedAccessException("User isnt authorized");
+
+            var profileToken = tokenService.DecodeToken(token);
+
+            if (profileToken.IsFailure)
+            {
+                throw new InternalServerErrorException("Invalid token signature");
+            }
+
+            await mediator.Send(new LimitTestAccessCommand
+            {
+                Email = profileToken.Value.Email,
+                Role = profileToken.Value.Role,
+                TargetEntityId = request.TargetEntityId,
+                TestId = request.TestId,
+                TargetEntity = request.TargetAccessEntityType
+            },
+            cancellationToken);
+
+            return Ok();
         }
     }
 }

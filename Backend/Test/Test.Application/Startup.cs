@@ -31,7 +31,7 @@ namespace Test.Application
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminTestAccessBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminQuestionAccessBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminGroupAccessBehavior<,>));
-                //cfg.AddOpenBehavior(typeof(TestAccessBehavior<,>));
+                cfg.AddOpenBehavior(typeof(TestAccessBehavior<,>));
             });
 
             return services;

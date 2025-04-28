@@ -68,7 +68,7 @@ services:
   mongo_db:
     image: mongo
     container_name: testing_mongo_db
-    restart: always
+    restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
@@ -76,25 +76,16 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=eZQ9XeVGvT
     volumes:
       - testing_mongo_volume:/data/db
+      - ./conf/mongo-keyfile:/etc/mongo/mongo-keyfile
     networks:
       - testing_mongo_net
+    command: >
+      mongod --auth --replSet rs0 --keyFile /etc/mongo/mongo-keyfile --bind_ip_all
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mongo",
-          "--quiet",
-          "--username=FaITh725",
-          "--password=eZQ9XeVGvT",
-          "--authenticationDatabase=admin",
-          "127.0.0.1/test",
-          "--eval",
-          "quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
+      test: mongosh --eval "db.adminCommand('ping')" || exit 1
+      interval: 5s
+      timeout: 30s
+      retries: 10
 
   testing_mongo_express:
     image: mongo-express
@@ -105,7 +96,7 @@ services:
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=FaITh725
       - ME_CONFIG_MONGODB_ADMINPASSWORD=eZQ9XeVGvT
-      - ME_CONFIG_MONGODB_URL=mongodb://FaITh725:eZQ9XeVGvT@mongo_db:27017/
+      - ME_CONFIG_MONGODB_URL=mongodb://FaITh725:eZQ9XeVGvT@mongo_db:27017/?authSource=admin&replicaSet=rs0
       - ME_CONFIG_BASICAUTH=false
     networks:
       - testing_mongo_net

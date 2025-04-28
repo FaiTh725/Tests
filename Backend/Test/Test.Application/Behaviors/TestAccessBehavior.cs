@@ -1,6 +1,8 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using Test.Application.Common.BehaviorsIntrfaces;
+using Test.Application.Queries.ProfileGroupEntity.Specifications;
+using Test.Application.Queries.TestAccessEntity.Specifications;
 using Test.Domain.Intrefaces;
 
 namespace Test.Application.Behaviors
@@ -30,12 +32,30 @@ namespace Test.Application.Behaviors
                 throw new BadRequestException("Test doesnt exist");
             }
 
-            if(test.IsPublic)
+            if(test.IsPublic ||
+                test.ProfileId == request.ProfileId)
             {
                 return await next(cancellationToken);
             }
 
-            // TODO
+            var profileGroups = await unitOfWork.ProfileGroupRepository
+                .GetProfileGroupsByCriteria(new GroupsByProfileIdSpecification(request.ProfileId), cancellationToken);
+
+            var avaliableAccessId = profileGroups
+                .Select(x => x.Id)
+                .ToList();
+            avaliableAccessId.Add(request.ProfileId);
+
+            var testAccesses = await unitOfWork.AccessRepository
+                .GetAccessesByCriteria(
+                new AccessesByTargetEntitySpecification(avaliableAccessId), 
+                cancellationToken);
+            
+            if(!testAccesses.Any())
+            {
+                throw new ForbiddenAccessException("Current test is private");
+            }
+
             return await next(cancellationToken);
         }
     }

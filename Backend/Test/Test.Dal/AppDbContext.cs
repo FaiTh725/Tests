@@ -16,6 +16,7 @@ namespace Test.Dal
         public const string TEST_SESSIONS_COLLECTION_NAME = "sessions";
         public const string PROFILE_ANSWERS_COLLECTION_NAME = "profile_answers";
         public const string GROUPS_COLLECTION_NAME = "groups";
+        public const string TEST_ACCESS_COLLECTION_NAME = "test_accesses";
 
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
@@ -72,6 +73,11 @@ namespace Test.Dal
         public IMongoCollection<MongoProfileGroup> Groups
         {
             get => database.GetCollection<MongoProfileGroup>(GROUPS_COLLECTION_NAME);
+        }
+
+        public IMongoCollection<MongoTestAccess> Accesses
+        {
+            get => database.GetCollection<MongoTestAccess>(TEST_ACCESS_COLLECTION_NAME);
         }
 
         public long GetNextId(string entityName)

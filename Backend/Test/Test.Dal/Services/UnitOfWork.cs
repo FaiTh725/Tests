@@ -13,15 +13,16 @@ namespace Test.Dal.Services
 
         private bool isTransactionStarted;
 
-        private Lazy<IProfileRepository> profileRepository;
-        private Lazy<ITestRepository> testRepository;
-        private Lazy<IQuestionRepository> questionRepository;
-        private Lazy<IQuestionAnswerRepository> questionAnswerRepository;
-        private Lazy<IProfileAnswerRepository> profileAnswerRepository;
-        private Lazy<IProfileGroupRepository> profileGroupRepository;
-        private Lazy<ITestSessionRepository> testSessionRepository;
+        private readonly Lazy<IProfileRepository> profileRepository;
+        private readonly Lazy<ITestRepository> testRepository;
+        private readonly Lazy<IQuestionRepository> questionRepository;
+        private readonly Lazy<IQuestionAnswerRepository> questionAnswerRepository;
+        private readonly Lazy<IProfileAnswerRepository> profileAnswerRepository;
+        private readonly Lazy<IProfileGroupRepository> profileGroupRepository;
+        private readonly Lazy<ITestSessionRepository> testSessionRepository;
+        private readonly Lazy<ITestAccessRepository> testAccessRepository;
 
-        private List<DomainEventEntity> trackedEntities = new List<DomainEventEntity>();
+        private readonly List<DomainEventEntity> trackedEntities = new List<DomainEventEntity>();
 
         public UnitOfWork(
             AppDbContext context)
@@ -35,6 +36,7 @@ namespace Test.Dal.Services
             profileAnswerRepository = new Lazy<IProfileAnswerRepository>(() => new ProfileAnswerRepository(context));
             profileGroupRepository = new Lazy<IProfileGroupRepository>(() => new ProfileGroupRepository(context));
             testSessionRepository = new Lazy<ITestSessionRepository>(() => new TestSessionRepository(context));
+            testAccessRepository = new Lazy<ITestAccessRepository>(() => new TestAccessRepository(context));
         }
 
         public IProfileRepository ProfileRepository => profileRepository.Value;
@@ -50,6 +52,8 @@ namespace Test.Dal.Services
         public IProfileAnswerRepository ProfileAnswerRepository => profileAnswerRepository.Value;
 
         public IProfileGroupRepository ProfileGroupRepository => profileGroupRepository.Value;
+
+        public ITestAccessRepository AccessRepository => testAccessRepository.Value;
 
         public void BeginTransaction()
         {
@@ -84,7 +88,6 @@ namespace Test.Dal.Services
 
             isTransactionStarted = false;
         }
-
 
         public void RollBackTransaction()
         {

@@ -19,6 +19,8 @@ namespace Test.Domain.Intrefaces
 
         IProfileGroupRepository ProfileGroupRepository { get; }
 
+        ITestAccessRepository AccessRepository { get; }
+
         IReadOnlyCollection<DomainEventEntity> GetTrackedEntities();
 
         // is used to add an entity to its event tracking
