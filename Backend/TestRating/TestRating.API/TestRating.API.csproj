@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>a6f68f06-456b-487d-becd-15235564013c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,19 @@
     <Folder Include="Controllers\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestRating.Application\TestRating.Application.csproj" />
+    <ProjectReference Include="..\TestRating.Dal\TestRating.Dal.csproj" />
+    <ProjectReference Include="..\TestRating.Domain\TestRating.Domain.csproj" />
+    <ProjectReference Include="..\TestRating.Infastructure\TestRating.Infastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Application.Shared">
+      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

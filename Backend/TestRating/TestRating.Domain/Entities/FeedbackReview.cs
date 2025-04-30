@@ -7,6 +7,7 @@ namespace TestRating.Domain.Entities
         public bool IsPositive { get; private set; }
 
         public Profile Owner {  get; private set; }
+        public long OwnerId { get; private set; }
 
         public FeedbackReview() {}
 
@@ -16,6 +17,14 @@ namespace TestRating.Domain.Entities
         {
             IsPositive = isPositive;
             Owner = owner;
+        }
+
+        private FeedbackReview(
+            bool isPositive,
+            long ownerId)
+        {
+            IsPositive = isPositive;
+            OwnerId = ownerId;
         }
 
         public static Result<FeedbackReview> Initialize(
@@ -30,6 +39,15 @@ namespace TestRating.Domain.Entities
             return Result.Success(new FeedbackReview(
                 isPositive,
                 owner));
+        }
+
+        public static Result<FeedbackReview> Initialize(
+            bool isPositive,
+            long ownerId)
+        {
+            return Result.Success(new FeedbackReview(
+                isPositive,
+                ownerId));
         }
     }
 }

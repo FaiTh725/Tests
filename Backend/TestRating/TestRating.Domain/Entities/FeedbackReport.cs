@@ -8,10 +8,12 @@ namespace TestRating.Domain.Entities
         public string ReportMessage { get; private set; }
 
         public Feedback ReportedFeedback { get; private set; }
+        public long ReportedFeedbackId { get; private set; }
 
         public DateTime CreatedTime { get; private set; }
 
         public Profile Reviewer {  get; private set; }
+        public long ReviewerId { get; private set; }
 
         public FeedbackReport() {}
 
@@ -23,6 +25,20 @@ namespace TestRating.Domain.Entities
             ReportMessage = reportMessage;
             ReportedFeedback = reportedFeedback;
             Reviewer = reviewer;
+
+            CreatedTime = DateTime.UtcNow;
+        }
+
+        private FeedbackReport(
+            string reportMessage,
+            long reportedFeedbackId,
+            long reviewerId)
+        {
+            ReportMessage = reportMessage;
+            ReportedFeedbackId = reportedFeedbackId;
+            ReviewerId = reviewerId;
+
+            CreatedTime = DateTime.UtcNow;
         }
       
         public static Result<FeedbackReport> Initialize(
@@ -30,7 +46,14 @@ namespace TestRating.Domain.Entities
             Feedback reportedFeedback,
             Profile reviewer)
         {
-            if(reportedFeedback is null)
+            var isValid = Validate(reportMessage);
+
+            if (isValid.IsFailure)
+            {
+                return Result.Failure<FeedbackReport>(isValid.Error);
+            }
+
+            if (reportedFeedback is null)
             {
                 return Result.Failure<FeedbackReport>("Feedback is required");
             }
@@ -40,18 +63,42 @@ namespace TestRating.Domain.Entities
                 return Result.Failure<FeedbackReport>("Review owner is required");
             }
 
-            if(string.IsNullOrEmpty(reportMessage) ||
-                reportMessage.Length < ReportValidator.MIN_REPORT_MESSAGE_LENGTH ||
-                reportMessage.Length > ReportValidator.MAX_REPORT_MESSAGE_LENGTH)
-            {
-                return Result.Failure<FeedbackReport>("Message is empty or outside of " +
-                    $"{ReportValidator.MIN_REPORT_MESSAGE_LENGTH} - {ReportValidator.MAX_REPORT_MESSAGE_LENGTH}");
-            }
-
             return Result.Success(new FeedbackReport(
                 reportMessage,
                 reportedFeedback,
                 reviewer));
+        }
+
+        public static Result<FeedbackReport> Initialize(
+            string reportMessage,
+            long reportedFeedbackId,
+            long reviewerId)
+        {
+            var isValid = Validate(reportMessage);
+
+            if(isValid.IsFailure)
+            {
+                return Result.Failure<FeedbackReport>(isValid.Error);
+            }
+
+            return Result.Success(new FeedbackReport(
+                reportMessage,
+                reportedFeedbackId,
+                reviewerId));
+        }
+
+        private static Result Validate(
+            string reportMessage)
+        {
+            if (string.IsNullOrEmpty(reportMessage) ||
+                reportMessage.Length < ReportValidator.MIN_REPORT_MESSAGE_LENGTH ||
+                reportMessage.Length > ReportValidator.MAX_REPORT_MESSAGE_LENGTH)
+            {
+                return Result.Failure("Message is empty or outside of " +
+                    $"{ReportValidator.MIN_REPORT_MESSAGE_LENGTH} - {ReportValidator.MAX_REPORT_MESSAGE_LENGTH}");
+            }
+
+            return Result.Success();
         }
     }
 }
