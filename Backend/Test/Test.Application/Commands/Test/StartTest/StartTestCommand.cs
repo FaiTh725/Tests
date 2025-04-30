@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
+using Test.Application.Common.BehaviorsInterfaces;
 
 namespace Test.Application.Commands.Test.StartTest
 {

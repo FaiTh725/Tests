@@ -1,9 +1,9 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
+using Test.Application.Common.BehaviorsInterfaces;
 using Test.Application.Queries.ProfileGroupEntity.Specifications;
 using Test.Application.Queries.TestAccessEntity.Specifications;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Behaviors
 {

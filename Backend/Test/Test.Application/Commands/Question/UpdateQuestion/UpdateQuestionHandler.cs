@@ -1,6 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.Question.UpdateQuestion
 {
@@ -33,7 +33,7 @@ namespace Test.Application.Commands.Question.UpdateQuestion
 
             if(isValidUpdate.IsFailure)
             {
-                throw new BadRequestException("Invaid values to update - " +
+                throw new BadRequestException("Invalid values to update - " +
                     $"{isValidUpdate.Error}");
             }
 

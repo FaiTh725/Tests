@@ -12,19 +12,19 @@ using Newtonsoft.Json;
 using System.Text;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
-using Test.Infastructure.Configurations;
-using Test.Infastructure.Implementations;
+using Test.Infrastructure.Configurations;
+using Test.Infrastructure.Implementations;
 using MassTransit;
 using Test.Application.Consumers.FileConsumers;
 using Redis.OM;
-using Test.Infastructure.BackgroundServices;
+using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
 
-namespace Test.Infastructure
+namespace Test.Infrastructure
 {
     public static class Startup
     {
-        public static IServiceCollection ConfigureInfastructureServices(
+        public static IServiceCollection ConfigureInfrastructureServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -42,15 +42,16 @@ namespace Test.Infastructure
             services.AddSingleton<ITokenService<ProfileToken>, ProfileTokenService> ();
 
             services.AddHostedService<CreateRedisOmIndexes>();
+            services.AddHostedService<ClearInactiveSessionsBackgroundService>();
 
             return services;
         }
 
         public static IServiceCollection AddJwtAuthorization(
             this IServiceCollection services,
-            IConfiguration configurationq)
+            IConfiguration configuration)
         {
-            var jwtConf = configurationq
+            var jwtConf = configuration
                 .GetSection("JwtSettings")
                 .Get<JwtTokenConf>() ??
                 throw new AppConfigurationException("Jwt Configuration setting");

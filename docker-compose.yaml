@@ -3,11 +3,49 @@ version: "3.8"
 name: "Testing"
 
 services:
-  testing_authorizetion_api:
+  testing_testing_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Testing
+    container_name: testing_testing_api
+    ports:
+      - "5301:5301"
+      - "5302:5302"
+    environment:
+      - ConnectionStrings__RedisConnection=redis://:eZQ9XeVGvT@redis:6379
+      - ConnectionStrings__MongoDbConnection=mongodb://FaITh725:eZQ9XeVGvT@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
+      - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
+      - JwtSettings__Issuer=FaITh
+      - JwtSettings__ExpirationTimeRefreshTokenInDays=15
+      - JwtSettings__ExpirationTimeInMinutes=15
+      - JwtSettings__Audience=Audience
+      - RabbitMqSettings__User=FaITh725
+      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - RabbitMqSettings__Host=rabbitmq
+      - ASPNETCORE_URLS=https://+:5302;http://+:5301
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - testing_mongo_net
+      - message_broker_net
+      - redis_net
+      - application_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongo_db:
+        condition: service_healthy
+
+  testing_authorization_api:
     build:
       context: .
       dockerfile: Dockerfile.Authorization
-    container_name: testing_authorizetion_api
+    container_name: testing_authorization_api
     ports:
       - "5201:5201"
       - "5202:5202"
@@ -22,16 +60,18 @@ services:
       - RabbitMqSettings__User=FaITh725
       - RabbitMqSettings__Password=eZQ9XeVGvT
       - RabbitMqSettings__Host=rabbitmq
-      - GrpcServer=https://localhost:7114
+      # - GrpcServer=https://localhost:7114
+      - GrpcServer=https://testing_testing_api:5302
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
     volumes:
       - ./certs:/https:ro
     networks:
       - testing_postgres_net
       - message_broker_net
       - redis_net
+      - application_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -176,6 +216,8 @@ networks:
   message_broker_net:
     driver: bridge
   redis_net:
+    driver: bridge
+  application_net:
     driver: bridge
 
 volumes:

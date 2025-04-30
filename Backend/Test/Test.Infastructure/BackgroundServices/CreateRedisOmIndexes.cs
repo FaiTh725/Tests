@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Redis.OM;
-using Test.Infastructure.RedisEntities;
+using Test.Infrastructure.RedisEntities;
 
-namespace Test.Infastructure.BackgroundServices
+namespace Test.Infrastructure.BackgroundServices
 {
     public class CreateRedisOmIndexes : BackgroundService
     {

@@ -1,7 +1,7 @@
 ﻿using Redis.OM.Modeling;
 using Test.Application.Contracts.ProfileAnswerEntity;
 
-namespace Test.Infastructure.RedisEntities
+namespace Test.Infrastructure.RedisEntities
 {
     [Document(StorageType = StorageType.Json, Prefixes = ["Sessions"])]
     public class RedisTestSession

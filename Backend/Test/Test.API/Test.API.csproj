@@ -25,7 +25,7 @@
     <ProjectReference Include="..\Test.Application\Test.Application.csproj" />
     <ProjectReference Include="..\Test.Dal\Test.Dal.csproj" />
     <ProjectReference Include="..\Test.Domain\Test.Domain.csproj" />
-    <ProjectReference Include="..\Test.Infastructure\Test.Infastructure.csproj" />
+    <ProjectReference Include="..\Test.Infastructure\Test.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

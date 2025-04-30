@@ -1,4 +1,4 @@
-﻿namespace Test.Infastructure.Configurations
+﻿namespace Test.Infrastructure.Configurations
 {
     public class JwtTokenConf
     {

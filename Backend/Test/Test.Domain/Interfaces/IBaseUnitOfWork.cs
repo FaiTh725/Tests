@@ -1,4 +1,4 @@
-﻿namespace Test.Domain.Intrefaces
+﻿namespace Test.Domain.Interfaces
 {
     public interface IBaseUnitOfWork: IDisposable
     {

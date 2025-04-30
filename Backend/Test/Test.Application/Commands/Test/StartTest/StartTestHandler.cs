@@ -4,7 +4,8 @@ using Test.Application.Commands.Test.StopTest;
 using Test.Application.Common.Interfaces;
 using Test.Application.Common.Mediator;
 using Test.Application.Contracts.TestSession;
-using Test.Domain.Intrefaces;
+using Test.Domain.Enums;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.Test.StartTest
 {
@@ -49,15 +50,15 @@ namespace Test.Application.Commands.Test.StartTest
             var testSessionId = Guid.NewGuid();
             string? stopTestJobId = null;
 
-            if(test.DurationInMinutes is not null)
+            if(test.TestType == TestType.Timed)
             {
                 stopTestJobId = backgroundJobService
-                    .CreateDelaydedJob<MediatorWrapper>(x => 
+                    .CreateDelayedJob<MediatorWrapper>(x => 
                     x.SendCommand(new StopTestCommand
                     {
                         SessionId = testSessionId
                     }), 
-                    TimeSpan.FromMinutes(test.DurationInMinutes.Value));
+                    TimeSpan.FromMinutes(test.DurationInMinutes!.Value));
             }
 
             var tempSession = new TempTestSession
@@ -65,7 +66,7 @@ namespace Test.Application.Commands.Test.StartTest
                 Id = testSessionId,
                 ProfileId = profile.Id,
                 StartTime = DateTime.UtcNow,
-                TestDuration = test.DurationInMinutes,
+                TestDuration = test.TestType == TestType.Timed ? test.DurationInMinutes : null,
                 TestId = test.Id,
                 JobId = stopTestJobId
             };

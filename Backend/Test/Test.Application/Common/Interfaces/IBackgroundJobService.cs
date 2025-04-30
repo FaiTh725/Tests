@@ -6,9 +6,11 @@ namespace Test.Application.Common.Interfaces
     {
         string CreateFireAndForgetJob<T>(Expression<Action<T>> methodCall);
 
-        string CreateDelaydedJob<T>(Expression<Action<T>> methodCall, TimeSpan timeSpan);
+        string CreateDelayedJob<T>(Expression<Action<T>> methodCall, TimeSpan timeSpan);
 
-        string CreateDelaydedJob<T>(Expression<Func<T, Task>> methodCall, TimeSpan timeSpan);
+        string CreateDelayedJob<T>(Expression<Func<T, Task>> methodCall, TimeSpan timeSpan);
+
+        void CreateSchedulingJob<T>(string jobId, Expression<Func<T, Task>> methodCall, string cronExpression);
 
         void CancelJob(string jobId);
     }

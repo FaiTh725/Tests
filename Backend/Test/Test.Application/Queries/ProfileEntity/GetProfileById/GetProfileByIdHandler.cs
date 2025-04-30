@@ -1,7 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using Test.Application.Contracts.ProfileEntity;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.ProfileEntity.GetProfileById
 {

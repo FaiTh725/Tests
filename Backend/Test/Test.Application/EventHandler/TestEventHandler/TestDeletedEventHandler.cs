@@ -5,19 +5,19 @@ using Test.Application.Contracts.File;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
 using Test.Application.Queries.QuestionEntity.Specifications;
 using Test.Domain.Events;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.EventHandler.TestEventHandler
 {
     public class TestDeletedEventHandler : INotificationHandler<TestDeletedEvent>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly ILogger<TestDeletedEvent> logger;
+        private readonly ILogger<TestDeletedEventHandler> logger;
         private readonly IBus bus;
 
         public TestDeletedEventHandler(
             INoSQLUnitOfWork unitOfWork,
-            ILogger<TestDeletedEvent> logger,
+            ILogger<TestDeletedEventHandler> logger,
             IBus bus)
         {
             this.unitOfWork = unitOfWork;

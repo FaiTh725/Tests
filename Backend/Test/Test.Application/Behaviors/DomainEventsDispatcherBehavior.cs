@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Behaviors
 {

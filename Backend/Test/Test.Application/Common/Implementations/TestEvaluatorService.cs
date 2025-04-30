@@ -3,15 +3,15 @@ using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileAnswerEntity;
 using Test.Application.Contracts.Test;
 using Test.Domain.Entities;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Common.Implementations
 {
-    public class TestEvaliatorService : ITestEvaluatorService
+    public class TestEvaluatorService : ITestEvaluatorService
     {
         private readonly INoSQLUnitOfWork unitOfWork;
 
-        public TestEvaliatorService(
+        public TestEvaluatorService(
             INoSQLUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;

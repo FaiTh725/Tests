@@ -7,9 +7,9 @@ namespace Test.Application.Queries.QuestionEntity.Specifications
         BaseSpecification<Question>
     {
         public QuestionsByTestIdSpecification(
-            long tesId)
+            long testId)
         {
-            Criteria = question => question.TestId == tesId;
+            Criteria = question => question.TestId == testId;
         }
     }
 }

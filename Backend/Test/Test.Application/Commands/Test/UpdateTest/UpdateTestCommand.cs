@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
+using Test.Application.Common.BehaviorsInterfaces;
 using Test.Domain.Enums;
 
 namespace Test.Application.Commands.Test.UpdateTest

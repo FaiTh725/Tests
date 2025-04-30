@@ -1,5 +1,4 @@
-﻿using Application.Shared.Exceptions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
@@ -7,8 +6,6 @@ using Test.Application.Commands.Test.SendTestAnswer;
 using Test.Application.Commands.Test.StartTest;
 using Test.Application.Commands.Test.StopTest;
 using Test.Application.Common.Interfaces;
-using Test.Application.Contracts.ProfileEntity;
-using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
 using Test.Application.Queries.Test.GetTestToPass;
 
 namespace Test.API.Controllers
@@ -18,15 +15,14 @@ namespace Test.API.Controllers
     public class TestSessionController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ITokenService<ProfileToken> tokenService;
+        private readonly IProfileService profileService;
 
         public TestSessionController(
             IMediator mediator,
-            ITokenService<ProfileToken> tokenService
-            )
+            IProfileService profileService)
         {
             this.mediator = mediator;
-            this.tokenService = tokenService;
+            this.profileService = profileService;
         }
 
         [HttpPost("[action]")]
@@ -34,26 +30,14 @@ namespace Test.API.Controllers
         public async Task<IActionResult> StartTest(
             StartTestRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"] ??
-                throw new UnauthorizedAccessException("User isnt authorized");
-
-            // TODO: put the logic in a separate service
-            var profileToken = tokenService.DecodeToken(token);
-
-            if (profileToken.IsFailure)
-            {
-                throw new InternalServerErrorException("Invalid token signature");
-            }
-
-            var profile = await mediator.Send(new GetProfileByEmailQuery
-            {
-                Email = profileToken.Value.Email,
-            }, cancellationToken);
+            var token = Request.Cookies["token"];
+            var profileFromToken = await profileService
+                .DecodeProfileFromToken(token, cancellationToken);
 
             var sessionId = await mediator.Send(new StartTestCommand
             {
                 TestId = request.TestId,
-                ProfileId = profile.Id
+                ProfileId = profileFromToken.Id
             },
             cancellationToken);
 

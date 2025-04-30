@@ -3,7 +3,7 @@ using MediatR;
 using Test.Application.Contracts.File;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
 using Test.Domain.Events;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.EventHandler.QuestionEventHandler
 {

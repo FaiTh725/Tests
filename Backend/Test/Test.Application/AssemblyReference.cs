@@ -1,6 +1,6 @@
 ﻿namespace Test.Application
 {
-    public class AssemplyReference
+    public class AssemblyReference
     {
     }
 }

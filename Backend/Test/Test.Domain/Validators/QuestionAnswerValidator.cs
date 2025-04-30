@@ -2,7 +2,7 @@
 {
     public static class QuestionAnswerValidator
     {
-        public static int MAX_ANSWER_LENGHT = 500;
-        public static int MIN_ANSWER_LENGHT = 2;
+        public static int MAX_ANSWER_LENGTH = 500;
+        public static int MIN_ANSWER_LENGTH = 2;
     }
 }

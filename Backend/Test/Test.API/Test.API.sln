@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Dal", "..\Test.Dal\Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Application", "..\Test.Application\Test.Application.csproj", "{B5DC22A6-24BD-4921-9B5C-4BDF26F95D71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Infastructure", "..\Test.Infastructure\Test.Infastructure.csproj", "{C393CF4E-8EEB-44FD-A595-D1385412AD80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Infrastructure", "..\Test.Infastructure\Test.Infrastructure.csproj", "{C393CF4E-8EEB-44FD-A595-D1385412AD80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Contracts", "..\Test.Contracts\Test.Contracts.csproj", "{0018ACEE-D707-43E7-A26C-B971D4C0CCB0}"
 EndProject

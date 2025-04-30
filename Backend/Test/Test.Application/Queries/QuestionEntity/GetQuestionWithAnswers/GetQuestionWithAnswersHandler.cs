@@ -4,7 +4,7 @@ using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.Question;
 using Test.Application.Contracts.QuestionAnswerEntity;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.QuestionEntity.GetQuestionWithAnswers
 {

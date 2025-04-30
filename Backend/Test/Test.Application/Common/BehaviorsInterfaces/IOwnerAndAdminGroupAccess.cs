@@ -1,8 +1,8 @@
-﻿namespace Test.Application.Common.BehaviorsIntrfaces
+﻿namespace Test.Application.Common.BehaviorsInterfaces
 {
     public interface IOwnerAndAdminGroupAccess
     {
-        public long OwnerId { get; set; }
+        public string OwnerEmail { get; set; }
 
         public long GroupId { get; set; }
 

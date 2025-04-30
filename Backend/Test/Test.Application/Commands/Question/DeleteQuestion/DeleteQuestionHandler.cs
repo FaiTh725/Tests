@@ -2,7 +2,7 @@
 using MassTransit;
 using MediatR;
 using Test.Application.Contracts.File;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.Question.DeleteQuestion
 {

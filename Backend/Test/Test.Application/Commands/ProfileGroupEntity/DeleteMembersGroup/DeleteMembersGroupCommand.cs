@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
+using Test.Application.Common.BehaviorsInterfaces;
 
 namespace Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup
 {
@@ -8,11 +8,11 @@ namespace Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup
         IOwnerAndAdminGroupAccess
     {
         public List<long> MembersId { get; set; } = new List<long>();
-
-        public long OwnerId { get; set; }
         
         public long GroupId { get; set; }
         
         public string Role { get; set; } = string.Empty;
+
+        public string OwnerEmail { get; set; } = string.Empty;
     }
 }

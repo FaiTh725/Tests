@@ -3,7 +3,7 @@ using MediatR;
 using Test.Application.Common.Interfaces;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 using QuestionEntity = Test.Domain.Entities.Question;
 
 namespace Test.Application.Commands.Question.CreateQuestion
@@ -42,7 +42,7 @@ namespace Test.Application.Commands.Question.CreateQuestion
                 request.QuestionType == QuestionType.ManyAnswers &&
                 rightQuestions.Any()))
             {
-                throw new BadRequestException("Answer should have 1 correcct answer if the type is OneAnswer " +
+                throw new BadRequestException("Answer should have 1 correct answer if the type is OneAnswer " +
                     "or at least one answer");
             }
 

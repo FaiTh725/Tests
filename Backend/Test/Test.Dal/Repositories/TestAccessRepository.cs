@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
-using Test.Dal.ExpressionRewriters;
 using Test.Dal.Persistences;
+using Test.Dal.Specifications;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Primitives;
@@ -55,7 +55,7 @@ namespace Test.Dal.Repositories
         {
             var criteria = specification.Criteria is null ?
                 Builders<MongoTestAccess>.Filter.Empty :
-                new TestAccessToMongoRewrite().Rewrite(specification.Criteria);
+                new ExpressionConverter<TestAccess, MongoTestAccess>().Rewrite(specification.Criteria);
 
             var testAccesses = await context.Accesses
                 .Find(criteria)

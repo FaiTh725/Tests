@@ -1,7 +1,7 @@
 ﻿using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
-namespace Test.Domain.Intrefaces
+namespace Test.Domain.Interfaces
 {
     public interface INoSQLUnitOfWork: IBaseUnitOfWork
     {

@@ -1,6 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.ProfileGroupEntity.DeleteGroup
 {

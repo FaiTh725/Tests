@@ -1,16 +1,14 @@
 ﻿using System.Linq.Expressions;
-using Test.Dal.Persistences;
-using Test.Domain.Entities;
 
-namespace Test.Dal.ExpressionRewriters
+namespace Test.Dal.Specifications
 {
-    public class ProfileGroupToMongoRewriter : ExpressionVisitor
+    public class ExpressionConverter<TIn, TOut> : ExpressionVisitor
     {
-        private readonly ParameterExpression mongoParam = Expression.Parameter(typeof(MongoProfileGroup));
+        private readonly ParameterExpression mongoParam = Expression.Parameter(typeof(TOut));
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            if (node.Type == typeof(ProfileGroup))
+            if (node.Type == typeof(TIn))
             {
                 return mongoParam;
             }
@@ -23,12 +21,12 @@ namespace Test.Dal.ExpressionRewriters
             var rewriteExpr = Visit(node.Expression);
 
             if (node.Expression is not null &&
-                node.Expression.Type == typeof(ProfileGroup) &&
-                rewriteExpr.Type == typeof(MongoProfileGroup))
+                node.Expression.Type == typeof(TIn) &&
+                rewriteExpr.Type == typeof(TOut))
             {
                 var memberName = node.Member.Name;
 
-                var mongoProperty = typeof(MongoProfileGroup).GetProperty(memberName);
+                var mongoProperty = typeof(TOut).GetProperty(memberName);
                 if (mongoProperty is not null)
                 {
                     return Expression.MakeMemberAccess(rewriteExpr, mongoProperty);
@@ -38,11 +36,11 @@ namespace Test.Dal.ExpressionRewriters
             return base.VisitMember(node);
         }
 
-        public Expression<Func<MongoProfileGroup, bool>> Rewrite(
-            Expression<Func<ProfileGroup, bool>> original)
+        public Expression<Func<TOut, bool>> Rewrite(
+            Expression<Func<TIn, bool>> original)
         {
             var newBody = Visit(original.Body);
-            return Expression.Lambda<Func<MongoProfileGroup, bool>>(newBody, mongoParam);
+            return Expression.Lambda<Func<TOut, bool>>(newBody, mongoParam);
         }
     }
 }

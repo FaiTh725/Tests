@@ -3,9 +3,9 @@ using Redis.OM;
 using Redis.OM.Searching;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.TestSession;
-using Test.Infastructure.RedisEntities;
+using Test.Infrastructure.RedisEntities;
 
-namespace Test.Infastructure.Implementations
+namespace Test.Infrastructure.Implementations
 {
     public class RedisTempDbService : ITempDbService<TempTestSession>
     {

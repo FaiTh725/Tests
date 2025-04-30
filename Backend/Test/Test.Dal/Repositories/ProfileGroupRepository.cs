@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
-using Test.Dal.ExpressionRewriters;
 using Test.Dal.Persistences;
+using Test.Dal.Specifications;
 using Test.Domain.Entities;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -62,7 +62,7 @@ namespace Test.Dal.Repositories
         {
             var filter = specification.Criteria is null ?
                 Builders<MongoProfileGroup>.Filter.Empty :
-                new ProfileGroupToMongoRewriter().Rewrite(specification.Criteria);
+                new ExpressionConverter<ProfileGroup, MongoProfileGroup>().Rewrite(specification.Criteria);
 
             var groups = await context.Groups
                 .Find(filter)

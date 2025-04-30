@@ -1,7 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
-using Test.Domain.Intrefaces;
+using Test.Application.Common.BehaviorsInterfaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Behaviors
 {

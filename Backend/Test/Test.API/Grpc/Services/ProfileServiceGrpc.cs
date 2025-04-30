@@ -49,7 +49,7 @@ namespace Test.API.Grpc.Services
             {
                 throw new RpcException(new Status(
                     StatusCode.InvalidArgument,
-                    "Unknown erorr"));
+                    "Unknown error"));
             }
         }
     }

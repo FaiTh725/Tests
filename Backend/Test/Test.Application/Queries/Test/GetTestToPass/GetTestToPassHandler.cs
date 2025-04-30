@@ -7,7 +7,7 @@ using Test.Application.Contracts.QuestionAnswerEntity;
 using Test.Application.Contracts.Test;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
 using Test.Application.Queries.QuestionEntity.Specifications;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.Test.GetTestToPass
 {

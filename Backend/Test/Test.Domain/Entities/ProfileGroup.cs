@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using MediatR;
 using Test.Domain.Events;
 using Test.Domain.Primitives;
 using Test.Domain.Validators;

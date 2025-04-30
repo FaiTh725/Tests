@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Test.Dal.ExpressionRewriters;
 using Test.Dal.Persistences;
+using Test.Dal.Specifications;
 using Test.Domain.Entities;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -86,7 +86,7 @@ namespace Test.Dal.Repositories
         {
             var filter = specification.Criteria is null ?
                 Builders<MongoQuestion>.Filter.Empty :
-                new QuestionToMongoRewriter().Rewrite(specification.Criteria);
+                new ExpressionConverter<Question, MongoQuestion>().Rewrite(specification.Criteria);
 
             var mongoQuestions = await context.Questions
                 .Find(filter)

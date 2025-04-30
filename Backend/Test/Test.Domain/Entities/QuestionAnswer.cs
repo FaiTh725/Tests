@@ -29,11 +29,11 @@ namespace Test.Domain.Entities
             long questionId)
         {
             if(string.IsNullOrWhiteSpace(answer) ||
-                answer.Length < QuestionAnswerValidator.MIN_ANSWER_LENGHT ||
-                answer.Length > QuestionAnswerValidator.MAX_ANSWER_LENGHT)
+                answer.Length < QuestionAnswerValidator.MIN_ANSWER_LENGTH ||
+                answer.Length > QuestionAnswerValidator.MAX_ANSWER_LENGTH)
             {
                 return Result.Failure<QuestionAnswer>("Answer is null or white space " +
-                    $"or lenght outside from range {QuestionAnswerValidator.MIN_ANSWER_LENGHT} - {QuestionAnswerValidator.MAX_ANSWER_LENGHT}");
+                    $"or length outside from range {QuestionAnswerValidator.MIN_ANSWER_LENGTH} - {QuestionAnswerValidator.MAX_ANSWER_LENGTH}");
             }
 
             return Result.Success(new QuestionAnswer(

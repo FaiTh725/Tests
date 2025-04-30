@@ -3,7 +3,7 @@ using Azure.Storage.Blobs.Models;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.File;
 
-namespace Test.Infastructure.Implementations
+namespace Test.Infrastructure.Implementations
 {
     public class AzuriteStorageService : IBlobService
     {

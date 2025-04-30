@@ -1,7 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
-using Test.Domain.Intrefaces;
+using Test.Application.Common.BehaviorsInterfaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Behaviors
 {
@@ -30,8 +30,16 @@ namespace Test.Application.Behaviors
                 throw new BadRequestException("Group doesnt exist");
             }
 
-            if(request.Role != "Admin" &&
-                group.OwnerId != request.OwnerId)
+            var owner = await unitOfWork.ProfileRepository
+                .GetProfile(request.OwnerEmail, cancellationToken);
+
+            if (owner is null)
+            {
+                throw new InternalServerErrorException("Unexpected error, group doesnt have an owner");
+            }
+
+            if (request.Role != "Admin" &&
+                group.OwnerId != owner.Id)
             {
                 throw new ForbiddenAccessException("Only the owner or an admin have access to the group");
             }

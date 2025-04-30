@@ -1,7 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using Test.Domain.Entities;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.ProfileEntity.CreateProfile
 {

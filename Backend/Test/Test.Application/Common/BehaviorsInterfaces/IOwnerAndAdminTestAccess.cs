@@ -1,4 +1,4 @@
-﻿namespace Test.Application.Common.BehaviorsIntrfaces
+﻿namespace Test.Application.Common.BehaviorsInterfaces
 {
     public interface IOwnerAndAdminTestAccess
     {

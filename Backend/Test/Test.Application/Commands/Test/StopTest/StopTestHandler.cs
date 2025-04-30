@@ -3,7 +3,7 @@ using MediatR;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.TestSession;
 using Test.Domain.Entities;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.Test.StopTest
 {

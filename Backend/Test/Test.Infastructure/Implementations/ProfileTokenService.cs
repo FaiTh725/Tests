@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 
-namespace Test.Infastructure.Implementations
+namespace Test.Infrastructure.Implementations
 {
     public class ProfileTokenService : ITokenService<ProfileToken>
     {

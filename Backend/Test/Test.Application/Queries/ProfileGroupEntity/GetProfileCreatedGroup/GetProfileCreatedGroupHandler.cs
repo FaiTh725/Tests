@@ -2,7 +2,7 @@
 using MediatR;
 using Test.Application.Contracts.ProfileGroupEntity;
 using Test.Application.Queries.ProfileGroupEntity.Specifications;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
 {

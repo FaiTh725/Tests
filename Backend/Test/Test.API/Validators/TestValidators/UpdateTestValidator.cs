@@ -10,18 +10,18 @@ namespace Test.API.Validators.TestValidators
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
-                .MinimumLength(TestValidator.MIN_NAME_LENGHT)
+                .MinimumLength(TestValidator.MIN_NAME_LENGTH)
                     .WithMessage("Min test name length is " +
-                    TestValidator.MIN_NAME_LENGHT.ToString())
-                .MaximumLength(TestValidator.MAX_NAME_LENGHT)
+                    TestValidator.MIN_NAME_LENGTH.ToString())
+                .MaximumLength(TestValidator.MAX_NAME_LENGTH)
                     .WithMessage("Max test name length is " +
-                    TestValidator.MAX_NAME_LENGHT.ToString());
+                    TestValidator.MAX_NAME_LENGTH.ToString());
 
             RuleFor(x => x.Description)
                 .NotEmpty()
-                .MaximumLength(TestValidator.MAX_DESCRIPTION_LENGHT)
+                .MaximumLength(TestValidator.MAX_DESCRIPTION_LENGTH)
                     .WithMessage("Max description length is " +
-                    TestValidator.MAX_DESCRIPTION_LENGHT.ToString());
+                    TestValidator.MAX_DESCRIPTION_LENGTH.ToString());
         }
     }
 }

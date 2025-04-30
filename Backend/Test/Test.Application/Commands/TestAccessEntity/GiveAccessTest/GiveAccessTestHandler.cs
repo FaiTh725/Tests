@@ -2,7 +2,7 @@
 using MediatR;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.TestAccessEntity.GiveAccessTest
 {

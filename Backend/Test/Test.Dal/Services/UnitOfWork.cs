@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 using Test.Dal.Repositories;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 

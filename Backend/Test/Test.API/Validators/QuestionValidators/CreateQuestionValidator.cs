@@ -11,12 +11,12 @@ namespace Test.API.Validators.QuestionValidators
         {
             RuleFor(x => x.TestQuestion)
                 .NotEmpty()
-                .MinimumLength(QuestionValidator.MIN_QUESTION_LENGHT)
+                .MinimumLength(QuestionValidator.MIN_QUESTION_LENGTH)
                     .WithMessage("Min question length is " +
-                    QuestionValidator.MIN_QUESTION_LENGHT.ToString())
-                .MaximumLength(QuestionValidator.MAX_QUESTION_LENGHT)
+                    QuestionValidator.MIN_QUESTION_LENGTH.ToString())
+                .MaximumLength(QuestionValidator.MAX_QUESTION_LENGTH)
                     .WithMessage("Max question length is " +
-                    QuestionValidator.MAX_QUESTION_LENGHT.ToString());
+                    QuestionValidator.MAX_QUESTION_LENGTH.ToString());
 
             RuleFor(x => x.QuestionWeight)
                 .Must(x => x >= QuestionValidator.MIN_QUESTION_WEIGHT)
@@ -25,7 +25,7 @@ namespace Test.API.Validators.QuestionValidators
 
             RuleFor(x => x.QuestionType)
                 .IsInEnum()
-                    .WithMessage("Valid valus for enum: [" +
+                    .WithMessage("Valid values for enum: [" +
                     $"{string.Join(" ", Enum.GetValues(typeof(QuestionType)))}]");
         }
     }

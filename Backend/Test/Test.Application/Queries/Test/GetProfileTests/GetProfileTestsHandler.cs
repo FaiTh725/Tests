@@ -3,8 +3,7 @@ using MediatR;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.Test;
 using Test.Application.Queries.Test.Specifications;
-using Test.Domain.Entities;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.Test.GetProfileTests
 {

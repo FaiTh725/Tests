@@ -2,10 +2,10 @@ using Test.Dal;
 using Test.API.Middlewares;
 using Test.API.Grpc.Services;
 using Test.API.Extentions;
-using Test.Infastructure;
 using Test.Application;
 using Hangfire;
 using Test.API.Filters;
+using Test.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +24,7 @@ builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 builder.Services
     .ConfigureApiServices()
     .ConfigureAppServices()
-    .ConfigureInfastructureServices(builder.Configuration)
+    .ConfigureInfrastructureServices(builder.Configuration)
     .ConfigureDalServices();
 
 var app = builder.Build();

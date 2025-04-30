@@ -15,7 +15,8 @@ namespace Test.Application
 
             services.AddScoped<MediatorWrapper>();
 
-            services.AddScoped<ITestEvaluatorService, TestEvaliatorService>();
+            services.AddScoped<ITestEvaluatorService, TestEvaluatorService>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             return services;
         }
@@ -25,7 +26,7 @@ namespace Test.Application
         {
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(AssemplyReference).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
 
                 cfg.AddOpenBehavior(typeof(DomainEventsDispatcherBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminTestAccessBehavior<,>));

@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Notification.Contracts.Email;
 using Test.Domain.Events;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.EventHandler.ProfileGroupEventHandler
 {

@@ -1,5 +1,4 @@
-﻿using Application.Shared.Exceptions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Question;
@@ -8,7 +7,6 @@ using Test.Application.Commands.Question.DeleteQuestion;
 using Test.Application.Commands.Question.UpdateQuestion;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.File;
-using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.QuestionAnswerEntity;
 using Test.Application.Queries.QuestionEntity.GetQuestionWithAnswers;
 
@@ -19,14 +17,14 @@ namespace Test.API.Controllers
     public class QuestionController: ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ITokenService<ProfileToken> tokenService;
+        private readonly IProfileService profileService;
 
         public QuestionController(
             IMediator mediator,
-            ITokenService<ProfileToken> tokenService)
+            IProfileService profileService)
         {
             this.mediator = mediator;
-            this.tokenService = tokenService;
+            this.profileService = profileService;
         }
 
         [HttpPost("[action]")]
@@ -34,15 +32,8 @@ namespace Test.API.Controllers
         public async Task<IActionResult> AddQuestion(
             [FromForm]CreateQuestionRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"] ??
-                throw new UnauthorizedAccessException("User isnt authorized");
-
-            var profileToken = tokenService.DecodeToken(token);
-
-            if (profileToken.IsFailure)
-            {
-                throw new InternalServerErrorException("Invalid token signature");
-            }
+            var token = Request.Cookies["token"];
+            var profile = profileService.VerifyProfileFromToken(token);
 
             var createQuestionCommand = new CreateQuestionCommand
             {
@@ -67,8 +58,8 @@ namespace Test.API.Controllers
                         Name = y.Name
                     }).ToList() ?? new List<FileModel>()
                 }).ToList(),
-                Email = profileToken.Value.Email,
-                Role = profileToken.Value.Role
+                Email = profile.Email,
+                Role = profile.Role
             };
 
             var questionId = await mediator.Send(createQuestionCommand, cancellationToken);
@@ -86,21 +77,14 @@ namespace Test.API.Controllers
         public async Task<IActionResult> DeleteQuestion(
             long questionId, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"] ??
-                throw new UnauthorizedAccessException("User isnt authorized");
-
-            var profileToken = tokenService.DecodeToken(token);
-
-            if (profileToken.IsFailure)
-            {
-                throw new InternalServerErrorException("Invalid token signature");
-            }
+            var token = Request.Cookies["token"];
+            var profile = profileService.VerifyProfileFromToken(token);
 
             await mediator.Send(new DeleteQuestionCommand 
             { 
                 QuestionId = questionId,
-                Email = profileToken.Value.Email,
-                Role = profileToken.Value.Role
+                Email = profile.Email,
+                Role = profile.Role
             }, 
             cancellationToken);
 
@@ -112,23 +96,16 @@ namespace Test.API.Controllers
         public async Task<IActionResult> UpdateQuestion(
             UpdateQuestionRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"] ??
-                throw new UnauthorizedAccessException("User isnt authorized");
-
-            var profileToken = tokenService.DecodeToken(token);
-
-            if (profileToken.IsFailure)
-            {
-                throw new InternalServerErrorException("Invalid token signature");
-            }
+            var token = Request.Cookies["token"];
+            var profile = profileService.VerifyProfileFromToken(token);
 
             var questionId = await mediator.Send(new UpdateQuestionCommand
             {
                 QuestionId = request.Id,
                 QuestionWeight = request.QuestionWeight,
                 TestQuestion = request.TestQuestion,
-                Role = profileToken.Value.Role,
-                Email = profileToken.Value.Email
+                Role = profile.Role,
+                Email = profile.Email
             }, 
             cancellationToken);
 

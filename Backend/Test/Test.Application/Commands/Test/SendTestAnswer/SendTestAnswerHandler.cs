@@ -4,7 +4,7 @@ using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileAnswerEntity;
 using Test.Application.Contracts.TestSession;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Commands.Test.SendTestAnswer
 {

@@ -106,24 +106,24 @@ namespace Test.Domain.Entities
             double? durationInMinutes)
         {
             if (string.IsNullOrWhiteSpace(name) ||
-               name.Length < TestValidator.MIN_NAME_LENGHT ||
-               name.Length > TestValidator.MAX_NAME_LENGHT)
+               name.Length < TestValidator.MIN_NAME_LENGTH ||
+               name.Length > TestValidator.MAX_NAME_LENGTH)
             {
                 return Result.Failure("Test name should be in range from " +
-                    $"{TestValidator.MIN_NAME_LENGHT} to {TestValidator.MAX_NAME_LENGHT}");
+                    $"{TestValidator.MIN_NAME_LENGTH} to {TestValidator.MAX_NAME_LENGTH}");
             }
 
             if (string.IsNullOrWhiteSpace(description) ||
-                description.Length > TestValidator.MAX_DESCRIPTION_LENGHT)
+                description.Length > TestValidator.MAX_DESCRIPTION_LENGTH)
             {
                 return Result.Failure("Description is empty or " +
-                    $"lenght greater than {TestValidator.MAX_DESCRIPTION_LENGHT}");
+                    $"length greater than {TestValidator.MAX_DESCRIPTION_LENGTH}");
             }
 
             if(testType == TestType.Timed &&
                 durationInMinutes == null)
             {
-                return Result.Failure("If TestType has timed status than duration is requred");
+                return Result.Failure("If TestType has timed status than duration is required");
             }
 
             if(durationInMinutes < TestValidator.MIN_TEST_DURATION)

@@ -81,11 +81,11 @@ namespace Test.Domain.Entities
             int questionWeight)
         {
             if (string.IsNullOrWhiteSpace(testQuestion) ||
-                testQuestion.Length < QuestionValidator.MIN_QUESTION_LENGHT ||
-                testQuestion.Length > QuestionValidator.MAX_QUESTION_LENGHT)
+                testQuestion.Length < QuestionValidator.MIN_QUESTION_LENGTH ||
+                testQuestion.Length > QuestionValidator.MAX_QUESTION_LENGTH)
             {
                 return Result.Failure("QUestion is null or white space " +
-                    $"or lenght outside of {QuestionValidator.MIN_QUESTION_LENGHT} - {QuestionValidator.MAX_QUESTION_LENGHT}");
+                    $"or lenght outside of {QuestionValidator.MIN_QUESTION_LENGTH} - {QuestionValidator.MAX_QUESTION_LENGTH}");
             }
 
             if (questionWeight < QuestionValidator.MIN_QUESTION_WEIGHT)

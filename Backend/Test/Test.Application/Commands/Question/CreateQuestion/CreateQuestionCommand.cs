@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Test.Application.Common.BehaviorsIntrfaces;
+using Test.Application.Common.BehaviorsInterfaces;
 using Test.Application.Contracts.File;
 using Test.Application.Contracts.QuestionAnswerEntity;
 using Test.Domain.Enums;

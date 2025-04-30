@@ -2,7 +2,7 @@
 using MediatR;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.Test;
-using Test.Domain.Intrefaces;
+using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.Test.GetTestInfoById
 {
