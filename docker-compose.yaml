@@ -3,6 +3,38 @@ version: "3.8"
 name: "Testing"
 
 services:
+  testing_feedback_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Feedback
+    container_name: testing_feedback_api
+    ports:
+      - "5401:5401"
+      - "5402:5402"
+    environment:
+      - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=FaITh725;Password=eZQ9XeVGvT;Database=Feedback;Port=5432
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
+      - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
+      - JwtSettings__Issuer=FaITh
+      - JwtSettings__Audience=Audience
+      - RabbitMqSettings__User=FaITh725
+      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - RabbitMqSettings__Host=rabbitmq
+      - ASPNETCORE_URLS=https://+:5402;http://+:5401
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - testing_postgres_net
+      - application_net
+      - message_broker_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres_db:
+        condition: service_healthy
+
   testing_testing_api:
     build:
       context: .
@@ -17,8 +49,6 @@ services:
       - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
       - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
       - JwtSettings__Issuer=FaITh
-      - JwtSettings__ExpirationTimeRefreshTokenInDays=15
-      - JwtSettings__ExpirationTimeInMinutes=15
       - JwtSettings__Audience=Audience
       - RabbitMqSettings__User=FaITh725
       - RabbitMqSettings__Password=eZQ9XeVGvT
@@ -60,8 +90,8 @@ services:
       - RabbitMqSettings__User=FaITh725
       - RabbitMqSettings__Password=eZQ9XeVGvT
       - RabbitMqSettings__Host=rabbitmq
-      # - GrpcServer=https://localhost:7114
-      - GrpcServer=https://testing_testing_api:5302
+      - ExternalService__TestingService=https://testing_testing_api:5302
+      - ExternalService__FeedbackService=https://testing_feedback_api:5402
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx

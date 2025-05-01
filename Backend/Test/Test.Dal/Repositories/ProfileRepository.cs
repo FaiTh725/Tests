@@ -36,6 +36,14 @@ namespace Test.Dal.Repositories
             return mongoProfile.ConvertToDomainEntity();
         }
 
+        public async Task DeleteProfile(
+            long id, 
+            CancellationToken cancellationToken = default)
+        {
+            await context.Profiles
+                .DeleteOneAsync(x => x.Id == id, cancellationToken);
+        }
+
         public async Task<Profile?> GetProfile(long id, CancellationToken cancellationToken = default)
         {
             var mongorProfile =  await context.Profiles

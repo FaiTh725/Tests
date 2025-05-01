@@ -19,6 +19,8 @@ using Test.Application.Consumers.FileConsumers;
 using Redis.OM;
 using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
+using Test.Contracts.Profile;
+using Test.Application.Consumers.ProfileConsumers;
 
 namespace Test.Infrastructure
 {
@@ -47,7 +49,7 @@ namespace Test.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddJwtAuthorization(
+        private static IServiceCollection AddJwtAuthorization(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -93,7 +95,7 @@ namespace Test.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddAzuriteProvider(
+        private static IServiceCollection AddAzuriteProvider(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -158,6 +160,8 @@ namespace Test.Infrastructure
                 conf.SetKebabCaseEndpointNameFormatter();
 
                 conf.AddConsumer<ClearStorageConsumer>();
+                conf.AddConsumer<CreateTestProfileConsumer>();
+                conf.AddConsumer<DeleteTestProfileConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

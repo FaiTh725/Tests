@@ -1,6 +1,8 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
+using Authorization.Application.SagaOrchestrator;
+using Authorization.Application.SagaOrchestrator.States;
 using Authorization.Infastructure.BackgroundServices;
 using Authorization.Infastructure.Configurations;
 using Authorization.Infastructure.Implementations;
@@ -62,6 +64,10 @@ namespace Authorization.Infastructure
             services.AddMassTransit(conf =>
             {
                 conf.SetKebabCaseEndpointNameFormatter();
+
+                // TODO configure saga in ef core
+                conf.AddSagaStateMachine<RegisterUserSaga, RegisterUserSagaState>()
+                    .InMemoryRepository();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

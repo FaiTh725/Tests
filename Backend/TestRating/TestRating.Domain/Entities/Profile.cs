@@ -36,7 +36,7 @@ namespace TestRating.Domain.Entities
             }
 
             if(string.IsNullOrEmpty(email) ||
-                ProfileValidator.IsValidEmail(email))
+                !ProfileValidator.IsValidEmail(email))
             {
                 return Result.Failure<Profile>("Email is empty or invalid signature");
             }

@@ -9,5 +9,7 @@ namespace Test.Domain.Repositories
         Task<Profile?> GetProfile(long id, CancellationToken cancellationToken = default);
 
         Task<Profile?> GetProfile(string email, CancellationToken cancellationToken = default);
+
+        Task DeleteProfile(long id, CancellationToken cancellationToken = default);
     }
 }

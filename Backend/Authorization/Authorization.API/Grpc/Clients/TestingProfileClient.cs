@@ -1,20 +1,22 @@
 ﻿using Authorization.Application.Common.Interfaces;
 using CSharpFunctionalExtensions;
 using Grpc.Core;
+using Grpc.Net.ClientFactory;
 using Test.API.Grpc;
 using Test.Contracts.Profile;
 
 namespace Authorization.API.Grpc.Clients
 {
-    public class ProfileClient :
+    // TODO: delete
+    public class TestingProfileClient :
         IExternalService<ProfileRequest, ProfileResponse>
     {
         private readonly ProfileService.ProfileServiceClient client;
 
-        public ProfileClient(
-            ProfileService.ProfileServiceClient client)
+        public TestingProfileClient(
+            GrpcClientFactory grpcClientFactory)
         {
-            this.client = client;
+            client = grpcClientFactory.CreateClient<ProfileService.ProfileServiceClient>("TestingClient");
         }
 
         public async Task<Result<ProfileResponse>> GetData(ProfileRequest request)
@@ -36,7 +38,7 @@ namespace Authorization.API.Grpc.Clients
             }
             catch(RpcException ex)
             {
-                return Result.Failure<ProfileResponse>("Error while calling externa service." +
+                return Result.Failure<ProfileResponse>("Error while calling external service." +
                     $" Status code - {ex.Status}." +
                     $" Error Message - {ex.Message}.");
             }

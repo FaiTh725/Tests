@@ -25,12 +25,12 @@ namespace Test.API.Grpc.Services
                 {
                     Email = request.Email,
                     Name = request.Name,
-                });
+                }, context.CancellationToken);
 
                 var profile = await mediator.Send(new GetProfileByIdQuery
                 {
                     Id = profileId,
-                });
+                }, context.CancellationToken);
 
                 return new AddProfileResponse 
                 { 
@@ -45,7 +45,7 @@ namespace Test.API.Grpc.Services
                     StatusCode.InvalidArgument, 
                     ex.Message));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new RpcException(new Status(
                     StatusCode.InvalidArgument,

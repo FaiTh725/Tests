@@ -7,11 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
     <Folder Include="Common\Implementations\" />
-    <Folder Include="Common\Interfaces\" />
-    <Folder Include="Contacts\" />
-    <Folder Include="Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestRating.Contracts\TestRating.Contracts.csproj" />
+    <ProjectReference Include="..\TestRating.Domain\TestRating.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Application.Shared">
+      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Authorization.Contracts">
+      <HintPath>..\..\Authorization\Authorization.Contracts\bin\Debug\net8.0\Authorization.Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -5,9 +5,9 @@ using Test.API.Contracts.Test;
 using Test.API.Validators.QuestionValidators;
 using Test.API.Validators.TestValidators;
 
-namespace Test.API.Extentions
+namespace Test.API.Extensions
 {
-    public static class AppExtention
+    public static class AppExtension
     {
         public static IServiceCollection ConfigureApiServices(
             this IServiceCollection services)

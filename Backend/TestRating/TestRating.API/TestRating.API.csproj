@@ -8,12 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.71.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
@@ -21,13 +24,17 @@
     <ProjectReference Include="..\TestRating.Application\TestRating.Application.csproj" />
     <ProjectReference Include="..\TestRating.Dal\TestRating.Dal.csproj" />
     <ProjectReference Include="..\TestRating.Domain\TestRating.Domain.csproj" />
-    <ProjectReference Include="..\TestRating.Infastructure\TestRating.Infastructure.csproj" />
+    <ProjectReference Include="..\TestRating.Infastructure\TestRating.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Application.Shared">
       <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+	<Protobuf Include="Grpc\Protos\profile_service.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

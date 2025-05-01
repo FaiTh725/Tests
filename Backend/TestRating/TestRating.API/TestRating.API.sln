@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75 d17.13
+VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRating.API", "TestRating.API.csproj", "{C1A005D3-B52F-42AD-BE89-CF66B919684F}"
 EndProject
@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRating.Dal", "..\TestRa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRating.Application", "..\TestRating.Application\TestRating.Application.csproj", "{66D0F990-912E-4536-ACED-D4A2E45E5D25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRating.Infastructure", "..\TestRating.Infastructure\TestRating.Infastructure.csproj", "{A1ECA4EF-CF01-4C19-B27D-341F9383059F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRating.Infrastructure", "..\TestRating.Infastructure\TestRating.Infrastructure.csproj", "{A1ECA4EF-CF01-4C19-B27D-341F9383059F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRating.Contracts", "..\TestRating.Contracts\TestRating.Contracts.csproj", "{41AD75C5-3A5B-4FBF-B6E1-7DBFD3A1C5DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{A1ECA4EF-CF01-4C19-B27D-341F9383059F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1ECA4EF-CF01-4C19-B27D-341F9383059F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1ECA4EF-CF01-4C19-B27D-341F9383059F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41AD75C5-3A5B-4FBF-B6E1-7DBFD3A1C5DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41AD75C5-3A5B-4FBF-B6E1-7DBFD3A1C5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41AD75C5-3A5B-4FBF-B6E1-7DBFD3A1C5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41AD75C5-3A5B-4FBF-B6E1-7DBFD3A1C5DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using System.Threading.RateLimiting;
 using Test.API.Grpc;
 using Test.Contracts.Profile;
+using TestRating.Contracts.Profile;
 
 namespace Authorization.API.Extention
 {
@@ -23,7 +24,8 @@ namespace Authorization.API.Extention
                 .AddRateLimits()
                 .AddGrpcProvider(configuration);
 
-            services.AddScoped<IExternalService<ProfileRequest, ProfileResponse>, ProfileClient>();
+            services.AddScoped<IExternalService<ProfileRequest, ProfileResponse>, TestingProfileClient>();
+            services.AddScoped<IExternalService<CreateProfileRequest, CreateProfileResponse>, FeedbackProfileClient>();
 
             return services;
         }
@@ -63,13 +65,25 @@ namespace Authorization.API.Extention
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var serverAdress = configuration
-                .GetValue<string>("GrpcServer") ??
+            var testingServiceAdress = configuration
+                .GetValue<string>("ExternalService:TestingService") ??
                 throw new AppConfigurationException("Grpc Test service address");
 
-            services.AddGrpcClient<ProfileService.ProfileServiceClient>(option =>
+            services.AddGrpcClient<ProfileService.ProfileServiceClient>("TestingClient", option =>
             {
-                option.Address = new Uri(serverAdress);
+                option.Address = new Uri(testingServiceAdress);
+            });
+
+            var feedbackServiceAdress = configuration
+                .GetValue<string>("ExternalService:FeedbackService") ??
+                throw new AppConfigurationException("Grpc Feedback service address");
+
+            Console.WriteLine($"Feedback service - {feedbackServiceAdress}");
+            Console.WriteLine($"Testing service - {testingServiceAdress}");
+
+            services.AddGrpcClient<ProfileService.ProfileServiceClient>("FeedbackClient", option =>
+            {
+                option.Address = new Uri(feedbackServiceAdress);
             });
 
             return services;
