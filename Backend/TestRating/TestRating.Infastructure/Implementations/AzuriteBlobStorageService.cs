@@ -7,7 +7,7 @@ namespace TestRating.Infrastructure.Implementations
 {
     public class AzuriteBlobStorageService : IBlobService
     {
-        private const string IMAGE_CONTAINER = "feedback_images";
+        private const string IMAGE_CONTAINER = "feedbackimages";
         private readonly BlobContainerClient blobContainer;
 
         public AzuriteBlobStorageService(

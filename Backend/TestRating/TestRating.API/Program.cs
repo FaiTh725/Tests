@@ -1,5 +1,4 @@
 using TestRating.API.Extensions;
-using TestRating.API.Grpc.Services;
 using TestRating.API.Middlewares;
 using TestRating.Application;
 using TestRating.Dal;
@@ -15,14 +14,12 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 
 builder.Services
-    .ConfigureApiServices()
+    .ConfigureApiServices(builder.Configuration)
     .ConfigureInfrastructureServices(builder.Configuration)
     .ConfigureAppServices()
     .ConfigureDalServices();
 
 var app = builder.Build();
-
-app.MapGrpcService<ProfileServiceGrpc>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

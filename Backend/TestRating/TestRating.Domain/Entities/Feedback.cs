@@ -9,6 +9,8 @@ namespace TestRating.Domain.Entities
 
         public string Text { get; private set; }
 
+        public long TestId { get; private set; }
+
         public Profile Owner { get; private set; }
         public long OwnerId { get; private set; }
 
@@ -22,10 +24,12 @@ namespace TestRating.Domain.Entities
 
         private Feedback(
             string text,
+            long testId,
             int rating,
             Profile owner)
         {
             Text = text;
+            TestId = testId;
             Rating = rating;
             Owner = owner;
 
@@ -35,10 +39,12 @@ namespace TestRating.Domain.Entities
 
         private Feedback(
             string text,
+            long testId,
             int rating,
             long ownerId)
         {
             Text = text;
+            TestId = testId;
             Rating = rating;
             OwnerId = ownerId;
 
@@ -46,8 +52,29 @@ namespace TestRating.Domain.Entities
             UpdateTime = DateTime.UtcNow;
         }
 
+        public Result ChangeFeedback(
+            string text,
+            int rating)
+        {
+            var isValidUpdate = Validate(text, rating);
+
+            if(isValidUpdate.IsFailure)
+            {
+                return Result.Failure("Invalid values to update feedback - " +
+                    $"{isValidUpdate.Error}");
+            }
+
+            Text = text;
+            Rating = rating;
+            UpdateTime = DateTime.UtcNow;
+        
+            return Result.Success();
+        }
+
+
         public static Result<Feedback> Initialize(
             string text,
+            long testId,
             int rating,
             Profile owner)
         {
@@ -65,12 +92,14 @@ namespace TestRating.Domain.Entities
 
             return Result.Success(new Feedback(
                 text,
+                testId,
                 rating,
                 owner));
         }
 
         public static Result<Feedback> Initialize(
             string text,
+            long testId,
             int rating,
             long ownerId)
         {
@@ -83,11 +112,12 @@ namespace TestRating.Domain.Entities
 
             return Result.Success(new Feedback(
                 text,
+                testId,
                 rating,
                 ownerId));
         }
 
-        public static Result Validate(
+        private static Result Validate(
             string text,
             int rating)
         {

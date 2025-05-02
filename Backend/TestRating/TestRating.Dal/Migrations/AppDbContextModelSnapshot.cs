@@ -39,6 +39,9 @@ namespace TestRating.Dal.Migrations
                     b.Property<DateTime>("SendTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<long>("TestId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -50,6 +53,8 @@ namespace TestRating.Dal.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("TestId");
 
                     b.ToTable("Feedbacks", t =>
                         {

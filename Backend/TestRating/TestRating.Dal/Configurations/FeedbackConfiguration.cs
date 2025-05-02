@@ -30,6 +30,11 @@ namespace TestRating.Dal.Configurations
             builder.Property(x => x.Rating)
                 .IsRequired();
 
+            builder.Property(x => x.TestId)
+                .IsRequired();
+
+            builder.HasIndex(x => x.TestId);
+
             builder.ToTable(x =>
                 x.HasCheckConstraint(
                     "CK_Feedbacks_Rating",

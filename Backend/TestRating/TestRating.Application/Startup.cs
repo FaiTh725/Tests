@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TestRating.Application.Behaviors;
 
 namespace TestRating.Application
 {
@@ -19,6 +20,9 @@ namespace TestRating.Application
             services.AddMediatR(x =>
             {
                 x.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
+                
+                x.AddOpenBehavior(typeof(CheckTestIsExistBehavior<,>));
+                x.AddOpenBehavior(typeof(OwnerAndAdminFeedbackAccessBehavior<,>));
             });
 
             return services;

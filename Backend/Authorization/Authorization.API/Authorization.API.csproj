@@ -36,9 +36,10 @@
       <HintPath>..\..\TestRating\TestRating.Contracts\bin\Debug\net8.0\TestRating.Contracts.dll</HintPath>
     </Reference>
   </ItemGroup>
-	
-	<ItemGroup>
-	<Protobuf Include="Grpc\Protos\profile_service.proto" GrpcServices="Client" />	
+
+  <ItemGroup>
+    <Folder Include="Grpc\Clients\" />
+    <Folder Include="Grpc\Protos\" />
   </ItemGroup> 
 
 </Project>

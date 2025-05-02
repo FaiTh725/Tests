@@ -7,11 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TestRating.Application.Common.Interfaces;
+using TestRating.Application.Consumers.Blobs;
 using TestRating.Application.Consumers.ProfileConsumers;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Infrastructure.Configurations;
 using TestRating.Infrastructure.Implementations;
-using static CSharpFunctionalExtensions.Result;
 
 namespace TestRating.Infrastructure
 {
@@ -26,7 +26,8 @@ namespace TestRating.Infrastructure
                 .AddJwtAuthorization(configuration)
                 .AddAzuriteProvider(configuration);
 
-            services.AddSingleton<ITokenService<ProfileToken>, ProfileTokenService>();
+            services.AddScoped<ITokenService<ProfileToken>, ProfileTokenService>();
+            
             services.AddSingleton<IBlobService, AzuriteBlobStorageService>();
 
             return services;
@@ -106,6 +107,7 @@ namespace TestRating.Infrastructure
 
                 conf.AddConsumer<CreateFeedbackProfileConsumer>();
                 conf.AddConsumer<DeleteFeedbackProfileConsumer>();
+                conf.AddConsumer<ClearBlobsConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

@@ -3,37 +3,39 @@ version: "3.8"
 name: "Testing"
 
 services:
-  testing_feedback_api:
-    build:
-      context: .
-      dockerfile: Dockerfile.Feedback
-    container_name: testing_feedback_api
-    ports:
-      - "5401:5401"
-      - "5402:5402"
-    environment:
-      - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=FaITh725;Password=eZQ9XeVGvT;Database=Feedback;Port=5432
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
-      - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
-      - JwtSettings__Issuer=FaITh
-      - JwtSettings__Audience=Audience
-      - RabbitMqSettings__User=FaITh725
-      - RabbitMqSettings__Password=eZQ9XeVGvT
-      - RabbitMqSettings__Host=rabbitmq
-      - ASPNETCORE_URLS=https://+:5402;http://+:5401
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
-    volumes:
-      - ./certs:/https:ro
-    networks:
-      - testing_postgres_net
-      - application_net
-      - message_broker_net
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      postgres_db:
-        condition: service_healthy
+  # testing_feedback_api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.Feedback
+  #   container_name: testing_feedback_api
+  #   ports:
+  #     - "5401:5401"
+  #     - "5402:5402"
+  #   environment:
+  #     - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=FaITh725;Password=eZQ9XeVGvT;Database=Feedback;Port=5432
+  #     - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
+  #     - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
+  #     - JwtSettings__Issuer=FaITh
+  #     - JwtSettings__Audience=Audience
+  #     - RabbitMqSettings__User=FaITh725
+  #     - RabbitMqSettings__Password=eZQ9XeVGvT
+  #     - RabbitMqSettings__Host=rabbitmq
+  #     - ExternalServices__TestingService=https://testing_testing_api:5302
+  #     - ASPNETCORE_URLS=https://+:5402;http://+:5401
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+  #   volumes:
+  #     - ./certs:/https:ro
+  #   networks:
+  #     - testing_postgres_net
+  #     - application_net
+  #     - message_broker_net
+  #     - azurite_net
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     postgres_db:
+  #       condition: service_healthy
 
   testing_testing_api:
     build:
@@ -46,7 +48,7 @@ services:
     environment:
       - ConnectionStrings__RedisConnection=redis://:eZQ9XeVGvT@redis:6379
       - ConnectionStrings__MongoDbConnection=mongodb://FaITh725:eZQ9XeVGvT@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
       - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
       - JwtSettings__Issuer=FaITh
       - JwtSettings__Audience=Audience
@@ -55,7 +57,7 @@ services:
       - RabbitMqSettings__Host=rabbitmq
       - ASPNETCORE_URLS=https://+:5302;http://+:5301
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./certs:/https:ro
     networks:
@@ -63,6 +65,7 @@ services:
       - message_broker_net
       - redis_net
       - application_net
+      - azurite_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -90,11 +93,9 @@ services:
       - RabbitMqSettings__User=FaITh725
       - RabbitMqSettings__Password=eZQ9XeVGvT
       - RabbitMqSettings__Host=rabbitmq
-      - ExternalService__TestingService=https://testing_testing_api:5302
-      - ExternalService__FeedbackService=https://testing_feedback_api:5402
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./certs:/https:ro
     networks:
@@ -203,6 +204,8 @@ services:
       - "AZURITE_ACCOUNTS=FaITh725:ZGV2c3RvcmVhY2NvdW50Mw=="
     volumes:
       - testing_blob_volume:/data
+    networks:
+      - azurite_net
 
   rabbitmq:
     image: rabbitmq:management
@@ -246,6 +249,8 @@ networks:
   message_broker_net:
     driver: bridge
   redis_net:
+    driver: bridge
+  azurite_net:
     driver: bridge
   application_net:
     driver: bridge

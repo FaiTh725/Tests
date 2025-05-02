@@ -30,6 +30,7 @@ namespace Test.Application.Behaviors
                 throw new NotFoundException("Test doesnt exist");
             }
 
+            // TODO: rework
             var profile = await unitOfWork.ProfileRepository
                 .GetProfile(test.ProfileId, cancellationToken);
 

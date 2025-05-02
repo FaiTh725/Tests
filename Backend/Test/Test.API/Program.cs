@@ -24,7 +24,7 @@ builder.Services
 
 var app = builder.Build();
 
-app.MapGrpcService<ProfileServiceGrpc>();
+app.MapGrpcService<TestServiceGrpc>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

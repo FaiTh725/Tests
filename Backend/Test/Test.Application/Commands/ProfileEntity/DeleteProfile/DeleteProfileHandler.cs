@@ -7,10 +7,10 @@ namespace Test.Application.Commands.ProfileEntity.DeleteProfile
     public class DeleteProfileHandler :
         IRequestHandler<DeleteProfileCommand>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly INoSQLUnitOfWork unitOfWork;
 
         public DeleteProfileHandler(
-            IUnitOfWork unitOfWork)
+            INoSQLUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
