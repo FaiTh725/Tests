@@ -1,6 +1,4 @@
-﻿using Application.Shared.Exceptions;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using Test.Dal.Configurations;
 using Test.Dal.Persistences;
@@ -20,22 +18,20 @@ namespace Test.Dal
 
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
-        // Store last insert index for entities, using for generate next id entity
+        // Store last inserted index for entities, using for generate next id entity
         private readonly IMongoCollection<BsonDocument> counters;
 
         public AppDbContext(
-            IConfiguration configuration)
+            IMongoClient mongoClient,
+            IMongoDatabase mongoDatabase)
         {
-            var mongoConnection = configuration
-                .GetConnectionString("MongoDbConnection") ??
-                throw new AppConfigurationException("MongoDb Connection String");
-            
-            client = new MongoClient(mongoConnection);
-            database =  client.GetDatabase("Testing");
+            client = mongoClient;
+            database = mongoDatabase;
 
             counters = database.GetCollection<BsonDocument>("counters");
 
             ProfileConfiguration.ApplyProfileConfigurations(database.GetCollection<MongoProfile>(PROFILES_COLLECTION_NAME));
+            TestAccessConfiguration.ApplyTestAccessConfigurations(database.GetCollection<MongoTestAccess>(TEST_ACCESS_COLLECTION_NAME));
         }
 
         public IMongoClient Client { get => client; }

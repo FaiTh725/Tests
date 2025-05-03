@@ -29,18 +29,6 @@ namespace TestRating.API.Controllers
             this.tokenService = tokenService;
         }
 
-        [HttpDelete("test")]
-        public async Task<IActionResult> TestSoftDelete(
-            long id, CancellationToken cancellationToken)
-        {
-            await mediator.Send(new BanFeedbackCommand
-            {
-                Id = id,    
-            }, cancellationToken);
-
-            return Ok();
-        }
-
         [HttpPost("[action]")]
         [Authorize]
         public async Task<IActionResult> SendFeedback(

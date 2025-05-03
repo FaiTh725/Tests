@@ -57,12 +57,12 @@ namespace TestRating.Application.Commands.FeedbackEntity.SendFeedback
             var feedbackDb = await unitOfWork.FeedbackRepository
                 .AddFeedback(feedbackEntity.Value, cancellationToken);
 
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            
             await blobService.UploadBlobs(
                 feedbackDb.ImageFolder, 
                 request.FeedbackImages, 
                 cancellationToken);
-            
-            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return feedbackDb.Id;
         }

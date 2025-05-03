@@ -13,12 +13,12 @@ namespace Test.Application.EventHandler.TestEventHandler
     {
         private readonly INoSQLUnitOfWork unitOfWork;
         private readonly ILogger<TestDeletedEventHandler> logger;
-        private readonly IBus bus;
+        private readonly IPublishEndpoint bus;
 
         public TestDeletedEventHandler(
             INoSQLUnitOfWork unitOfWork,
             ILogger<TestDeletedEventHandler> logger,
-            IBus bus)
+            IPublishEndpoint bus)
         {
             this.unitOfWork = unitOfWork;
             this.bus = bus;
@@ -53,11 +53,6 @@ namespace Test.Application.EventHandler.TestEventHandler
             imagesFolderToDelete.AddRange(questionAnswers
                 .Select(x => x.ImageFolder));
 
-            await bus.Publish(new DeleteFilesFromStorage 
-                { 
-                    PathFiles = imagesFolderToDelete
-                }, cancellationToken);
-
             await unitOfWork.BeginTransactionAsync(cancellationToken);
             
             try
@@ -68,7 +63,14 @@ namespace Test.Application.EventHandler.TestEventHandler
                 await unitOfWork.QuestionAnswerRepository
                     .DeleteAnswers(questionAnswersIdList, cancellationToken);
 
+                await bus.Publish(new DeleteFilesFromStorage
+                {
+                    PathFiles = imagesFolderToDelete
+                }, cancellationToken);
+
                 await unitOfWork.CommitTransactionAsync(cancellationToken);
+
+                logger.LogInformation("TestDeleted event handler executed");
             }
             catch(Exception ex)
             {

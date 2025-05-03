@@ -19,8 +19,9 @@ using Test.Application.Consumers.FileConsumers;
 using Redis.OM;
 using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
-using Test.Contracts.Profile;
 using Test.Application.Consumers.ProfileConsumers;
+using Test.Dal;
+using MongoDB.Driver;
 
 namespace Test.Infrastructure
 {
@@ -162,6 +163,15 @@ namespace Test.Infrastructure
                 conf.AddConsumer<ClearStorageConsumer>();
                 conf.AddConsumer<CreateTestProfileConsumer>();
                 conf.AddConsumer<DeleteTestProfileConsumer>();
+
+                conf.AddMongoDbOutbox(x =>
+                {
+                    x.QueryDelay = TimeSpan.FromSeconds(5);
+                    x.UseBusOutbox();
+
+                    x.ClientFactory(provider => provider.GetRequiredService<IMongoClient>());
+                    x.DatabaseFactory(provider => provider.GetRequiredService<IMongoDatabase>());
+                });
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

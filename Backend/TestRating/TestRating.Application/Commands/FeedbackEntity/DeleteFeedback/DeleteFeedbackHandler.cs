@@ -10,11 +10,11 @@ namespace TestRating.Application.Commands.FeedbackEntity.DeleteFeedback
         IRequestHandler<DeleteFeedbackCommand>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly IBus bus;
+        private readonly IPublishEndpoint bus;
 
         public DeleteFeedbackHandler(
             IUnitOfWork unitOfWork,
-            IBus bus)
+            IPublishEndpoint bus)
         {
             this.bus = bus;
             this.unitOfWork = unitOfWork;
@@ -33,7 +33,6 @@ namespace TestRating.Application.Commands.FeedbackEntity.DeleteFeedback
                 throw new BadRequestException("Feedback doesnt exist");
             }
 
-            // TODO there implement outbox pattern
             await unitOfWork.FeedbackRepository
                 .HardDeleteFeedback(feedback.Id, cancellationToken);
 

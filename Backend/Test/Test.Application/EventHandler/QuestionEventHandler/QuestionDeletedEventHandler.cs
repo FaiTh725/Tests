@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Test.Application.Contracts.File;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
 using Test.Domain.Events;
@@ -11,13 +12,16 @@ namespace Test.Application.EventHandler.QuestionEventHandler
         INotificationHandler<QuestionDeletedEvent>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly IBus bus;
+        private readonly ILogger<QuestionDeletedEventHandler> logger;
+        private readonly IPublishEndpoint bus;
 
         public QuestionDeletedEventHandler(
             INoSQLUnitOfWork unitOfWork,
-            IBus bus)
+            ILogger<QuestionDeletedEventHandler> logger,
+            IPublishEndpoint bus)
         {
             this.unitOfWork = unitOfWork;
+            this.logger = logger;
             this.bus = bus;
         }
 
@@ -30,23 +34,39 @@ namespace Test.Application.EventHandler.QuestionEventHandler
                 new AnswersByQuestionIdSpecification(notification.QuestionId), 
                 cancellationToken);
 
-            await unitOfWork.QuestionAnswerRepository.DeleteAnswers(
-                    questionAnswer
-                        .Select(x => x.Id)
-                        .ToList(), 
-                    cancellationToken);
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            var imagesFolderToDelete = questionAnswer
-                    .Select(x => x.ImageFolder)
-                    .ToList();
-
-            await bus.Publish(new DeleteFilesFromStorage
+            try
             {
-                PathFiles = questionAnswer
-                    .Select(x => x.ImageFolder)
-                    .ToList()
-            }, 
-            cancellationToken);
+                await unitOfWork.QuestionAnswerRepository.DeleteAnswers(
+                        questionAnswer
+                            .Select(x => x.Id)
+                            .ToList(), 
+                        cancellationToken);
+
+                var imagesFolderToDelete = questionAnswer
+                        .Select(x => x.ImageFolder)
+                        .ToList();
+
+                await bus.Publish(new DeleteFilesFromStorage
+                {
+                    PathFiles = questionAnswer
+                        .Select(x => x.ImageFolder)
+                        .ToList()
+                }, 
+                cancellationToken);
+
+                await unitOfWork.CommitTransactionAsync(cancellationToken);
+
+                logger.LogInformation("QuestionDeleted event handler executed");
+            }
+            catch(Exception ex)
+            {
+                logger.LogError("Error execute question deleted event handler. " +
+                    ex.Message);
+
+                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+            }
         }
     }
 }

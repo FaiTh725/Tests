@@ -10,6 +10,7 @@ using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Consumers.Blobs;
 using TestRating.Application.Consumers.ProfileConsumers;
 using TestRating.Application.Contacts.Profile;
+using TestRating.Dal;
 using TestRating.Infrastructure.Configurations;
 using TestRating.Infrastructure.Implementations;
 
@@ -108,6 +109,12 @@ namespace TestRating.Infrastructure
                 conf.AddConsumer<CreateFeedbackProfileConsumer>();
                 conf.AddConsumer<DeleteFeedbackProfileConsumer>();
                 conf.AddConsumer<ClearBlobsConsumer>();
+
+                conf.AddEntityFrameworkOutbox<AppDbContext>(x =>
+                {
+                    x.QueryDelay = TimeSpan.FromSeconds(30);
+                    x.UsePostgres().UseBusOutbox();
+                });
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

@@ -12,12 +12,12 @@ namespace TestRating.Application.Commands.FeedbackEntity.ChangeFeedback
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBlobService blobService;
-        private readonly IBus bus;
+        private readonly IPublishEndpoint bus;
 
         public ChangeFeedbackHandler(
             IUnitOfWork unitOfWork,
             IBlobService blobService,
-            IBus bus)
+            IPublishEndpoint bus)
         {
             this.unitOfWork = unitOfWork;
             this.blobService = blobService;

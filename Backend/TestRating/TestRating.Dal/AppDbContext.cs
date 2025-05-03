@@ -1,4 +1,5 @@
 ﻿using Application.Shared.Exceptions;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TestRating.Dal.Configurations;
@@ -14,7 +15,7 @@ namespace TestRating.Dal
         private readonly DomainEventsInterceptor domainEventsInterceptor;
 
         public AppDbContext(
-            DbContextOptions options,
+            DbContextOptions<AppDbContext> options,
             SoftDeleteInterceptor softDeleteInterceptor,
             DomainEventsInterceptor domainEventsInterceptor,
             IConfiguration configuration):
@@ -39,6 +40,10 @@ namespace TestRating.Dal
             modelBuilder.ApplyConfiguration(new FeedbackReportConfiguration());
             modelBuilder.ApplyConfiguration(new FeedbackReviewConfiguration());
             modelBuilder.ApplyConfiguration(new ProfileConfiguration());
+
+            modelBuilder.AddInboxStateEntity();
+            modelBuilder.AddOutboxMessageEntity();
+            modelBuilder.AddOutboxStateEntity();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

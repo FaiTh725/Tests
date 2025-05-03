@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Notification.Contracts.Email;
-using TestRating.Application.Queries.FeedbackEntity.Specifications;
 using TestRating.Domain.Events;
 using TestRating.Domain.Interfaces;
 
@@ -12,12 +11,12 @@ namespace TestRating.Application.EventHandlers.FeedbackEntity
         INotificationHandler<FeedbackDeletedEvent>
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly IBus bus;
+        private readonly IPublishEndpoint bus;
         private readonly ILogger<FeedbackDeletedEventHandler> logger;
 
         public FeedbackDeletedEventHandler(
             IUnitOfWork unitOfWork,
-            IBus bus,
+            IPublishEndpoint bus,
             ILogger<FeedbackDeletedEventHandler> logger)
         {
             this.unitOfWork = unitOfWork;

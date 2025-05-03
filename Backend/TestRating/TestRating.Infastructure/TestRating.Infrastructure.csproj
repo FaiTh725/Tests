@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestRating.Application\TestRating.Application.csproj" />
+    <ProjectReference Include="..\TestRating.Dal\TestRating.Dal.csproj" />
   </ItemGroup>
 
   <ItemGroup>

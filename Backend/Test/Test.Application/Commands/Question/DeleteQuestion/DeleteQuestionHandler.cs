@@ -10,11 +10,11 @@ namespace Test.Application.Commands.Question.DeleteQuestion
         IRequestHandler<DeleteQuestionCommand>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly IBus bus;
+        private readonly IPublishEndpoint bus;
 
         public DeleteQuestionHandler(
             INoSQLUnitOfWork unitOfWork,
-            IBus bus)
+            IPublishEndpoint bus)
         {
             this.unitOfWork = unitOfWork;
             this.bus = bus;
@@ -32,17 +32,29 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 throw new NotFoundException("Question doesnt exist");
             }
 
-            await unitOfWork.QuestionRepository
-                .DeleteQuestion(request.QuestionId, cancellationToken);
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            await bus.Publish(new DeleteFilesFromStorage
+            try
             {
-                PathFiles = [question.ImageFolder]
-            },
-            cancellationToken);
+                await unitOfWork.QuestionRepository
+                    .DeleteQuestion(request.QuestionId, cancellationToken);
 
-            question.Delete();
-            unitOfWork.TrackEntity(question);
+                await bus.Publish(new DeleteFilesFromStorage
+                {
+                    PathFiles = [question.ImageFolder]
+                },
+                cancellationToken);
+
+                question.Delete();
+                unitOfWork.TrackEntity(question);
+
+                await unitOfWork.CommitTransactionAsync(cancellationToken);
+            }
+            catch
+            {
+                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                throw;
+            }
         }
     }
 }
