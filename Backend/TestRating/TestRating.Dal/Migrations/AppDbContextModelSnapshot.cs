@@ -30,6 +30,14 @@ namespace TestRating.Dal.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<long>("OwnerId")
                         .HasColumnType("bigint");
 
@@ -52,6 +60,9 @@ namespace TestRating.Dal.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IsDeleted")
+                        .HasFilter("\"IsDeleted\" = false");
+
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("TestId");
@@ -73,6 +84,9 @@ namespace TestRating.Dal.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool?>("IsApproval")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("ReportMessage")
                         .IsRequired()
                         .HasMaxLength(300)
@@ -86,7 +100,8 @@ namespace TestRating.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReportedFeedbackId");
+                    b.HasIndex("ReportedFeedbackId")
+                        .IsUnique();
 
                     b.HasIndex("ReviewerId");
 
@@ -107,9 +122,14 @@ namespace TestRating.Dal.Migrations
                     b.Property<long>("OwnerId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("ReviewedFeedbackId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("ReviewedFeedbackId");
 
                     b.ToTable("Reviews");
                 });
@@ -152,8 +172,8 @@ namespace TestRating.Dal.Migrations
             modelBuilder.Entity("TestRating.Domain.Entities.FeedbackReport", b =>
                 {
                     b.HasOne("TestRating.Domain.Entities.Feedback", "ReportedFeedback")
-                        .WithMany()
-                        .HasForeignKey("ReportedFeedbackId")
+                        .WithOne()
+                        .HasForeignKey("TestRating.Domain.Entities.FeedbackReport", "ReportedFeedbackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -176,7 +196,20 @@ namespace TestRating.Dal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TestRating.Domain.Entities.Feedback", "ReviewedFeedback")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ReviewedFeedbackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Owner");
+
+                    b.Navigation("ReviewedFeedback");
+                });
+
+            modelBuilder.Entity("TestRating.Domain.Entities.Feedback", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("TestRating.Domain.Entities.Profile", b =>

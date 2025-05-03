@@ -30,7 +30,8 @@ namespace Test.Infrastructure.Implementations
             return Result.Success(new ProfileToken 
             { 
                 Email = email,
-                Name = name
+                Name = name,
+                Role = role
             });
         }
     }

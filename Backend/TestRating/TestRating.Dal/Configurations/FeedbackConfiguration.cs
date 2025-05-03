@@ -22,10 +22,18 @@ namespace TestRating.Dal.Configurations
             builder.Property(x => x.UpdateTime)
                 .IsRequired();
 
+            builder.Property(x => x.IsDeleted)
+                .HasDefaultValue(false);
+
             builder.HasOne(x => x.Owner)
                 .WithMany(x => x.FeedBacks)
                 .HasForeignKey(x => x.OwnerId)
                 .IsRequired();
+
+            builder.HasMany(x => x.Reviews)
+                .WithOne(x => x.ReviewedFeedback)
+                .HasForeignKey(x => x.ReviewedFeedbackId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(x => x.Rating)
                 .IsRequired();
@@ -35,10 +43,16 @@ namespace TestRating.Dal.Configurations
 
             builder.HasIndex(x => x.TestId);
 
+            builder.HasIndex(x => x.IsDeleted)
+                .HasFilter("\"IsDeleted\" = false");
+
             builder.ToTable(x =>
                 x.HasCheckConstraint(
                     "CK_Feedbacks_Rating",
                     $"\"Rating\" >= {FeedbackValidator.MIN_FEEDBACK_RATING} AND \"Rating\" <= {FeedbackValidator.MAX_FEEDBACK_RATING}"));
+
+            // Automatically skip deleted records
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

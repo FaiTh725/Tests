@@ -1,11 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
+using TestRating.Domain.Events;
+using TestRating.Domain.Primitives;
 using TestRating.Domain.Validators;
 
 namespace TestRating.Domain.Entities
 {
-    public class FeedbackReport : Entity
+    public class FeedbackReport : DomainEventEntity
     {
         public string ReportMessage { get; private set; }
+
+        public bool? IsApproval {  get; private set; }
 
         public Feedback ReportedFeedback { get; private set; }
         public long ReportedFeedbackId { get; private set; }
@@ -18,7 +22,7 @@ namespace TestRating.Domain.Entities
         public FeedbackReport() {}
 
         private FeedbackReport(
-            string reportMessage, 
+            string reportMessage,
             Feedback reportedFeedback, 
             Profile reviewer)
         {
@@ -27,6 +31,7 @@ namespace TestRating.Domain.Entities
             Reviewer = reviewer;
 
             CreatedTime = DateTime.UtcNow;
+            IsApproval = null;
         }
 
         private FeedbackReport(
@@ -39,6 +44,21 @@ namespace TestRating.Domain.Entities
             ReviewerId = reviewerId;
 
             CreatedTime = DateTime.UtcNow;
+            IsApproval = null;
+        }
+
+        public void ReviewReport(
+            bool isApproved)
+        {
+            IsApproval = isApproved;
+
+            if(isApproved == true)
+            {
+                RaiseDomainEvent(new FeedbackReportReviewedEvent
+                { 
+                    FeedbackReportId = Id
+                });
+            }
         }
       
         public static Result<FeedbackReport> Initialize(

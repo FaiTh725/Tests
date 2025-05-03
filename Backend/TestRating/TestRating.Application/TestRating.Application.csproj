@@ -26,6 +26,9 @@
     <Reference Include="Authorization.Contracts">
       <HintPath>..\..\Authorization\Authorization.Contracts\bin\Debug\net8.0\Authorization.Contracts.dll</HintPath>
     </Reference>
+    <Reference Include="Notification.Contracts">
+      <HintPath>..\..\Notification\Notification.Contracts\bin\Debug\net8.0\Notification.Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

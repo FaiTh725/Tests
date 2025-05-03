@@ -8,11 +8,15 @@ namespace TestRating.Domain.Repositories
         Task<Feedback> AddFeedback(Feedback feedback, CancellationToken cancellationToken = default);
 
         Task<Feedback?> GetFeedbackById(long id, CancellationToken cancellationToken = default);
+        
+        Task<Feedback?> GetFeedbackExcludeFiltersById(long id, CancellationToken cancellationToken = default);
 
         Task<Feedback?> GetFeedbackByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
 
         Task UpdateFeedback(long feedbackId, Feedback updatedFeedback, CancellationToken cancellationToken = default);
 
-        Task DeleteFeedback(long id, CancellationToken cancellationToken);
+        Task SoftDeleteFeedback(long id, CancellationToken cancellationToken = default);
+
+        Task HardDeleteFeedback(long id, CancellationToken cancellationToken = default);
     }
 }

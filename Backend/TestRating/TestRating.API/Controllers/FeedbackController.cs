@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestRating.API.Contracts.Feedback;
+using TestRating.Application.Commands.FeedbackEntity.BanFeedback;
 using TestRating.Application.Commands.FeedbackEntity.ChangeFeedback;
 using TestRating.Application.Commands.FeedbackEntity.DeleteFeedback;
 using TestRating.Application.Commands.FeedbackEntity.SendFeedback;
+using TestRating.Application.Commands.FeedbackReviewEntity.SendFeedbackReview;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Contacts.File;
 using TestRating.Application.Contacts.Profile;
@@ -25,6 +27,18 @@ namespace TestRating.API.Controllers
         {
             this.mediator = mediator;
             this.tokenService = tokenService;
+        }
+
+        [HttpDelete("test")]
+        public async Task<IActionResult> TestSoftDelete(
+            long id, CancellationToken cancellationToken)
+        {
+            await mediator.Send(new BanFeedbackCommand
+            {
+                Id = id,    
+            }, cancellationToken);
+
+            return Ok();
         }
 
         [HttpPost("[action]")]
@@ -79,7 +93,7 @@ namespace TestRating.API.Controllers
                 ProfileRole = profile.Role
             }, cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("[action]")]
@@ -109,6 +123,25 @@ namespace TestRating.API.Controllers
                     })
                 .ToList()
 
+            }, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        [Authorize]
+        public async Task<IActionResult> SendReview(
+            SendReviewOnFeedbackRequest request, CancellationToken cancellationToken)
+        {
+            var token = Request.Cookies["token"];
+            var profile = await tokenService
+                .VerifyToken(token, cancellationToken);
+
+            await mediator.Send(new SendFeedbackReviewCommand
+            {
+                FeedbackId  = request.FeedbackId,
+                IsPositive = request.IsPositive,
+                ProfileId = profile.Id
             }, cancellationToken);
 
             return Ok();

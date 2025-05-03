@@ -20,12 +20,13 @@ namespace TestRating.Application.Commands.FeedbackEntity.DeleteFeedback
             this.unitOfWork = unitOfWork;
         }
 
+        // TODO when deleting feedback any reports can exist
         public async Task Handle(
             DeleteFeedbackCommand request, 
             CancellationToken cancellationToken)
         {
             var feedback = await unitOfWork.FeedbackRepository
-                .GetFeedbackById(request.FeedbackId, cancellationToken);
+                .GetFeedbackExcludeFiltersById(request.FeedbackId, cancellationToken);
 
             if (feedback is null)
             {
@@ -34,7 +35,7 @@ namespace TestRating.Application.Commands.FeedbackEntity.DeleteFeedback
 
             // TODO there implement outbox pattern
             await unitOfWork.FeedbackRepository
-                .DeleteFeedback(feedback.Id, cancellationToken);
+                .HardDeleteFeedback(feedback.Id, cancellationToken);
 
             await bus.Publish(new ClearBlobFromStorage
             {

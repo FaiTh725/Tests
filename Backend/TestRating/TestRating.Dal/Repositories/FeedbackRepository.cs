@@ -26,13 +26,18 @@ namespace TestRating.Dal.Repositories
             return addedFeedback.Entity;
         }
 
-        public async Task DeleteFeedback(
+        public async Task SoftDeleteFeedback(
             long id, 
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
-            await context.Feedbacks
-                .Where(x => x.Id == id)
-                .ExecuteDeleteAsync(cancellationToken);
+            var report = await GetFeedbackById(id, cancellationToken);
+
+            if (report is null)
+            {
+                return;
+            }
+
+            report.Delete();
         }
 
         public Task<Feedback?> GetFeedbackByCriteria(
@@ -65,6 +70,34 @@ namespace TestRating.Dal.Repositories
                     .SetProperty(x => x.Rating, updatedFeedback.Rating)
                     .SetProperty(x => x.UpdateTime, updatedFeedback.UpdateTime),
                 cancellationToken);
+        }
+
+        public async Task HardDeleteFeedback(
+            long id, 
+            CancellationToken cancellationToken = default)
+        {
+            // disable soft delete interceptor to execute hard delete
+            context.ChangeTracker.AutoDetectChangesEnabled = false;
+
+            await context.Feedbacks
+                .IgnoreQueryFilters()
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync(cancellationToken);
+        }
+
+        public async Task<Feedback?> GetFeedbackExcludeFiltersById(
+            long id, 
+            CancellationToken cancellationToken = default)
+        {
+            var feedbacks = context.Feedbacks
+                .AsQueryable();
+
+            feedbacks = feedbacks.IgnoreQueryFilters();
+
+            return await feedbacks
+                    .FirstOrDefaultAsync(x => 
+                        x.Id == id, 
+                    cancellationToken);
         }
     }
 }

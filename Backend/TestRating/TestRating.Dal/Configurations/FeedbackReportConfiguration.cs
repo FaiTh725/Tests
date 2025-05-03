@@ -16,13 +16,17 @@ namespace TestRating.Dal.Configurations
                 .HasMaxLength(ReportValidator.MAX_REPORT_MESSAGE_LENGTH)
                 .IsRequired();
 
+            builder.Property(x => x.IsApproval)
+                .HasDefaultValue(null);
+
             builder.Property(x => x.CreatedTime)
                 .IsRequired();
 
             builder.HasOne(x => x.ReportedFeedback)
-                .WithMany()
-                .HasForeignKey(x => x.ReportedFeedbackId)
-                .IsRequired();
+                .WithOne()
+                .HasForeignKey<FeedbackReport>(x => x.ReportedFeedbackId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Reviewer)
                 .WithMany()

@@ -18,6 +18,11 @@ namespace TestRating.Dal.Configurations
                 .WithMany(x => x.Reviews)
                 .HasForeignKey(x => x.OwnerId)
                 .IsRequired();
+
+            builder.HasOne(x => x.ReviewedFeedback)
+                .WithMany(x => x.Reviews)
+                .HasForeignKey(x => x.ReviewedFeedbackId)
+                .IsRequired();
         }
     }
 }

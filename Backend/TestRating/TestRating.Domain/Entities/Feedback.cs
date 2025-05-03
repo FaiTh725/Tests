@@ -1,9 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
+using TestRating.Domain.Events;
+using TestRating.Domain.Primitives;
 using TestRating.Domain.Validators;
 
 namespace TestRating.Domain.Entities
 {
-    public class Feedback : Entity
+    public class Feedback : DomainEventEntity, ISoftDeletable
     {
         public string ImageFolder { get => $"FeedBack-{Id}"; }
 
@@ -14,11 +16,17 @@ namespace TestRating.Domain.Entities
         public Profile Owner { get; private set; }
         public long OwnerId { get; private set; }
 
+        public List<FeedbackReview> Reviews { get; private set; }
+
         public int Rating { get; private set; }
 
         public DateTime SendTime { get; private set; }
 
         public DateTime UpdateTime { get; private set; }
+
+        public bool IsDeleted { get; private set; }
+
+        public DateTime? DeletedTime { get; private set; }
 
         public Feedback() { }
 
@@ -35,6 +43,8 @@ namespace TestRating.Domain.Entities
 
             SendTime = DateTime.UtcNow;
             UpdateTime = DateTime.UtcNow;
+            Reviews = new List<FeedbackReview>();
+            IsDeleted = false;
         }
 
         private Feedback(
@@ -50,6 +60,26 @@ namespace TestRating.Domain.Entities
 
             SendTime = DateTime.UtcNow;
             UpdateTime = DateTime.UtcNow;
+            Reviews = new List<FeedbackReview>();
+            IsDeleted = false;
+        }
+
+        public Result Delete()
+        {
+            if (IsDeleted)
+            {
+                return Result.Failure("Feedback has already deleted");
+            }
+
+            IsDeleted = true;
+            DeletedTime = DateTime.UtcNow;
+
+            RaiseDomainEvent(new FeedbackDeletedEvent
+            {
+                FeedbackId = Id
+            });
+
+            return Result.Success();
         }
 
         public Result ChangeFeedback(
