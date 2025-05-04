@@ -13,6 +13,10 @@ namespace TestRating.Domain.Repositories
 
         Task<Feedback?> GetFeedbackByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(Specification<Feedback> specification, int page, int pageSize,CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Feedback>> GetFeedbacks(CancellationToken cancellationToken = default);
+
         Task UpdateFeedback(long feedbackId, Feedback updatedFeedback, CancellationToken cancellationToken = default);
 
         Task SoftDeleteFeedback(long id, CancellationToken cancellationToken = default);

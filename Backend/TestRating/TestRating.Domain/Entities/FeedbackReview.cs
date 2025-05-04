@@ -16,16 +16,6 @@ namespace TestRating.Domain.Entities
 
         private FeedbackReview(
             bool isPositive,
-            Profile owner,
-            Feedback reviewedFeedback)
-        {
-            IsPositive = isPositive;
-            Owner = owner;
-            ReviewedFeedback = reviewedFeedback;
-        }
-
-        private FeedbackReview(
-            bool isPositive,
             long ownerId,
             long reviewedFeedbackId)
         {
@@ -37,23 +27,6 @@ namespace TestRating.Domain.Entities
         public void ChangeReview(bool isPositive)
         {
             IsPositive = isPositive;
-        }
-
-
-        public static Result<FeedbackReview> Initialize(
-            bool isPositive,
-            Profile owner,
-            Feedback reviewedFeedback)
-        {
-            if(owner is null)
-            {
-                return Result.Failure<FeedbackReview>("Owner is null");
-            }
-
-            return Result.Success(new FeedbackReview(
-                isPositive,
-                owner,
-                reviewedFeedback));
         }
 
         public static Result<FeedbackReview> Initialize(

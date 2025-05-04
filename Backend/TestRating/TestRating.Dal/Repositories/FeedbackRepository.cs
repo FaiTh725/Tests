@@ -99,5 +99,26 @@ namespace TestRating.Dal.Repositories
                         x.Id == id, 
                     cancellationToken);
         }
+
+        public async Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(
+            Specification<Feedback> specification, 
+            int page, 
+            int pageSize, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetQuery(
+                context.Feedbacks,
+                specification)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Feedback>> GetFeedbacks(
+            CancellationToken cancellationToken = default)
+        {
+            return await context.Feedbacks
+                .ToListAsync(cancellationToken);
+        }
     }
 }

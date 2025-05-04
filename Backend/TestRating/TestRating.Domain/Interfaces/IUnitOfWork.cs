@@ -1,4 +1,5 @@
-﻿using TestRating.Domain.Repositories;
+﻿using System.Data;
+using TestRating.Domain.Repositories;
 
 namespace TestRating.Domain.Interfaces
 {
@@ -12,13 +13,15 @@ namespace TestRating.Domain.Interfaces
 
         IProfileRepository ProfileRepository { get; }
 
+        IFeedbackReplyRepository ReplyRepository { get; }
+
         int SaveChanges();
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
-        void BeginTransaction();
+        void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
 
-        Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+        Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 
         void CommitTransaction();
 

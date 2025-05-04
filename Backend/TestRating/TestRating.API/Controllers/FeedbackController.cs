@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestRating.API.Contracts.Feedback;
-using TestRating.Application.Commands.FeedbackEntity.BanFeedback;
 using TestRating.Application.Commands.FeedbackEntity.ChangeFeedback;
 using TestRating.Application.Commands.FeedbackEntity.DeleteFeedback;
 using TestRating.Application.Commands.FeedbackEntity.SendFeedback;
@@ -10,6 +9,7 @@ using TestRating.Application.Commands.FeedbackReviewEntity.SendFeedbackReview;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Contacts.File;
 using TestRating.Application.Contacts.Profile;
+using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
 using TestRating.Application.Queries.FeedbackEntity.GetFeedbackWithOwner;
 
 namespace TestRating.API.Controllers
@@ -27,6 +27,16 @@ namespace TestRating.API.Controllers
         {
             this.mediator = mediator;
             this.tokenService = tokenService;
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetTestFeedbacks(
+            [FromQuery]GetFeedbacksByTestIdQuery request, CancellationToken cancellationToken)
+        {
+            var feedbacks = await mediator
+                .Send(request, cancellationToken);
+        
+            return Ok(feedbacks);
         }
 
         [HttpPost("[action]")]
@@ -113,7 +123,7 @@ namespace TestRating.API.Controllers
 
             }, cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("[action]")]

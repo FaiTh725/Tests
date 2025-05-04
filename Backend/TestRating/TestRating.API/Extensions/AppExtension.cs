@@ -1,7 +1,17 @@
 ﻿using Application.Shared.Exceptions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Test.API.Grpc;
+using TestRating.API.Contracts.Feedback;
+using TestRating.API.Contracts.FeedbackReply;
+using TestRating.API.Contracts.FeedbackReport;
 using TestRating.API.Grpc.Services;
+using TestRating.API.Validators.FeedbackValidators;
+using TestRating.API.Validators.ReplyValidators;
+using TestRating.API.Validators.ReportFeedbackValidators;
 using TestRating.Application.Common.Interfaces;
+using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
+using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
 
 namespace TestRating.API.Extensions
 {
@@ -12,7 +22,8 @@ namespace TestRating.API.Extensions
             IConfiguration configuration)
         {
             services
-                .AddGrpcProvider(configuration);
+                .AddGrpcProvider(configuration)
+                .ConfigureFluentValidation();
 
             services.AddScoped<ITestExternalService, TestExternalService>();
 
@@ -41,6 +52,24 @@ namespace TestRating.API.Extensions
 
                 return handler;
             });
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureFluentValidation(
+            this IServiceCollection services)
+        {
+            services.AddFluentValidationAutoValidation();
+
+            services.AddScoped<IValidator<CreateFeedbackRequest>, CreateFeedbackValidator>();
+            services.AddScoped<IValidator<ChangeFeedbackRequest>, ChangeFeedbackValidator>();
+            services.AddScoped<IValidator<GetFeedbacksByTestIdQuery>, GetTestFeedbacksValidator>();
+
+            services.AddScoped<IValidator<SendReplyRequest>, SendReplyValidator>();
+            services.AddScoped<IValidator<ChangeReplyRequest>, ChangeReplyValidator>();
+            services.AddScoped<IValidator<GetFeedbackRepliesQuery>, GetFeedbackRepliesValidator>();
+
+            services.AddScoped<IValidator<SendReportRequest>, SendReportValidator>();
 
             return services;
         }

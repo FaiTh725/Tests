@@ -31,8 +31,10 @@ namespace Authorization.Infastructure.BackgroundServices
                 await migrationService.ApplyPendingMigrations(stoppingToken);
                 logger.LogInformation("Apply Migrations");
             }
-
-            logger.LogInformation("Migrations already replied");
+            else
+            {
+                logger.LogInformation("Migrations already applied");
+            }
         }
 
         private async Task WaitDatabase(CancellationToken cancellationToken)

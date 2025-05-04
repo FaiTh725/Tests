@@ -55,6 +55,7 @@ services:
       - RabbitMqSettings__User=FaITh725
       - RabbitMqSettings__Password=eZQ9XeVGvT
       - RabbitMqSettings__Host=rabbitmq
+      - MongoDbName=Testing
       - ASPNETCORE_URLS=https://+:5302;http://+:5301
       - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx

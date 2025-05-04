@@ -241,6 +241,45 @@ namespace TestRating.Dal.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TestRating.Domain.Entities.FeedbackReply", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("FeedbackId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<long>("OwnerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("SendTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeedbackId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Replies");
+                });
+
             modelBuilder.Entity("TestRating.Domain.Entities.FeedbackReport", b =>
                 {
                     b.Property<long>("Id")
@@ -349,6 +388,25 @@ namespace TestRating.Dal.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("TestRating.Domain.Entities.FeedbackReply", b =>
+                {
+                    b.HasOne("TestRating.Domain.Entities.Feedback", "Feedback")
+                        .WithMany("Replies")
+                        .HasForeignKey("FeedbackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestRating.Domain.Entities.Profile", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feedback");
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("TestRating.Domain.Entities.FeedbackReport", b =>
                 {
                     b.HasOne("TestRating.Domain.Entities.Feedback", "ReportedFeedback")
@@ -389,6 +447,8 @@ namespace TestRating.Dal.Migrations
 
             modelBuilder.Entity("TestRating.Domain.Entities.Feedback", b =>
                 {
+                    b.Navigation("Replies");
+
                     b.Navigation("Reviews");
                 });
 

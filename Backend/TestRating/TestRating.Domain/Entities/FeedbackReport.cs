@@ -23,19 +23,6 @@ namespace TestRating.Domain.Entities
 
         private FeedbackReport(
             string reportMessage,
-            Feedback reportedFeedback, 
-            Profile reviewer)
-        {
-            ReportMessage = reportMessage;
-            ReportedFeedback = reportedFeedback;
-            Reviewer = reviewer;
-
-            CreatedTime = DateTime.UtcNow;
-            IsApproval = null;
-        }
-
-        private FeedbackReport(
-            string reportMessage,
             long reportedFeedbackId,
             long reviewerId)
         {
@@ -59,34 +46,6 @@ namespace TestRating.Domain.Entities
                     FeedbackReportId = Id
                 });
             }
-        }
-      
-        public static Result<FeedbackReport> Initialize(
-            string reportMessage,
-            Feedback reportedFeedback,
-            Profile reviewer)
-        {
-            var isValid = Validate(reportMessage);
-
-            if (isValid.IsFailure)
-            {
-                return Result.Failure<FeedbackReport>(isValid.Error);
-            }
-
-            if (reportedFeedback is null)
-            {
-                return Result.Failure<FeedbackReport>("Feedback is required");
-            }
-
-            if (reviewer is null)
-            {
-                return Result.Failure<FeedbackReport>("Review owner is required");
-            }
-
-            return Result.Success(new FeedbackReport(
-                reportMessage,
-                reportedFeedback,
-                reviewer));
         }
 
         public static Result<FeedbackReport> Initialize(

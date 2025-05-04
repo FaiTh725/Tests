@@ -23,6 +23,7 @@ namespace TestRating.Application
                 
                 x.AddOpenBehavior(typeof(CheckTestIsExistBehavior<,>));
                 x.AddOpenBehavior(typeof(OwnerAndAdminFeedbackAccessBehavior<,>));
+                x.AddOpenBehavior(typeof(OwnerAndAdminReplyAccessBehavior<,>));
             });
 
             return services;

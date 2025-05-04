@@ -11,6 +11,7 @@ using TestRating.Application.Consumers.Blobs;
 using TestRating.Application.Consumers.ProfileConsumers;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Dal;
+using TestRating.Infrastructure.BackgroundServices;
 using TestRating.Infrastructure.Configurations;
 using TestRating.Infrastructure.Implementations;
 
@@ -30,6 +31,8 @@ namespace TestRating.Infrastructure
             services.AddScoped<ITokenService<ProfileToken>, ProfileTokenService>();
             
             services.AddSingleton<IBlobService, AzuriteBlobStorageService>();
+
+            services.AddHostedService<ApplyMigrationsBackgroundService>();
 
             return services;
         }

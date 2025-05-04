@@ -18,6 +18,8 @@ namespace TestRating.Domain.Entities
 
         public List<FeedbackReview> Reviews { get; private set; }
 
+        public List<FeedbackReply> Replies { get; private set; }
+
         public int Rating { get; private set; }
 
         public DateTime SendTime { get; private set; }
@@ -34,23 +36,6 @@ namespace TestRating.Domain.Entities
             string text,
             long testId,
             int rating,
-            Profile owner)
-        {
-            Text = text;
-            TestId = testId;
-            Rating = rating;
-            Owner = owner;
-
-            SendTime = DateTime.UtcNow;
-            UpdateTime = DateTime.UtcNow;
-            Reviews = new List<FeedbackReview>();
-            IsDeleted = false;
-        }
-
-        private Feedback(
-            string text,
-            long testId,
-            int rating,
             long ownerId)
         {
             Text = text;
@@ -61,6 +46,7 @@ namespace TestRating.Domain.Entities
             SendTime = DateTime.UtcNow;
             UpdateTime = DateTime.UtcNow;
             Reviews = new List<FeedbackReview>();
+            Replies = new List<FeedbackReply>();
             IsDeleted = false;
         }
 
@@ -99,32 +85,6 @@ namespace TestRating.Domain.Entities
             UpdateTime = DateTime.UtcNow;
         
             return Result.Success();
-        }
-
-
-        public static Result<Feedback> Initialize(
-            string text,
-            long testId,
-            int rating,
-            Profile owner)
-        {
-            var isValid = Validate(text, rating);
-
-            if (isValid.IsFailure)
-            {
-                return Result.Failure<Feedback>(isValid.Error);
-            }
-
-            if(owner is null)
-            {
-                return Result.Failure<Feedback>("Owner is null");
-            }
-
-            return Result.Success(new Feedback(
-                text,
-                testId,
-                rating,
-                owner));
         }
 
         public static Result<Feedback> Initialize(

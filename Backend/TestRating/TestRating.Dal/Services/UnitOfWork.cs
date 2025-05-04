@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 using TestRating.Dal.Repositories;
 using TestRating.Domain.Interfaces;
 using TestRating.Domain.Repositories;
@@ -15,6 +17,7 @@ namespace TestRating.Dal.Services
         private readonly Lazy<IFeedbackReportRepository> reportRepository;
         private readonly Lazy<IFeedbackReviewRepository> reviewRepository;
         private readonly Lazy<IProfileRepository> profileRepository;
+        private readonly Lazy<IFeedbackReplyRepository> replyRepository;
 
         private IDbContextTransaction transaction;
 
@@ -27,6 +30,7 @@ namespace TestRating.Dal.Services
             reportRepository = new Lazy<IFeedbackReportRepository>(() => new FeedbackReportRepository(context));
             reviewRepository = new Lazy<IFeedbackReviewRepository>(() => new FeedbackReviewRepository(context));
             profileRepository = new Lazy<IProfileRepository>(() => new ProfileRepository(context));
+            replyRepository = new Lazy<IFeedbackReplyRepository>(() => new FeedbackReplyRepository(context));
         }
 
         public IFeedbackReportRepository ReportRepository => reportRepository.Value;
@@ -37,12 +41,18 @@ namespace TestRating.Dal.Services
 
         public IProfileRepository ProfileRepository => profileRepository.Value;
 
-        public void BeginTransaction()
+        public IFeedbackReplyRepository ReplyRepository => replyRepository.Value;
+
+        public void BeginTransaction(
+            IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            transaction = context.Database.BeginTransaction();
+            transaction = context.Database
+                .BeginTransaction(isolationLevel);
         }
 
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task BeginTransactionAsync(
+            IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, 
+            CancellationToken cancellationToken = default)
         {
             transaction = await context.Database
                 .BeginTransactionAsync(cancellationToken);

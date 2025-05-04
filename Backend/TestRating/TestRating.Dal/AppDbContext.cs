@@ -34,6 +34,8 @@ namespace TestRating.Dal
 
         public DbSet<FeedbackReview> Reviews { get; set; }
 
+        public DbSet<FeedbackReply> Replies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new FeedbackConfiguration());
