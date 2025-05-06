@@ -1,6 +1,6 @@
 ﻿namespace Application.Shared.Exceptions
 {
-    public class AppConfigurationException : Exception
+    public class AppConfigurationException : ApiException
     {
         public string SectionWithError { get; private set; } = string.Empty;
 
