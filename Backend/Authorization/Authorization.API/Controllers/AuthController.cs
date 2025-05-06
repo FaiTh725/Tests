@@ -1,10 +1,13 @@
-﻿using Authorization.Application.Commands.UserEntity.Login;
+using Authorization.Application.Commands.Email.SendConfirmCode;
+using Authorization.Application.Commands.Email.VerifyCode;
+using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
 using Authorization.Application.Queries.UserEntity.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Authorization.API.Controllers
 {
@@ -112,6 +115,25 @@ namespace Authorization.API.Controllers
             Response.Cookies.Delete("token");
 
             return NoContent();
+        }
+
+        [HttpPost("[action]")]
+        [EnableRateLimiting("confirm_email")]
+        public async Task<IActionResult> SendEmailConfirmationCode(
+            SendConfirmCodeCommand request, CancellationToken cancellationToken)
+        {
+            await mediator.Send(request, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> VerifyConfirmationCode(
+            VerifyCodeCommand request, CancellationToken cancellationToken)
+        {
+            await mediator.Send(request, cancellationToken);
+
+            return Ok();
         }
     }
 }

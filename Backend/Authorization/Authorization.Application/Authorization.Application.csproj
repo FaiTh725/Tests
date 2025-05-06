@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
@@ -20,6 +21,9 @@
   <ItemGroup>
     <Reference Include="Application.Shared">
       <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Notification.Contracts">
+      <HintPath>..\..\Notification\Notification.Contracts\bin\Debug\net8.0\Notification.Contracts.dll</HintPath>
     </Reference>
   </ItemGroup>
 

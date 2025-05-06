@@ -1,4 +1,5 @@
-﻿using Authorization.Application.Common.Implementations;
+﻿using Authorization.Application.Behaviors;
+using Authorization.Application.Common.Implementations;
 using Authorization.Application.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +23,7 @@ namespace Authorization.Application
         {
             services.AddMediatR(cfg =>
             {
+                cfg.AddOpenBehavior(typeof(RegistrationAccessBehavior<,>));
                 cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
             });
 
