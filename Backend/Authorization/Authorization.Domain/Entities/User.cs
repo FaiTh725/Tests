@@ -47,22 +47,17 @@ namespace Authorization.Domain.Entities
             string passwordHash,
             Role role)
         {
-            if(string.IsNullOrWhiteSpace(userName))
+            var isValid = Validate(
+                userName,
+                email,
+                passwordHash);
+
+            if (isValid.IsFailure)
             {
-                return Result.Failure<User>("UserName is emprt or null");
+                return Result.Failure<User>(isValid.Error);
             }
 
-            if(string.IsNullOrEmpty(passwordHash))
-            {
-                return Result.Failure<User>("PasswordHash is empty or null");
-            }
-
-            if(!UserValidator.IsValidEmail(email))
-            {
-                return Result.Failure<User>("Email is invalid, must contains one letter and one number");
-            }
-
-            if(role is null)
+            if (role is null)
             {
                 return Result.Failure<User>("Role is null");
             }
@@ -80,19 +75,14 @@ namespace Authorization.Domain.Entities
             string passwordHash,
             string roleName)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                return Result.Failure<User>("UserName is emprt or null");
-            }
+            var isValid = Validate(
+                userName,
+                email,
+                passwordHash);
 
-            if (string.IsNullOrEmpty(passwordHash))
+            if(isValid.IsFailure)
             {
-                return Result.Failure<User>("PasswordHash is empty or null");
-            }
-
-            if (!UserValidator.IsValidEmail(email))
-            {
-                return Result.Failure<User>("Email is invalid, must contains one letter and one number");
+                return Result.Failure<User>(isValid.Error);
             }
 
             if (string.IsNullOrWhiteSpace(roleName))
@@ -105,6 +95,29 @@ namespace Authorization.Domain.Entities
                 email,
                 passwordHash,
                 roleName));
+        }
+
+        private static Result Validate(
+            string userName,
+            string email,
+            string passwordHash)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return Result.Failure("UserName is empty or null");
+            }
+
+            if (string.IsNullOrEmpty(passwordHash))
+            {
+                return Result.Failure("PasswordHash is empty or null");
+            }
+
+            if (!UserValidator.IsValidEmail(email))
+            {
+                return Result.Failure("Email is invalid, must contains one letter and one number");
+            }
+
+            return Result.Success();
         }
     }
 }

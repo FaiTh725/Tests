@@ -3,11 +3,11 @@ version: "3.8"
 name: "Testing"
 
 services:
-  testing_authorizetion_api:
+  testing_authorization_api:
     build:
       context: .
       dockerfile: Dockerfile.Authorization
-    container_name: testing_authorizetion_api
+    container_name: testing_authorization_api
     ports:
       - "5201:5201"
       - "5202:5202"
@@ -51,7 +51,7 @@ services:
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
-      - EmailSettings__ReciverEmail=${EMAIL_RECIVER}
+      - EmailSettings__ReceiverEmail=${EMAIL_RECIVER}
       - EmailSettings__Password=${EMAIL_PASSWORD}
       - ASPNETCORE_URLS=https://+:5102;http://+:5101
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}

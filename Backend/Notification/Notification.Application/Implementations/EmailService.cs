@@ -23,7 +23,7 @@ namespace Notification.Application.Implementations
             emailServiceConf = configuration
                 .GetSection("EmailSettings")
                 .Get<EmailServiceConf>() ??
-                throw new AppConfigurationException("EmailSettings configuratiion");
+                throw new AppConfigurationException("EmailSettings configuration");
         }
 
         public async Task SendEmail(EmailDTO email)
@@ -32,7 +32,7 @@ namespace Notification.Application.Implementations
 
             emailMessage.From.Add(new MailboxAddress(
                 "Testing",
-                emailServiceConf.ReciverEmail));
+                emailServiceConf.ReceiverEmail));
             emailMessage.To.Add(new MailboxAddress(
                 "",
                 email.Email));
@@ -47,12 +47,12 @@ namespace Notification.Application.Implementations
                 using var client = new SmtpClient();
                 await client.ConnectAsync("smtp.mail.ru", 465);
                 await client.AuthenticateAsync(
-                    emailServiceConf.ReciverEmail,
+                    emailServiceConf.ReceiverEmail,
                     emailServiceConf.Password);
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);
 
-                logger.LogInformation("Email successfuly sent to " + email.Email);
+                logger.LogInformation("Email successfully sent to " + email.Email);
             }
             catch
             {

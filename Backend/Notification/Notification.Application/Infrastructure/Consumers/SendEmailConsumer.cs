@@ -4,7 +4,7 @@ using Notification.Application.DTO;
 using Notification.Application.Interfaces;
 using Notification.Contracts.Email;
 
-namespace Notification.Application.Infastructure.Consumers
+namespace Notification.Application.Infrastructure.Consumers
 {
     public class SendEmailConsumer :
         IConsumer<SendEmailRequest>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75 d17.13
+VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.API", "Authorization.API.csproj", "{2D6C93B4-3EFD-455E-8791-5318EBDBE88D}"
 EndProject
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Dal", "..\Aut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Application", "..\Authorization.Application\Authorization.Application.csproj", "{C8A322E6-6CED-4E22-A41B-3B99E06A5C0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Infastructure", "..\Authorization.Infastructure\Authorization.Infastructure.csproj", "{B401C760-754B-41E9-A0D8-9381CDD20572}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Infrastructure", "..\Authorization.Infastructure\Authorization.Infrastructure.csproj", "{B401C760-754B-41E9-A0D8-9381CDD20572}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

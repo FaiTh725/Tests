@@ -1,7 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
-using Authorization.Infastructure.Configurations;
+using Authorization.Infrastructure.Configurations;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Authorization.Infastructure.Implementations
+namespace Authorization.Infrastructure.Implementations
 {
     public class JwtUserService :
         IJwtService<UserTokenRequest, UserTokenResponse>

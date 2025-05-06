@@ -1,19 +1,19 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
-using Authorization.Infastructure.BackgroundServices;
 using Authorization.Infastructure.Configurations;
-using Authorization.Infastructure.Implementations;
 using MassTransit;
+using Authorization.Infrastructure.BackgroundServices;
+using Authorization.Infrastructure.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace Authorization.Infastructure
+namespace Authorization.Infrastructure
 {
     public static class Startup
     {
-        public static IServiceCollection ConfigureInfastructureServices(
+        public static IServiceCollection ConfigureInfrastructureServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -36,7 +36,7 @@ namespace Authorization.Infastructure
         {
             var redisCacheConncetion = configuration
                 .GetConnectionString("RedisCacheConnection") ??
-                throw new AppConfigurationException("Redis Cache conncetion string");
+                throw new AppConfigurationException("Redis Cache connection string");
 
             services.AddStackExchangeRedisCache(options =>
             {

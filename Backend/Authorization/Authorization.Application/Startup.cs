@@ -7,12 +7,13 @@ namespace Authorization.Application
 {
     public static class Startup
     {
-        public static IServiceCollection ConfigureAppSerrvices(
+        public static IServiceCollection ConfigureAppServices(
             this IServiceCollection services)
         {
             services.AddMediatRrovider();
 
             services.AddSingleton<IHashService, HashService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
@@ -22,8 +23,8 @@ namespace Authorization.Application
         {
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(AssemplyReference).Assembly);
                 cfg.AddOpenBehavior(typeof(RegistrationAccessBehavior<,>));
+                cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
             });
 
             return services;
