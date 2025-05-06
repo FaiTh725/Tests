@@ -1,12 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Shared.Exceptions;
+using Authorization.Application.Common.Interfaces;
+using Authorization.Application.Contracts.User;
+using Authorization.Infrastructure.BackgroundServices;
+using Authorization.Infrastructure.Implementations;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
-namespace Authorization.Infastructure
+namespace Authorization.Infrastructure
 {
-    class Startup
+    public static class Startup
     {
+        public static IServiceCollection ConfigureInfastructureServices(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services
+                .AddCacheProvider(configuration);
+
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<IJwtService<UserTokenRequest, UserTokenResponse>, JwtUserService>();
+
+            services.AddHostedService<ApplyMigrationsBackgroundService>();
+            services.AddHostedService<InitializeRolesBackgroundService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddCacheProvider(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var redisCacheConncetion = configuration
+                .GetConnectionString("RedisCacheConnection") ??
+                throw new AppConfigurationException("Redis Cache connection string");
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisCacheConncetion;
+                options.InstanceName = "TestingAuth";
+            });
+
+            services.AddSingleton<IConnectionMultiplexer>(
+                ConnectionMultiplexer.Connect(redisCacheConncetion));
+
+            return services;
+        }
     }
 }
