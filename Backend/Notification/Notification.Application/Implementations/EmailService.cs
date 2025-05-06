@@ -33,6 +33,7 @@ namespace Notification.Application.Implementations
             emailMessage.From.Add(new MailboxAddress(
                 "Testing",
                 emailServiceConf.ReceiverEmail));
+
             emailMessage.To.Add(new MailboxAddress(
                 "",
                 email.Email));
