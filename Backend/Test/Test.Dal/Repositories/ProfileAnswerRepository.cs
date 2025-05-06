@@ -28,8 +28,19 @@ namespace Test.Dal.Repositories
                 return mongoProfileAnswer;
             });
 
-            await context.ProfileAnswers
-                .InsertManyAsync(mongoProfileAnswers, cancellationToken: cancellationToken);
+            if (context.Session is null)
+            {
+                await context.ProfileAnswers.InsertManyAsync(
+                mongoProfileAnswers,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.ProfileAnswers.InsertManyAsync(
+                    context.Session,
+                    mongoProfileAnswers,
+                    cancellationToken: cancellationToken);
+            }
 
             return mongoProfileAnswers.Select(x => x.ConvertToDomainEntity());
         }

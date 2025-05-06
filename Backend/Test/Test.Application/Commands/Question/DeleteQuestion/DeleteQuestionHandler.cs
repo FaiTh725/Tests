@@ -10,14 +10,14 @@ namespace Test.Application.Commands.Question.DeleteQuestion
         IRequestHandler<DeleteQuestionCommand>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly IPublishEndpoint bus;
+        private readonly IOutboxService outboxService;
 
         public DeleteQuestionHandler(
             INoSQLUnitOfWork unitOfWork,
-            IPublishEndpoint bus)
+            IOutboxService outboxService)
         {
             this.unitOfWork = unitOfWork;
-            this.bus = bus;
+            this.outboxService = outboxService;
         }
 
         public async Task Handle(
@@ -39,7 +39,7 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 await unitOfWork.QuestionRepository
                     .DeleteQuestion(request.QuestionId, cancellationToken);
 
-                await bus.Publish(new DeleteFilesFromStorage
+                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
                     PathFiles = [question.ImageFolder]
                 },

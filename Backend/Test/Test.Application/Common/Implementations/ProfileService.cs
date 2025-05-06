@@ -3,7 +3,6 @@ using MediatR;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
-using Test.Domain.Entities;
 
 namespace Test.Application.Common.Implementations
 {
@@ -20,37 +19,34 @@ namespace Test.Application.Common.Implementations
             this.mediator = mediator;
         }
 
-        public async Task<ProfileResponse> DecodeProfileFromToken(
-            string? token,
+        public async Task<ConfirmedProfile> DecodeToken(
+            string? token, 
             CancellationToken cancellationToken = default)
         {
-            var profileToken = VerifyProfileFromToken(token);
-
-            var profile = await mediator.Send(new GetProfileByEmailQuery
-            {
-                Email = profileToken.Email
-            }, 
-            cancellationToken);
-
-            return profile;
-        }
-
-        public ProfileToken VerifyProfileFromToken(
-            string? token)
-        {
-            if (string.IsNullOrEmpty(token))
+            if(string.IsNullOrEmpty(token))
             {
                 throw new UnauthorizedAccessException("User isnt authorized");
             }
 
-            var profileToken = tokenService.DecodeToken(token);
+            var tokenPayload = tokenService.DecodeToken(token);
 
-            if (profileToken.IsFailure)
+            if(tokenPayload.IsFailure)
             {
                 throw new InternalServerErrorException("Invalid token signature");
             }
 
-            return profileToken.Value;
+            var profile = await mediator.Send(new GetProfileByEmailQuery
+            { 
+                Email = tokenPayload.Value.Email
+            }, cancellationToken);
+
+            return new ConfirmedProfile
+            {
+                Id = profile.Id,
+                Email = profile.Email,
+                Name = profile.Name,
+                Role = tokenPayload.Value.Role
+            };
         }
     }
 }

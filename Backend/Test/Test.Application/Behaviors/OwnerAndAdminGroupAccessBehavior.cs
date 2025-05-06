@@ -30,16 +30,8 @@ namespace Test.Application.Behaviors
                 throw new BadRequestException("Group doesnt exist");
             }
 
-            var owner = await unitOfWork.ProfileRepository
-                .GetProfile(request.OwnerEmail, cancellationToken);
-
-            if (owner is null)
-            {
-                throw new InternalServerErrorException("Unexpected error, group doesnt have an owner");
-            }
-
             if (request.Role != "Admin" &&
-                group.OwnerId != owner.Id)
+                group.OwnerId != request.OwnerId)
             {
                 throw new ForbiddenAccessException("Only the owner or an admin have access to the group");
             }

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Test.Application.Commands.Test.ClearTestProgress;
 using Test.Application.Common.Interfaces;
-using Test.Application.Common.Mediator;
+using Test.Application.Common.Wrappers;
 
 namespace Test.Infrastructure.BackgroundServices
 {

@@ -31,9 +31,23 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Answers
-                .InsertOneAsync(mongoQuestionAnswer, insertOptions, cancellationToken);
-        
+            if (context.Session is null)
+            {
+                await context.Answers.InsertOneAsync(
+                    mongoQuestionAnswer,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Answers.InsertOneAsync(
+                    context.Session,
+                    mongoQuestionAnswer,
+                    insertOptions,
+                    cancellationToken);
+            }
+
+
             return mongoQuestionAnswer.ConvertToDomainEntity();
         }
 
@@ -55,8 +69,21 @@ namespace Test.Dal.Repositories
                 IsOrdered = false,
             };
 
-            await context.Answers.InsertManyAsync(
-                mongoQuestions, insertQuestion, cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Answers.InsertManyAsync(
+                mongoQuestions,
+                insertQuestion,
+                cancellationToken);
+            }
+            else
+            {
+                await context.Answers.InsertManyAsync(
+                    context.Session,
+                    mongoQuestions,
+                    insertQuestion,
+                    cancellationToken);
+            }
 
             return mongoQuestions
                 .Select(x => x.ConvertToDomainEntity())
@@ -65,8 +92,22 @@ namespace Test.Dal.Repositories
 
         public async Task DeleteAnswers(List<long> idList, CancellationToken cancellationToken = default)
         {
-            await context.Answers
-                .DeleteManyAsync(x => idList.Contains(x.Id), cancellationToken);
+            var filter = Builders<MongoQuestionAnswer>.Filter
+                .In(x => x.Id, idList);
+
+            if (context.Session is null)
+            {
+                await context.Answers.DeleteManyAsync(
+                filter,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Answers.DeleteManyAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<QuestionAnswer?> GetQuestionAnswer(

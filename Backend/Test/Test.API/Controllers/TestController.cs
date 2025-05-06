@@ -35,7 +35,7 @@ namespace Test.API.Controllers
         {
             var token = Request.Cookies["token"];
             var profileFromToken = await profileService
-                .DecodeProfileFromToken(token, cancellationToken);
+                .DecodeToken(token, cancellationToken);
 
             var testId = await mediator.Send(new CreateTestCommand
             {
@@ -76,12 +76,13 @@ namespace Test.API.Controllers
             long testId, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             await mediator.Send(new DeleteTestCommand
             {
                 TestId = testId,
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
@@ -95,7 +96,8 @@ namespace Test.API.Controllers
             UpdateTestRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             var updatedTestId = await mediator.Send(new UpdateTestCommand
             {
@@ -103,7 +105,7 @@ namespace Test.API.Controllers
                 Description = request.Description,
                 IsPublic = request.IsPublic,
                 Name = request.Name,
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             }, cancellationToken);
 
@@ -116,14 +118,15 @@ namespace Test.API.Controllers
             ProvideTestAccessRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             var testAccessId = await mediator.Send(new GiveAccessTestCommand
                 {
                     AccessTargetEntityId = request.TargetEntityId,
                     TargetEntity = request.TargetAccessEntityType,
                     TestId = request.TestId,
-                    Email = profile.Email,
+                    OwnerId = profile.Id,
                     Role = profile.Role
                 },
                 cancellationToken);
@@ -137,11 +140,12 @@ namespace Test.API.Controllers
             LimitTestAccessRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             await mediator.Send(new LimitTestAccessCommand
             {
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role,
                 TargetEntityId = request.TargetEntityId,
                 TestId = request.TestId,

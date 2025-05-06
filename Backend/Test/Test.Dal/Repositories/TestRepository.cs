@@ -30,15 +30,43 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Tests.InsertOneAsync(
-                mongoTest, insertOptions, cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Tests.InsertOneAsync(
+                    mongoTest,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Tests.InsertOneAsync(
+                    context.Session,
+                    mongoTest,
+                    insertOptions,
+                    cancellationToken);
+            }
 
             return mongoTest.ConvertToDomainEntity();
         }
 
         public async Task DeleteTest(long id, CancellationToken cancellationToken = default)
         {
-            await context.Tests.DeleteOneAsync(x => x.Id == id, cancellationToken);
+            var filter = Builders<MongoTest>.Filter
+                .Eq(x => x.Id, id);
+
+            if (context.Session is null)
+            {
+                await context.Tests.DeleteOneAsync(
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Tests.DeleteOneAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<TestEntity?> GetTest(
@@ -96,9 +124,22 @@ namespace Test.Dal.Repositories
                 .Set(x => x.IsPublic, mongoTest.IsPublic)
                 .Set(x => x.TestType, mongoTest.TestType)
                 .Set(x => x.DurationInMinutes, mongoTest.DurationInMinutes);
-                
-            await context.Tests
-                .UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
+
+            if (context.Session is null)
+            {
+                await context.Tests.UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Tests.UpdateOneAsync(
+                    context.Session,
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
         }
     }
 }

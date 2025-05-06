@@ -76,9 +76,6 @@ namespace TestRating.Dal.Repositories
             long id, 
             CancellationToken cancellationToken = default)
         {
-            // disable soft delete interceptor to execute hard delete
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
-
             await context.Feedbacks
                 .IgnoreQueryFilters()
                 .Where(x => x.Id == id)
@@ -118,6 +115,29 @@ namespace TestRating.Dal.Repositories
             CancellationToken cancellationToken = default)
         {
             return await context.Feedbacks
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task HardDeleteByCriteria(
+            Specification<Feedback> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            if(specification.Criteria is not null)
+            { 
+                await context.Feedbacks
+                    .IgnoreQueryFilters()
+                    .Where(specification.Criteria)
+                    .ExecuteDeleteAsync(cancellationToken);
+            }
+        }
+
+        public async Task<IEnumerable<Feedback>> GetFeedbacksExcludeFiltersByCriteria(
+            Specification<Feedback> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetQuery(
+                context.Feedbacks.IgnoreQueryFilters(),
+                specification)
                 .ToListAsync(cancellationToken);
         }
     }

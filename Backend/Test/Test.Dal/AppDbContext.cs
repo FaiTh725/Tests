@@ -15,6 +15,7 @@ namespace Test.Dal
         public const string PROFILE_ANSWERS_COLLECTION_NAME = "profile_answers";
         public const string GROUPS_COLLECTION_NAME = "groups";
         public const string TEST_ACCESS_COLLECTION_NAME = "test_accesses";
+        public const string OUTBOX_MESSAGE_COLLECTION_NAME = "outbox_messages";
 
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
@@ -35,6 +36,9 @@ namespace Test.Dal
         }
 
         public IMongoClient Client { get => client; }
+
+        // in my opinion, a very bad solution to the transaction problem
+        public IClientSessionHandle? Session { get; set; }
 
         public IMongoCollection<MongoProfile> Profiles 
         { 
@@ -74,6 +78,11 @@ namespace Test.Dal
         public IMongoCollection<MongoTestAccess> Accesses
         {
             get => database.GetCollection<MongoTestAccess>(TEST_ACCESS_COLLECTION_NAME);
+        }
+
+        public IMongoCollection<MongoOutboxMessage> OutboxMessages
+        {
+            get => database.GetCollection<MongoOutboxMessage>(OUTBOX_MESSAGE_COLLECTION_NAME);
         }
 
         public long GetNextId(string entityName)

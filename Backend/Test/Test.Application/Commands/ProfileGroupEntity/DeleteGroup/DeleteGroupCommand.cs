@@ -11,6 +11,6 @@ namespace Test.Application.Commands.ProfileGroupEntity.DeleteGroup
 
         public string Role { get; set; } = string.Empty;
 
-        public string OwnerEmail { get; set; } = string.Empty;
+        public long OwnerId { get; set; }
     }
 }

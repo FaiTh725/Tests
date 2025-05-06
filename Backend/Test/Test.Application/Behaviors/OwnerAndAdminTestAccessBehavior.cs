@@ -30,12 +30,8 @@ namespace Test.Application.Behaviors
                 throw new NotFoundException("Test doesnt exist");
             }
 
-            // TODO: rework
-            var profile = await unitOfWork.ProfileRepository
-                .GetProfile(test.ProfileId, cancellationToken);
-
             if (request.Role != "Admin" &&
-                (profile is null || profile.Email != request.Email))
+                test.ProfileId != request.OwnerId)
             {
                 throw new ForbiddenAccessException("Only the owner or an admin have access to the test");
             }

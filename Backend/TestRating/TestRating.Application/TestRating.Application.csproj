@@ -29,6 +29,9 @@
     <Reference Include="Notification.Contracts">
       <HintPath>..\..\Notification\Notification.Contracts\bin\Debug\net8.0\Notification.Contracts.dll</HintPath>
     </Reference>
+    <Reference Include="Test.Contracts">
+      <HintPath>..\..\Test\Test.Contracts\bin\Debug\net8.0\Test.Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Test.Application.Contracts.File;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
@@ -13,16 +12,16 @@ namespace Test.Application.EventHandler.QuestionEventHandler
     {
         private readonly INoSQLUnitOfWork unitOfWork;
         private readonly ILogger<QuestionDeletedEventHandler> logger;
-        private readonly IPublishEndpoint bus;
+        private readonly IOutboxService outboxService;
 
         public QuestionDeletedEventHandler(
             INoSQLUnitOfWork unitOfWork,
             ILogger<QuestionDeletedEventHandler> logger,
-            IPublishEndpoint bus)
+            IOutboxService outboxService)
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;
-            this.bus = bus;
+            this.outboxService = outboxService;
         }
 
         public async Task Handle(
@@ -48,7 +47,7 @@ namespace Test.Application.EventHandler.QuestionEventHandler
                         .Select(x => x.ImageFolder)
                         .ToList();
 
-                await bus.Publish(new DeleteFilesFromStorage
+                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
                     PathFiles = questionAnswer
                         .Select(x => x.ImageFolder)

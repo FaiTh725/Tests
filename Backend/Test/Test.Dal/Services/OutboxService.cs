@@ -1,0 +1,51 @@
+﻿using MongoDB.Driver;
+using System.Text.Json;
+using Test.Dal.Persistences;
+using Test.Domain.Interfaces;
+
+namespace Test.Dal.Services
+{
+    public class OutboxService : IOutboxService
+    {
+        private readonly AppDbContext context;
+
+        public OutboxService(
+            AppDbContext context)
+        {
+            this.context = context;
+        }
+
+        public async Task AddOutboxMessage<T>(T message, CancellationToken cancellationToken = default)
+            where T : notnull
+        {
+            var mongoOutboxMessage = new MongoOutboxMessage
+            {
+                Id = context.GetNextId(AppDbContext.OUTBOX_MESSAGE_COLLECTION_NAME),
+                OccurredOnUtc = DateTime.UtcNow,
+                Type = message.GetType().AssemblyQualifiedName!,
+                Payload = JsonSerializer.Serialize(message)
+            };
+
+            var incertOneOptions = new InsertOneOptions
+            {
+                BypassDocumentValidation = true
+            };
+
+            if (context.Session is null)
+            {
+                await context.OutboxMessages.InsertOneAsync(
+                    mongoOutboxMessage, 
+                    incertOneOptions, 
+                    cancellationToken);
+            }
+            else
+            {
+                await context.OutboxMessages.InsertOneAsync(
+                    context.Session,
+                    mongoOutboxMessage,
+                    incertOneOptions,
+                    cancellationToken);
+            }
+        }
+    }
+}

@@ -31,8 +31,21 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Groups.InsertOneAsync(
-                mongoProfileGroup, insertOptions, cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Groups.InsertOneAsync(
+                    mongoProfileGroup,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Groups.InsertOneAsync(
+                    context.Session,
+                    mongoProfileGroup,
+                    insertOptions,
+                    cancellationToken);
+            }
 
             return mongoProfileGroup.ConvertToDomainEntity();
         }
@@ -41,8 +54,22 @@ namespace Test.Dal.Repositories
             long groupId, 
             CancellationToken cancellationToken = default)
         {
-            await context.Groups
-                .DeleteOneAsync(x => x.Id == groupId, cancellationToken);
+            var filter = Builders<MongoProfileGroup>.Filter
+                .Eq(x => x.Id, groupId);
+
+            if (context.Session is null)
+            {
+                await context.Groups.DeleteOneAsync(
+                filter,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Groups.DeleteOneAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<ProfileGroup?> GetProfileGroup(
@@ -83,7 +110,21 @@ namespace Test.Dal.Repositories
                 .Set(x => x.GroupName, updatedGroup.GroupName)
                 .Set(x => x.MembersId, [.. updatedGroup.MembersId]);
 
-            await context.Groups.UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Groups.UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Groups.UpdateOneAsync(
+                    context.Session,
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
         }
     }
 }

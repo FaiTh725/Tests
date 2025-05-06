@@ -19,9 +19,9 @@ namespace Test.Application.Commands.Test.UpdateTest
         public double? DurationInMinutes { get; set; }
 
         public long TestId { get; set; }
-
-        public string Email { get; set; } = string.Empty;
         
         public string Role { get; set; } = string.Empty;
+
+        public long OwnerId { get; set; }
     }
 }

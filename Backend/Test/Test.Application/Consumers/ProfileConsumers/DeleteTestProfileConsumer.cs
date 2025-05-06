@@ -23,7 +23,6 @@ namespace Test.Application.Consumers.ProfileConsumers
         {
             try
             {
-
                 await mediator.Send(new DeleteProfileCommand
                 {
                     ProfileId = context.Message.Id

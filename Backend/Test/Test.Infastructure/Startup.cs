@@ -20,8 +20,8 @@ using Redis.OM;
 using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
 using Test.Application.Consumers.ProfileConsumers;
-using Test.Dal;
-using MongoDB.Driver;
+using Test.Application.Consumers.TestConsumers;
+using Test.Domain.Interfaces;
 
 namespace Test.Infrastructure
 {
@@ -39,6 +39,7 @@ namespace Test.Infrastructure
                 .AddRedisProvider(configuration);
 
             services.AddScoped<IBackgroundJobService, HangFireJobService>();
+            services.AddScoped<IMessagePublisher, RabbitMessagePublisher>();
             services.AddScoped<ITempDbService<TempTestSession>, RedisTempDbService>();
 
             services.AddSingleton<IBlobService, AzuriteStorageService> ();
@@ -46,6 +47,7 @@ namespace Test.Infrastructure
 
             services.AddHostedService<CreateRedisOmIndexes>();
             services.AddHostedService<ClearInactiveSessionsBackgroundService>();
+            services.AddHostedService<OutboxBackgroundService>();
 
             return services;
         }
@@ -163,15 +165,24 @@ namespace Test.Infrastructure
                 conf.AddConsumer<ClearStorageConsumer>();
                 conf.AddConsumer<CreateTestProfileConsumer>();
                 conf.AddConsumer<DeleteTestProfileConsumer>();
+                conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
 
-                conf.AddMongoDbOutbox(x =>
-                {
-                    x.QueryDelay = TimeSpan.FromSeconds(5);
-                    x.UseBusOutbox();
+                //conf.AddConfigureEndpointsCallback((context, name, cfg) =>
+                //{
+                //    cfg.UseMessageRetry(r => r.Intervals(100, 500, 1000, 5000, 10000));
+                //    cfg.UseMongoDbOutbox(context);
+                //});
 
-                    x.ClientFactory(provider => provider.GetRequiredService<IMongoClient>());
-                    x.DatabaseFactory(provider => provider.GetRequiredService<IMongoDatabase>());
-                });
+                //conf.AddMongoDbOutbox(x =>
+                //{
+                //    x.QueryDelay = TimeSpan.FromSeconds(5);
+                //    x.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
+
+                //    x.UseBusOutbox();
+
+                //    x.ClientFactory(provider => provider.GetRequiredService<IMongoClient>());
+                //    x.DatabaseFactory(provider => provider.GetRequiredService<IMongoDatabase>());
+                //});
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Test.Application.Common.Mediator
+namespace Test.Application.Common.Wrappers
 {
     public class MediatorWrapper
     {

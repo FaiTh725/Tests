@@ -33,7 +33,8 @@ namespace Test.API.Controllers
             [FromForm]CreateQuestionRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             var createQuestionCommand = new CreateQuestionCommand
             {
@@ -58,7 +59,7 @@ namespace Test.API.Controllers
                         Name = y.Name
                     }).ToList() ?? new List<FileModel>()
                 }).ToList(),
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             };
 
@@ -78,12 +79,13 @@ namespace Test.API.Controllers
             long questionId, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             await mediator.Send(new DeleteQuestionCommand 
             { 
                 QuestionId = questionId,
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             }, 
             cancellationToken);
@@ -97,7 +99,8 @@ namespace Test.API.Controllers
             UpdateQuestionRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             var questionId = await mediator.Send(new UpdateQuestionCommand
             {
@@ -105,7 +108,7 @@ namespace Test.API.Controllers
                 QuestionWeight = request.QuestionWeight,
                 TestQuestion = request.TestQuestion,
                 Role = profile.Role,
-                Email = profile.Email
+                OwnerId = profile.Id
             }, 
             cancellationToken);
 

@@ -15,7 +15,9 @@ namespace Test.Application.Commands.Test.DeleteTest
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(DeleteTestCommand request, CancellationToken cancellationToken)
+        public async Task Handle(
+            DeleteTestCommand request, 
+            CancellationToken cancellationToken)
         {
             var test = await unitOfWork.TestRepository
                 .GetTest(request.TestId, cancellationToken);

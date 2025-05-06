@@ -28,10 +28,21 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Profiles.InsertOneAsync(
-                mongoProfile, 
+            if (context.Session is null)
+            {
+                await context.Profiles.InsertOneAsync(
+                mongoProfile,
                 insertParameters,
                 cancellationToken);
+            }
+            else
+            {
+                await context.Profiles.InsertOneAsync(
+                    context.Session,
+                    mongoProfile,
+                    insertParameters,
+                    cancellationToken);
+            }
 
             return mongoProfile.ConvertToDomainEntity();
         }
@@ -40,8 +51,22 @@ namespace Test.Dal.Repositories
             long id, 
             CancellationToken cancellationToken = default)
         {
-            await context.Profiles
-                .DeleteOneAsync(x => x.Id == id, cancellationToken);
+            var filter = Builders<MongoProfile>.Filter
+                .Eq(x => x.Id, id);
+
+            if (context.Session is null)
+            {
+                await context.Profiles.DeleteOneAsync(
+                filter,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Profiles.DeleteOneAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<Profile?> GetProfile(long id, CancellationToken cancellationToken = default)

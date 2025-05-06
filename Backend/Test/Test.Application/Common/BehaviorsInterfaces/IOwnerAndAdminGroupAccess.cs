@@ -2,7 +2,7 @@
 {
     public interface IOwnerAndAdminGroupAccess
     {
-        public string OwnerEmail { get; set; }
+        public long OwnerId { get; set; }
 
         public long GroupId { get; set; }
 

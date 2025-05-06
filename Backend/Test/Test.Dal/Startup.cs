@@ -21,6 +21,7 @@ namespace Test.Dal
             services.AddSingleton<AppDbContext>();
 
             services.AddScoped<INoSQLUnitOfWork, UnitOfWork>();
+            services.AddScoped<IOutboxService, OutboxService>();
 
             return services;
         }

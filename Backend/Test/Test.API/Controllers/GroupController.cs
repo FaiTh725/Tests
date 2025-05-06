@@ -33,7 +33,7 @@ namespace Test.API.Controllers
         {
             var token = Request.Cookies["token"];
             var decodeProfile = await profileService
-                .DecodeProfileFromToken(token, cancellationToken);
+                .DecodeToken(token, cancellationToken);
 
             var groupId = await mediator.Send(new CreateGroupCommand
             {
@@ -57,13 +57,14 @@ namespace Test.API.Controllers
             AddGroupMemberRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             await mediator.Send(new AddGroupMemberCommand
             {
                 GroupId = request.GroupId,
                 ProfileId = request.MemberId,
-                OwnerEmail = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
@@ -77,13 +78,14 @@ namespace Test.API.Controllers
             DeleteMembersGroupRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             await mediator.Send(new DeleteMembersGroupCommand
             {
                 GroupId = request.GroupId,
                 MembersId = request.MembersId,
-                OwnerEmail = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
@@ -97,12 +99,13 @@ namespace Test.API.Controllers
             DeleteGroupRequest request, CancellationToken cancellationToken)
         {
             var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = await profileService
+                .DecodeToken(token, cancellationToken);
 
             await mediator.Send(new DeleteGroupCommand
             {
                 GroupId = request.GroupId,
-                OwnerEmail = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);

@@ -1,5 +1,4 @@
-﻿using MongoDB.Driver;
-using Test.Dal.Repositories;
+﻿using Test.Dal.Repositories;
 using Test.Domain.Interfaces;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -9,7 +8,7 @@ namespace Test.Dal.Services
     public class UnitOfWork : INoSQLUnitOfWork
     {
         private readonly AppDbContext context;
-        private IClientSessionHandle session;
+        //private IClientSessionHandle session;
 
         private bool isTransactionStarted;
 
@@ -21,6 +20,7 @@ namespace Test.Dal.Services
         private readonly Lazy<IProfileGroupRepository> profileGroupRepository;
         private readonly Lazy<ITestSessionRepository> testSessionRepository;
         private readonly Lazy<ITestAccessRepository> testAccessRepository;
+        private readonly Lazy<IOutboxMessageRepository> outboxMessageRepository;
 
         private readonly List<DomainEventEntity> trackedEntities = new List<DomainEventEntity>();
 
@@ -37,6 +37,7 @@ namespace Test.Dal.Services
             profileGroupRepository = new Lazy<IProfileGroupRepository>(() => new ProfileGroupRepository(context));
             testSessionRepository = new Lazy<ITestSessionRepository>(() => new TestSessionRepository(context));
             testAccessRepository = new Lazy<ITestAccessRepository>(() => new TestAccessRepository(context));
+            outboxMessageRepository = new Lazy<IOutboxMessageRepository>(() => new OutboxMessageRepository(context));
         }
 
         public IProfileRepository ProfileRepository => profileRepository.Value;
@@ -55,18 +56,20 @@ namespace Test.Dal.Services
 
         public ITestAccessRepository AccessRepository => testAccessRepository.Value;
 
+        public IOutboxMessageRepository OutboxMessageRepository => outboxMessageRepository.Value;
+
         public void BeginTransaction()
         {
-            session = context.Client.StartSession();
-            session.StartTransaction();
+            context.Session = context.Client.StartSession();
+            context.Session.StartTransaction();
 
             isTransactionStarted = true;
         }
 
         public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            session = await context.Client.StartSessionAsync(cancellationToken: cancellationToken);
-            session.StartTransaction();
+            context.Session = await context.Client.StartSessionAsync(cancellationToken: cancellationToken);
+            context.Session.StartTransaction();
 
             isTransactionStarted = true;
         }
@@ -75,7 +78,7 @@ namespace Test.Dal.Services
         {
             AssuranceTransaction();
 
-            session.CommitTransaction();
+            context.Session!.CommitTransaction();
 
             isTransactionStarted = false;
         }
@@ -84,7 +87,7 @@ namespace Test.Dal.Services
         {
             AssuranceTransaction();
 
-            await session.CommitTransactionAsync(cancellationToken: cancellationToken);
+            await context.Session!.CommitTransactionAsync(cancellationToken: cancellationToken);
 
             isTransactionStarted = false;
         }
@@ -93,25 +96,25 @@ namespace Test.Dal.Services
         {
             AssuranceTransaction();
 
-            session.AbortTransaction();
+            context.Session!.AbortTransaction();
         }
 
         public async Task RollBackTransactionAsync(CancellationToken cancellationToken = default)
         {
             AssuranceTransaction();
 
-            await session.AbortTransactionAsync(cancellationToken: cancellationToken);
+            await context.Session!.AbortTransactionAsync(cancellationToken: cancellationToken);
         }
 
         public void Dispose()
         {
-            session?.Dispose();
+            context.Session?.Dispose();
         }
 
         private void AssuranceTransaction()
         {
-            if(!isTransactionStarted ||
-                session is null)
+            if (!isTransactionStarted ||
+                context.Session is null)
             {
                 throw new InvalidOperationException("Transaction is not started");
             }

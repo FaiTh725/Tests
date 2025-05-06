@@ -31,24 +31,64 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Questions
-                .InsertOneAsync(mongoQuestion, insertOptions, cancellationToken);
-            
+            if (context.Session is null)
+            {
+                await context.Questions.InsertOneAsync(
+                    mongoQuestion,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Questions.InsertOneAsync(
+                    context.Session,
+                    mongoQuestion,
+                    insertOptions,
+                    cancellationToken);
+            }
+
             return mongoQuestion.ConvertToDomainEntity();
         }
 
         public async Task DeleteQuestion(long id, CancellationToken cancellationToken = default)
         {
-            await context.Questions.DeleteManyAsync(x => x.Id == id, 
-                cancellationToken);
+            var filter = Builders<MongoQuestion>.Filter
+                .Eq(x => x.Id, id);
+
+            if (context.Session is null)
+            {
+                await context.Questions.DeleteManyAsync(
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Questions.DeleteManyAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task DeleteQuestions(List<long> questionIdList, 
             CancellationToken cancellationToken = default)
         {
-            await context.Questions
-                .DeleteManyAsync(x => questionIdList.Contains(x.Id), 
-                cancellationToken);
+            var filter = Builders<MongoQuestion>.Filter
+                .In(x => x.Id, questionIdList);
+
+            if (context.Session is null)
+            {
+                await context.Questions.DeleteManyAsync(
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Questions.DeleteManyAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<Question?> GetQuestion(
@@ -109,8 +149,21 @@ namespace Test.Dal.Repositories
                 .Set(x => x.TestQuestion, updatedQuestion.TestQuestion)
                 .Set(x => x.QuestionWeight, updatedQuestion.QuestionWeight);
 
-            await context.Questions.UpdateOneAsync(filter, update, 
+            if (context.Session is null)
+            {
+                await context.Questions.UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Questions.UpdateOneAsync(
+                context.Session,
+                filter,
+                update,
                 cancellationToken: cancellationToken);
+            }
         }
     }
 }

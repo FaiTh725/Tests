@@ -32,7 +32,7 @@ namespace Test.API.Controllers
         {
             var token = Request.Cookies["token"];
             var profileFromToken = await profileService
-                .DecodeProfileFromToken(token, cancellationToken);
+                .DecodeToken(token, cancellationToken);
 
             var sessionId = await mediator.Send(new StartTestCommand
             {

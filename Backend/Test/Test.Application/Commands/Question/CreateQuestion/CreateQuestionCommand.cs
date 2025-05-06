@@ -22,8 +22,8 @@ namespace Test.Application.Commands.Question.CreateQuestion
 
         public List<CreateQuestionAnswer> Answers { get; set; } = new List<CreateQuestionAnswer>();
 
-        public string Email { get; set; } = string.Empty;
-
         public string Role { get; set; } = string.Empty;
+
+        public long OwnerId { get; set; }
     }
 }

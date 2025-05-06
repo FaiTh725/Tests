@@ -32,8 +32,21 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Accesses.InsertOneAsync(
-                mongoTestAccess, insertOptions, cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Accesses.InsertOneAsync(
+                    mongoTestAccess,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Accesses.InsertOneAsync(
+                    context.Session,
+                    mongoTestAccess,
+                    insertOptions,
+                    cancellationToken);
+            }
 
             return mongoTestAccess.ConvertToDomainEntity();
         }
@@ -45,8 +58,19 @@ namespace Test.Dal.Repositories
             var filter = Builders<MongoTestAccess>.Filter
                 .Eq(x => x.Id, testAccessId);
 
-            await context.Accesses
-                .DeleteOneAsync(filter, cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Accesses.DeleteOneAsync(
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Accesses.DeleteOneAsync(
+                    context.Session,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<IEnumerable<TestAccess>> GetAccessesByCriteria(

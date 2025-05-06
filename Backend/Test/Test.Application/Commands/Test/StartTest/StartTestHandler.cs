@@ -2,7 +2,7 @@
 using MediatR;
 using Test.Application.Commands.Test.StopTest;
 using Test.Application.Common.Interfaces;
-using Test.Application.Common.Mediator;
+using Test.Application.Common.Wrappers;
 using Test.Application.Contracts.TestSession;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;

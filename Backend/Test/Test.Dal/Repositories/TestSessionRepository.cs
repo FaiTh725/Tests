@@ -29,10 +29,21 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Sessions.InsertOneAsync(
-                mongoTestSession,
-                insertOptions,
-                cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Sessions.InsertOneAsync(
+                    mongoTestSession,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Sessions.InsertOneAsync(
+                    context.Session,
+                    mongoTestSession,
+                    insertOptions,
+                    cancellationToken);
+            }
 
             return mongoTestSession.ConvertToDomainEntity();
         }
@@ -61,8 +72,23 @@ namespace Test.Dal.Repositories
                 .Set(x => x.IsEnded, updatedSession.IsEnded)
                 .Set(x => x.Percent, updatedSession.Percent);
 
-            await context.Sessions
-                .UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
+            if (context.Session is null)
+            {
+                await context.Sessions
+                    .UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Sessions
+                    .UpdateOneAsync(
+                    context.Session,
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
         }
     }
 }
