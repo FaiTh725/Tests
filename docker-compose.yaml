@@ -3,39 +3,99 @@ version: "3.8"
 name: "Testing"
 
 services:
-  # testing_feedback_api:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.Feedback
-  #   container_name: testing_feedback_api
-  #   ports:
-  #     - "5401:5401"
-  #     - "5402:5402"
-  #   environment:
-  #     - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=FaITh725;Password=eZQ9XeVGvT;Database=Feedback;Port=5432
-  #     - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
-  #     - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
-  #     - JwtSettings__Issuer=FaITh
-  #     - JwtSettings__Audience=Audience
-  #     - RabbitMqSettings__User=FaITh725
-  #     - RabbitMqSettings__Password=eZQ9XeVGvT
-  #     - RabbitMqSettings__Host=rabbitmq
-  #     - ExternalServices__TestingService=https://testing_testing_api:5302
-  #     - ASPNETCORE_URLS=https://+:5402;http://+:5401
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
-  #   volumes:
-  #     - ./certs:/https:ro
-  #   networks:
-  #     - testing_postgres_net
-  #     - application_net
-  #     - message_broker_net
-  #     - azurite_net
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     postgres_db:
-  #       condition: service_healthy
+  testing_logstash:
+    image: logstash:8.16.6
+    container_name: testing_logstash_service
+    ports:
+      - "5044:5044"
+      - "5000:5000"
+      - "9600:9600"
+    # environment:
+      # - LS_JAVA_OPTS=-Xms512m -Xmx512m
+      # - xpack.security.enabled=false
+      # - ELASTIC_USER=${ELASTIC_USER}
+      # - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      # - ELASTIC_HOSTS=http://testing_elastic:9200
+    volumes:
+      - ./conf/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      # - ./conf/logstash/logstash.yaml:/usr/share/logstash/config/logstash.yaml
+    networks:
+      - elastic_net
+    # command: logstash -f /usr/share/logstash/pipeline/logstash.conf --log.level=debug
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  testing_kibana:
+    image: kibana:8.16.6
+    container_name: testing_kibana_service
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=${ELASTIC_USER}
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+      - xpack.security.enabled=false
+    networks:
+      - elastic_net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+  
+  # with custom service name logstash doesnt want to work i dont know how to fix and configure it
+  elasticsearch:
+    image: elasticsearch:8.16.6
+    container_name: testing_elastic_db
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - XPACK_MONITORING_ENABLED=false
+      - xpack.security.http.ssl.enabled=false
+    volumes:
+      - testing_elastic_volume:/usr/share/elasticsearch/data
+    networks:
+      - elastic_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  testing_feedback_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Feedback
+    container_name: testing_feedback_api
+    ports:
+      - "5401:5401"
+      - "5402:5402"
+    environment:
+      - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Feedback;Port=5432
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - RabbitMqSettings__User=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+      - RabbitMqSettings__Host=rabbitmq
+      - ExternalServices__TestingService=https://testing_testing_api:5302
+      - ASPNETCORE_URLS=https://+:5402;http://+:5401
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - testing_postgres_net
+      - application_net
+      - message_broker_net
+      - azurite_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres_db:
+        condition: service_healthy
 
   testing_testing_api:
     build:
@@ -46,18 +106,18 @@ services:
       - "5301:5301"
       - "5302:5302"
     environment:
-      - ConnectionStrings__RedisConnection=redis://:eZQ9XeVGvT@redis:6379
-      - ConnectionStrings__MongoDbConnection=mongodb://FaITh725:eZQ9XeVGvT@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/FaITh725;AccountName=FaITh725;AccountKey=ZGV2c3RvcmVhY2NvdW50Mw==
-      - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
-      - JwtSettings__Issuer=FaITh
-      - JwtSettings__Audience=Audience
-      - RabbitMqSettings__User=FaITh725
-      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - ConnectionStrings__RedisConnection=redis://:${REDIS_PASSWORD}@redis:6379
+      - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - RabbitMqSettings__User=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
       - MongoDbName=Testing
       - ASPNETCORE_URLS=https://+:5302;http://+:5301
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./certs:/https:ro
@@ -84,18 +144,18 @@ services:
       - "5201:5201"
       - "5202:5202"
     environment:
-      - ConnectionStrings__RedisCacheConnection=redis:6379,password=eZQ9XeVGvT
-      - ConnectionStrings__NpgConnection=Host=postgres_db;UserName=FaITh725;Password=eZQ9XeVGvT;Database=Authorize;Port=5432
-      - JwtSettings__SecretKey=SuperSecretKey8234064.SaltyForKey023.495
-      - JwtSettings__Issuer=FaITh
-      - JwtSettings__ExpirationTimeRefreshTokenInDays=15
-      - JwtSettings__ExpirationTimeInMinutes=15
-      - JwtSettings__Audience=Audience
-      - RabbitMqSettings__User=FaITh725
-      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - ConnectionStrings__RedisCacheConnection=redis:6379,password=${REDIS_PASSWORD}
+      - ConnectionStrings__NpgConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Authorize;Port=5432
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - JwtSettings__ExpirationTimeRefreshTokenInDays=${JWT_EXPIRATIONTIME_IN_DAYS}
+      - JwtSettings__ExpirationTimeInMinutes=${JWT_EXPIRATIONTIME_IN_MINUTES}
+      - RabbitMqSettings__User=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./certs:/https:ro
@@ -121,13 +181,13 @@ services:
       - "5101:5101"
       - "5102:5102"
     environment:
-      - RabbitMqSettings__User=FaITh725
-      - RabbitMqSettings__Password=eZQ9XeVGvT
+      - RabbitMqSettings__User=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
-      - EmailSettings__ReciverEmail=sasha.zelenukho.2016@mail.ru
-      - EmailSettings__Password=HK0ifnR0VWXjmbxNVj0X
+      - EmailSettings__ReciverEmail=${EMAIL_RECIVER}
+      - EmailSettings__Password=${EMAIL_PASSWORD}
       - ASPNETCORE_URLS=https://+:5102;http://+:5101
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=eZQ9XeVGvT
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./certs:/https:ro
@@ -144,14 +204,14 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=FaITh725
-      - MONGO_INITDB_ROOT_PASSWORD=eZQ9XeVGvT
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - testing_mongo_volume:/data/db
       - ./conf/mongo-keyfile:/etc/mongo/mongo-keyfile
     networks:
       - testing_mongo_net
-    command: >
+    command: > 
       mongod --auth --replSet rs0 --keyFile /etc/mongo/mongo-keyfile --bind_ip_all
     healthcheck:
       test: mongosh --eval "db.adminCommand('ping')" || exit 1
@@ -166,9 +226,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=FaITh725
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=eZQ9XeVGvT
-      - ME_CONFIG_MONGODB_URL=mongodb://FaITh725:eZQ9XeVGvT@mongo_db:27017/?authSource=admin&replicaSet=rs0
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_PASSWORD}
+      - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0
       - ME_CONFIG_BASICAUTH=false
     networks:
       - testing_mongo_net
@@ -183,15 +243,15 @@ services:
     ports:
       - "5555:5432"
     environment:
-      - POSTGRES_PASSWORD=eZQ9XeVGvT
-      - POSTGRES_USER=FaITh725
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_USER=${PG_USER}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - testing_postgres_volume:/var/lib/postgresql/data/pgdata
     networks:
       - testing_postgres_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U FaITh725"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -202,7 +262,7 @@ services:
     ports:
       - "10000:10000"
     environment:
-      - "AZURITE_ACCOUNTS=FaITh725:ZGV2c3RvcmVhY2NvdW50Mw=="
+      - "AZURITE_ACCOUNTS=${AZURITE_USER}:${AZURITE_PASSWORD}"
     volumes:
       - testing_blob_volume:/data
     networks:
@@ -215,8 +275,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=FaITh725
-      - RABBITMQ_DEFAULT_PASS=eZQ9XeVGvT
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     networks:
       - message_broker_net
     healthcheck:
@@ -232,8 +292,8 @@ services:
       - "6379:6379"
       - "8001:8001"
     environment:
-      - REDIS_PASSWORD=eZQ9XeVGvT
-      - REDIS_ARGS=--requirepass eZQ9XeVGvT
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_ARGS=--requirepass ${REDIS_PASSWORD}
     networks:
       - redis_net
     healthcheck:
@@ -255,8 +315,12 @@ networks:
     driver: bridge
   application_net:
     driver: bridge
+  elastic_net:
+    driver: bridge
 
 volumes:
+  testing_elastic_volume:
+    driver: local
   testing_postgres_volume:
     driver: local
   testing_mongo_volume:

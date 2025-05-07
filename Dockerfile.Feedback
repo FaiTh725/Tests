@@ -6,6 +6,8 @@ WORKDIR /src
 COPY ["Backend/TestRating/", "TestRating/"]
 COPY ["Backend/Application.Shared/", "Application.Shared/"]
 COPY ["Backend/Authorization/Authorization.Contracts/", "Authorization/Authorization.Contracts/"]
+COPY ["Backend/Notification/Notification.Contracts", "Notification/Notification.Contracts"]
+COPY ["Backend/Test/Test.Contracts/", "Test/Test.Contracts/"]
 
 
 RUN dotnet restore 'TestRating/TestRating.API/TestRating.API.csproj'

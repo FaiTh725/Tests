@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Grpc\**" />
+    <Content Remove="Grpc\**" />
+    <EmbeddedResource Remove="Grpc\**" />
+    <None Remove="Grpc\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.70.0" />
@@ -35,11 +42,6 @@
     <Reference Include="TestRating.Contracts">
       <HintPath>..\..\TestRating\TestRating.Contracts\bin\Debug\net8.0\TestRating.Contracts.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Grpc\Clients\" />
-    <Folder Include="Grpc\Protos\" />
   </ItemGroup> 
 
 </Project>
