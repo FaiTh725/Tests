@@ -3,6 +3,7 @@ using Authorization.API.Middlewares;
 using Authorization.Application;
 using Authorization.Dal;
 using Authorization.Infastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
+
+builder.Host.UseSerilog();
 
 builder.Services
     .ConfigureApiServices(builder.Configuration)

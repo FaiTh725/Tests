@@ -15,11 +15,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.Network" Version="2.0.2.68" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Notification.Application\Notification.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Application.Shared">
+      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

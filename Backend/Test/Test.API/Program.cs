@@ -6,6 +6,7 @@ using Test.Application;
 using Hangfire;
 using Test.API.Filters;
 using Test.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 
+builder.Host.UseSerilog();
+
 builder.Services
-    .ConfigureApiServices()
+    .ConfigureApiServices(builder.Configuration)
     .ConfigureAppServices()
     .ConfigureInfrastructureServices(builder.Configuration)
     .ConfigureDalServices(builder.Configuration);

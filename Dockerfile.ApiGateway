@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+
+WORKDIR /src
+
+
+COPY ["Backend/ApiGateway/", "ApiGateway/"]
+COPY ["Backend/Application.Shared/", "Application.Shared/"]
+
+
+RUN dotnet restore 'ApiGateway/ApiGateway.csproj'
+
+COPY . .
+
+WORKDIR /src/ApiGateway
+RUN dotnet build "ApiGateway.csproj" -c Release -o /app/build
+
+FROM build as publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 
+ENV ASPNETCORE_HTTP_PORTS=5501
+ENV ASPNETCORE_HTTPS_PORTS=5502
+EXPOSE 5501
+EXPOSE 5502
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [ "dotnet", "ApiGateway.dll" ]

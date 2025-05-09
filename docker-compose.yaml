@@ -3,65 +3,82 @@ version: "3.8"
 name: "Testing"
 
 services:
-  testing_logstash:
-    image: logstash:8.16.6
-    container_name: testing_logstash_service
+  testing_gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.ApiGateway
+    container_name: testing_reverse_proxy
     ports:
-      - "5044:5044"
-      - "5000:5000"
-      - "9600:9600"
-    # environment:
-      # - LS_JAVA_OPTS=-Xms512m -Xmx512m
-      # - xpack.security.enabled=false
-      # - ELASTIC_USER=${ELASTIC_USER}
-      # - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      # - ELASTIC_HOSTS=http://testing_elastic:9200
+      - "5502:5502"
+      - "5501:5501"
+    environment:
+      - AllowedUrl="https://localhost:5173"
+      - ASPNETCORE_URLS=https://+:5502;http://+:5501
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
     volumes:
-      - ./conf/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      # - ./conf/logstash/logstash.yaml:/usr/share/logstash/config/logstash.yaml
+      - ./certs:/https:ro
     networks:
-      - elastic_net
-    # command: logstash -f /usr/share/logstash/pipeline/logstash.conf --log.level=debug
+      - application_net
     depends_on:
-      elasticsearch:
-        condition: service_healthy
+      - testing_feedback_api
+      - testing_testing_api
+      - testing_authorization_api
 
-  testing_kibana:
-    image: kibana:8.16.6
-    container_name: testing_kibana_service
-    ports:
-      - "5601:5601"
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=${ELASTIC_USER}
-      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
-      - xpack.security.enabled=false
-    networks:
-      - elastic_net
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
+  # disable for local development
+  # testing_logstash:
+  #   image: logstash:8.16.6
+  #   container_name: testing_logstash_service
+  #   ports:
+  #     - "5044:5044"
+  #     - "9600:9600"
+  #   volumes:
+  #     - ./conf/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #     - ./conf/logstash/logstash.yaml:/usr/share/logstash/config/logstash.yml
+  #     - loging_volume:/usr/share/logstash/data
+  #   networks:
+  #     - elastic_net
+  #     - loging_net
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+
+  # testing_kibana:
+  #   image: kibana:8.16.6
+  #   container_name: testing_kibana_service
+  #   ports:
+  #     - "5601:5601"
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #     - ELASTICSEARCH_USERNAME=${ELASTIC_USER}
+  #     - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+  #     - xpack.security.enabled=false
+  #   networks:
+  #     - elastic_net
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
   
-  # with custom service name logstash doesnt want to work i dont know how to fix and configure it
-  elasticsearch:
-    image: elasticsearch:8.16.6
-    container_name: testing_elastic_db
-    ports:
-      - "9200:9200"
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - XPACK_MONITORING_ENABLED=false
-      - xpack.security.http.ssl.enabled=false
-    volumes:
-      - testing_elastic_volume:/usr/share/elasticsearch/data
-    networks:
-      - elastic_net
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+  # # with custom service name logstash doesnt want to work i dont know how to fix and configure it
+  # elasticsearch:
+  #   image: elasticsearch:8.16.6
+  #   container_name: testing_elastic_db
+  #   ports:
+  #     - "9200:9200"
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - XPACK_MONITORING_ENABLED=false  
+  #     - xpack.security.http.ssl.enabled=false
+  #   volumes:
+  #     - testing_elastic_volume:/usr/share/elasticsearch/data
+  #   networks:
+  #     - elastic_net
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:9200 || exit 1"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 10
 
   testing_feedback_api:
     build:
@@ -81,6 +98,8 @@ services:
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
       - ExternalServices__TestingService=https://testing_testing_api:5302
+      - LogstashSettings__Host=tcp://testing_logstash
+      - LogstashSettings__Port=5044
       - ASPNETCORE_URLS=https://+:5402;http://+:5401
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
@@ -91,6 +110,7 @@ services:
       - application_net
       - message_broker_net
       - azurite_net
+      - loging_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -115,6 +135,8 @@ services:
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
+      - LogstashSettings__Host=tcp://testing_logstash
+      - LogstashSettings__Port=5044
       - MongoDbName=Testing
       - ASPNETCORE_URLS=https://+:5302;http://+:5301
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
@@ -127,6 +149,7 @@ services:
       - redis_net
       - application_net
       - azurite_net
+      - loging_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -154,6 +177,8 @@ services:
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
+      - LogstashSettings__Host=tcp://testing_logstash
+      - LogstashSettings__Port=5044
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -164,6 +189,7 @@ services:
       - message_broker_net
       - redis_net
       - application_net
+      - loging_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -186,6 +212,8 @@ services:
       - RabbitMqSettings__Host=rabbitmq
       - EmailSettings__ReciverEmail=${EMAIL_RECIVER}
       - EmailSettings__Password=${EMAIL_PASSWORD}
+      - LogstashSettings__Host=tcp://testing_logstash
+      - LogstashSettings__Port=5044
       - ASPNETCORE_URLS=https://+:5102;http://+:5101
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -193,6 +221,7 @@ services:
       - ./certs:/https:ro
     networks:
       - message_broker_net
+      - loging_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -317,6 +346,8 @@ networks:
     driver: bridge
   elastic_net:
     driver: bridge
+  loging_net:
+    driver: bridge
 
 volumes:
   testing_elastic_volume:
@@ -326,4 +357,6 @@ volumes:
   testing_mongo_volume:
     driver: local
   testing_blob_volume:
+    driver: local
+  loging_volume:
     driver: local

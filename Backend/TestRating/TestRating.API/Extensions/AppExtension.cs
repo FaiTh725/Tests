@@ -1,7 +1,10 @@
 ﻿using Application.Shared.Exceptions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Serilog;
+using Serilog.Sinks.Network;
 using Test.API.Grpc;
+using TestRating.API.Configurations;
 using TestRating.API.Contracts.Feedback;
 using TestRating.API.Contracts.FeedbackReply;
 using TestRating.API.Contracts.FeedbackReport;
@@ -22,6 +25,7 @@ namespace TestRating.API.Extensions
             IConfiguration configuration)
         {
             services
+                .AddLogstashLoging(configuration)
                 .AddGrpcProvider(configuration)
                 .ConfigureFluentValidation();
 
@@ -70,6 +74,28 @@ namespace TestRating.API.Extensions
             services.AddScoped<IValidator<GetFeedbackRepliesQuery>, GetFeedbackRepliesValidator>();
 
             services.AddScoped<IValidator<SendReportRequest>, SendReportValidator>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddLogstashLoging(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var logstashConf = configuration
+                .GetSection("LogstashSettings")
+                .Get<LogstashConf>() ??
+                throw new AppConfigurationException("Logstash settings");
+
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.Debug()
+                .WriteTo.TCPSink(
+                    logstashConf.Host,
+                    logstashConf.Port,
+                    new Serilog.Formatting.Json.JsonFormatter())
+                .CreateLogger();
 
             return services;
         }

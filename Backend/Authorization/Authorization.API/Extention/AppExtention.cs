@@ -1,8 +1,12 @@
-﻿using Authorization.API.Validators.UserEntity;
+﻿using Application.Shared.Exceptions;
+using Authorization.API.Configurations;
+using Authorization.API.Validators.UserEntity;
 using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Serilog;
+using Serilog.Sinks.Network;
 using System.Threading.RateLimiting;
 
 namespace Authorization.API.Extention
@@ -14,6 +18,7 @@ namespace Authorization.API.Extention
             IConfiguration configuration)
         {
             services
+                .AddLogstashLoging(configuration)
                 .AddFlientValidation()
                 .AddRateLimits();
 
@@ -47,6 +52,28 @@ namespace Authorization.API.Extention
                          })
                  );
              });
+
+            return services;
+        }
+
+        private static IServiceCollection AddLogstashLoging(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var logstashConf = configuration
+                .GetSection("LogstashSettings")
+                .Get<LogstashConf>() ?? 
+                throw new AppConfigurationException("Logstash settings");
+
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.Debug()
+                .WriteTo.TCPSink(
+                    logstashConf.Host,
+                    logstashConf.Port,
+                    new Serilog.Formatting.Json.JsonFormatter())
+                .CreateLogger();
 
             return services;
         }

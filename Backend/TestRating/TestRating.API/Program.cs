@@ -1,3 +1,4 @@
+using Serilog;
 using TestRating.API.Extensions;
 using TestRating.API.Middlewares;
 using TestRating.Application;
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
+
+builder.Host.UseSerilog();
 
 builder.Services
     .ConfigureApiServices(builder.Configuration)
