@@ -22,6 +22,7 @@ using Test.Application.Contracts.TestSession;
 using Test.Application.Consumers.ProfileConsumers;
 using Test.Application.Consumers.TestConsumers;
 using Test.Domain.Interfaces;
+using Test.Application.Consumers.QuestionConsumers;
 
 namespace Test.Infrastructure
 {
@@ -166,6 +167,7 @@ namespace Test.Infrastructure
                 conf.AddConsumer<CreateTestProfileConsumer>();
                 conf.AddConsumer<DeleteTestProfileConsumer>();
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
 
                 //conf.AddConfigureEndpointsCallback((context, name, cfg) =>
                 //{

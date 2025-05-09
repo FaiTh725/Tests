@@ -1,73 +1,29 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using Test.Application.Contracts.File;
-using Test.Application.Queries.QuestionAnswerEntity.Specifications;
+﻿using MassTransit;
+using MediatR;
+using Test.Application.Contracts.Question;
 using Test.Domain.Events;
-using Test.Domain.Interfaces;
 
 namespace Test.Application.EventHandler.QuestionEventHandler
 {
     public class QuestionDeletedEventHandler :
         INotificationHandler<QuestionDeletedEvent>
     {
-        private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly ILogger<QuestionDeletedEventHandler> logger;
-        private readonly IOutboxService outboxService;
+        private readonly IPublishEndpoint bus;
 
         public QuestionDeletedEventHandler(
-            INoSQLUnitOfWork unitOfWork,
-            ILogger<QuestionDeletedEventHandler> logger,
-            IOutboxService outboxService)
+            IPublishEndpoint bus)
         {
-            this.unitOfWork = unitOfWork;
-            this.logger = logger;
-            this.outboxService = outboxService;
+            this.bus = bus;
         }
 
         public async Task Handle(
             QuestionDeletedEvent notification, 
             CancellationToken cancellationToken)
         {
-            var questionAnswer = await unitOfWork.QuestionAnswerRepository
-                .GetQuestionAnswersByCriteria(
-                new AnswersByQuestionIdSpecification(notification.QuestionId), 
-                cancellationToken);
-
-            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-
-            try
+            await bus.Publish(new DeleteDependentsQuestionEntities
             {
-                await unitOfWork.QuestionAnswerRepository.DeleteAnswers(
-                        questionAnswer
-                            .Select(x => x.Id)
-                            .ToList(), 
-                        transaction,
-                        cancellationToken);
-
-                var imagesFolderToDelete = questionAnswer
-                        .Select(x => x.ImageFolder)
-                        .ToList();
-
-                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
-                {
-                    PathFiles = questionAnswer
-                        .Select(x => x.ImageFolder)
-                        .ToList()
-                }, 
-                transaction,
-                cancellationToken);
-
-                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
-
-                logger.LogInformation("QuestionDeleted event handler executed");
-            }
-            catch(Exception ex)
-            {
-                logger.LogError("Error execute question deleted event handler. " +
-                    ex.Message);
-
-                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
-            }
+                QuestionId = notification.QuestionId,
+            }, cancellationToken);
         }
     }
 }

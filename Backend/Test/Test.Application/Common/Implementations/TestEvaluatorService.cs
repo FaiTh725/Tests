@@ -70,7 +70,7 @@ namespace Test.Application.Common.Implementations
             {
                 TestId = testId,
                 ProfileAnswers = profileAnswersEntity,
-                Percent = profilePoints * 100 / maxPoints
+                Percent = maxPoints == 0 ? 100 : profilePoints * 100 / maxPoints
             });
         }
     }

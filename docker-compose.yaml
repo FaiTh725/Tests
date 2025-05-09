@@ -148,7 +148,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - testing_mongo_volume:/data/db
-      - ./conf/mongo-keyfile:/etc/mongo/mongo-keyfile
+      - ./conf/mongo/mongo-keyfile:/etc/mongo/mongo-keyfile
     networks:
       - testing_mongo_net
     command: > 

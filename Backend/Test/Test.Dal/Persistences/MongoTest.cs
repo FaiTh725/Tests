@@ -40,6 +40,12 @@ namespace Test.Dal.Persistences
             var setMethod = property!.GetSetMethod(true);
             setMethod!.Invoke(testEntity.Value, [Id]);
 
+            // set CreatedTime
+            type = typeof(TestEntity);
+            property = type.GetProperty("CreatedTime");
+            setMethod = property!.GetSetMethod(true);
+            setMethod!.Invoke(testEntity.Value, [CreatedTime]);
+
             return testEntity.Value;
         }
 
