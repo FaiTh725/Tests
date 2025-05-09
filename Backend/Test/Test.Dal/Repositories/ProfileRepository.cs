@@ -1,7 +1,9 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -16,7 +18,10 @@ namespace Test.Dal.Repositories
             this.context = context;
         }
 
-        public async Task<Profile> AddProfile(Profile profile, CancellationToken cancellationToken = default)
+        public async Task<Profile> AddProfile(
+            Profile profile, 
+            IDatabaseSession? session = null, 
+            CancellationToken cancellationToken = default)
         {
             var mongoProfile = new MongoProfile();
             mongoProfile.ConvertToMongoEntity(profile);
@@ -28,7 +33,8 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Profiles.InsertOneAsync(
                 mongoProfile,
@@ -38,7 +44,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Profiles.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoProfile,
                     insertParameters,
                     cancellationToken);
@@ -49,12 +55,14 @@ namespace Test.Dal.Repositories
 
         public async Task DeleteProfile(
             long id, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoProfile>.Filter
                 .Eq(x => x.Id, id);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Profiles.DeleteOneAsync(
                 filter,
@@ -63,7 +71,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Profiles.DeleteOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }

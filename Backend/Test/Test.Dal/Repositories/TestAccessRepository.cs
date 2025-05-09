@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Dal.Specifications;
 using Test.Domain.Entities;
@@ -19,7 +20,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<TestAccess> AddTestAccess(
-            TestAccess testAccess, 
+            TestAccess testAccess,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoTestAccess = new MongoTestAccess();
@@ -32,7 +34,8 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Accesses.InsertOneAsync(
                     mongoTestAccess,
@@ -42,7 +45,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Accesses.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoTestAccess,
                     insertOptions,
                     cancellationToken);
@@ -53,12 +56,14 @@ namespace Test.Dal.Repositories
 
         public async Task DeleteTestAccess(
             long testAccessId, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoTestAccess>.Filter
                 .Eq(x => x.Id, testAccessId);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Accesses.DeleteOneAsync(
                     filter,
@@ -67,7 +72,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Accesses.DeleteOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }

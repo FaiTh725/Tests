@@ -6,7 +6,7 @@ namespace Test.Domain.Repositories
 {
     public interface IProfileGroupRepository
     {
-        Task<ProfileGroup> AddGroup(ProfileGroup profileGroup, CancellationToken cancellationToken = default);
+        Task<ProfileGroup> AddGroup(ProfileGroup profileGroup, IDatabaseSession? session = null,CancellationToken cancellationToken = default);
 
         Task<ProfileGroup?> GetProfileGroup(long id, CancellationToken cancellationToken = default);
 
@@ -14,8 +14,8 @@ namespace Test.Domain.Repositories
             BaseSpecification<ProfileGroup> specification, 
             CancellationToken cancellationToken = default);
 
-        Task UpdateGroup(long groupId, ProfileGroup updatedGroup, CancellationToken cancellationToken = default);
+        Task UpdateGroup(long groupId, ProfileGroup updatedGroup, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
-        Task DeleteGroup(long groupId, CancellationToken cancellationToken = default);
+        Task DeleteGroup(long groupId, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
     }
 }

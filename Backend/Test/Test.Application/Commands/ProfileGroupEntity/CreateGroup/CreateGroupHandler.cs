@@ -37,7 +37,7 @@ namespace Test.Application.Commands.ProfileGroupEntity.CreateGroup
             }
 
             var newProfileGroup = await unitOfWork.ProfileGroupRepository
-                .AddGroup(groupEntity.Value, cancellationToken);
+                .AddGroup(groupEntity.Value, cancellationToken: cancellationToken);
 
             return newProfileGroup.Id;
         }

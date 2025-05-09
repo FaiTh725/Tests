@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Dal.Specifications;
 using Test.Domain.Entities;
@@ -19,6 +20,7 @@ namespace Test.Dal.Repositories
 
         public async Task<QuestionAnswer> AddQuestionAnswer(
             QuestionAnswer questionAnswer, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoQuestionAnswer = new MongoQuestionAnswer();
@@ -31,7 +33,8 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Answers.InsertOneAsync(
                     mongoQuestionAnswer,
@@ -41,7 +44,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Answers.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoQuestionAnswer,
                     insertOptions,
                     cancellationToken);
@@ -52,7 +55,9 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<IEnumerable<QuestionAnswer>> AddQuestionAnswers(
-            List<QuestionAnswer> questionAnswers, CancellationToken cancellationToken = default)
+            List<QuestionAnswer> questionAnswers, 
+            IDatabaseSession? session = null, 
+            CancellationToken cancellationToken = default)
         {
             var mongoQuestions = questionAnswers.Select(x =>
             {
@@ -69,7 +74,8 @@ namespace Test.Dal.Repositories
                 IsOrdered = false,
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Answers.InsertManyAsync(
                 mongoQuestions,
@@ -79,7 +85,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Answers.InsertManyAsync(
-                    context.Session,
+                    mongoSession,
                     mongoQuestions,
                     insertQuestion,
                     cancellationToken);
@@ -90,12 +96,16 @@ namespace Test.Dal.Repositories
                 .AsEnumerable();
         }
 
-        public async Task DeleteAnswers(List<long> idList, CancellationToken cancellationToken = default)
+        public async Task DeleteAnswers(
+            List<long> idList, 
+            IDatabaseSession? session = null, 
+            CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoQuestionAnswer>.Filter
                 .In(x => x.Id, idList);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Answers.DeleteManyAsync(
                 filter,
@@ -104,7 +114,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Answers.DeleteManyAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }

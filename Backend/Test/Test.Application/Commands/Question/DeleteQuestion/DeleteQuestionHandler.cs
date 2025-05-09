@@ -32,27 +32,28 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 throw new NotFoundException("Question doesnt exist");
             }
 
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
             {
                 await unitOfWork.QuestionRepository
-                    .DeleteQuestion(request.QuestionId, cancellationToken);
+                    .DeleteQuestion(request.QuestionId, transaction, cancellationToken);
 
                 await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
                     PathFiles = [question.ImageFolder]
                 },
+                transaction,
                 cancellationToken);
 
                 question.Delete();
                 unitOfWork.TrackEntity(question);
 
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
                 throw;
             }
         }

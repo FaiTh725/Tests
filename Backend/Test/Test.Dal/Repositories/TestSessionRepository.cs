@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -17,6 +19,7 @@ namespace Test.Dal.Repositories
 
         public async Task<TestSession> AddTestSession(
             TestSession testSession, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoTestSession = new MongoTestSession();
@@ -29,7 +32,8 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Sessions.InsertOneAsync(
                     mongoTestSession,
@@ -39,7 +43,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Sessions.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoTestSession,
                     insertOptions,
                     cancellationToken);
@@ -62,6 +66,7 @@ namespace Test.Dal.Repositories
         public async Task UpdateTestSession(
             long id, 
             TestSession updatedSession, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoTestSession>.Filter
@@ -72,7 +77,8 @@ namespace Test.Dal.Repositories
                 .Set(x => x.IsEnded, updatedSession.IsEnded)
                 .Set(x => x.Percent, updatedSession.Percent);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Sessions
                     .UpdateOneAsync(
@@ -84,7 +90,7 @@ namespace Test.Dal.Repositories
             {
                 await context.Sessions
                     .UpdateOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     update,
                     cancellationToken: cancellationToken);

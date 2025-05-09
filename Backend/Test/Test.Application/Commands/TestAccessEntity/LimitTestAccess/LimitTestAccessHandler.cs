@@ -32,7 +32,7 @@ namespace Test.Application.Commands.TestAccessEntity.LimitTestAccess
             }
 
             await unitOfWork.AccessRepository
-                .DeleteTestAccess(testAccess.Id, cancellationToken);
+                .DeleteTestAccess(testAccess.Id, cancellationToken: cancellationToken);
         }
     }
 }

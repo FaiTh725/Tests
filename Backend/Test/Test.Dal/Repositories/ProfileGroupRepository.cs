@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Dal.Specifications;
 using Test.Domain.Entities;
@@ -19,6 +20,7 @@ namespace Test.Dal.Repositories
 
         public async Task<ProfileGroup> AddGroup(
             ProfileGroup profileGroup, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoProfileGroup = new MongoProfileGroup();
@@ -31,7 +33,8 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Groups.InsertOneAsync(
                     mongoProfileGroup,
@@ -41,7 +44,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Groups.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoProfileGroup,
                     insertOptions,
                     cancellationToken);
@@ -52,12 +55,14 @@ namespace Test.Dal.Repositories
 
         public async Task DeleteGroup(
             long groupId, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoProfileGroup>.Filter
                 .Eq(x => x.Id, groupId);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Groups.DeleteOneAsync(
                 filter,
@@ -66,7 +71,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Groups.DeleteOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }
@@ -100,7 +105,8 @@ namespace Test.Dal.Repositories
 
         public async Task UpdateGroup(
             long groupId, 
-            ProfileGroup updatedGroup, 
+            ProfileGroup updatedGroup,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoProfileGroup>.Filter
@@ -110,7 +116,8 @@ namespace Test.Dal.Repositories
                 .Set(x => x.GroupName, updatedGroup.GroupName)
                 .Set(x => x.MembersId, [.. updatedGroup.MembersId]);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Groups.UpdateOneAsync(
                     filter,
@@ -120,7 +127,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Groups.UpdateOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     update,
                     cancellationToken: cancellationToken);

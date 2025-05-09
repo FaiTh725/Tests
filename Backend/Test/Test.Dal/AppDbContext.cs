@@ -37,9 +37,6 @@ namespace Test.Dal
 
         public IMongoClient Client { get => client; }
 
-        // in my opinion, a very bad solution to the transaction problem
-        public IClientSessionHandle? Session { get; set; }
-
         public IMongoCollection<MongoProfile> Profiles 
         { 
             get => database.GetCollection<MongoProfile>(PROFILES_COLLECTION_NAME); 

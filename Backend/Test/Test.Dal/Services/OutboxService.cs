@@ -1,7 +1,9 @@
 ﻿using MongoDB.Driver;
 using System.Text.Json;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 
 namespace Test.Dal.Services
 {
@@ -15,7 +17,10 @@ namespace Test.Dal.Services
             this.context = context;
         }
 
-        public async Task AddOutboxMessage<T>(T message, CancellationToken cancellationToken = default)
+        public async Task AddOutboxMessage<T>(
+            T message, 
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
             where T : notnull
         {
             var mongoOutboxMessage = new MongoOutboxMessage
@@ -31,7 +36,8 @@ namespace Test.Dal.Services
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.OutboxMessages.InsertOneAsync(
                     mongoOutboxMessage, 
@@ -41,7 +47,7 @@ namespace Test.Dal.Services
             else
             {
                 await context.OutboxMessages.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoOutboxMessage,
                     incertOneOptions,
                     cancellationToken);

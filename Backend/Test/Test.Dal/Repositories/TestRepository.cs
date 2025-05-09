@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Dal.Specifications;
 using Test.Domain.Primitives;
@@ -18,7 +19,9 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<TestEntity> AddTest(
-            TestEntity test, CancellationToken cancellationToken = default)
+            TestEntity test, 
+            IDatabaseSession? session = null, 
+            CancellationToken cancellationToken = default)
         {
             var mongoTest = new MongoTest();
             mongoTest.ConvertToMongoEntity(test);
@@ -30,7 +33,8 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Tests.InsertOneAsync(
                     mongoTest,
@@ -40,7 +44,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Tests.InsertOneAsync(
-                    context.Session,
+                    mongoSession,
                     mongoTest,
                     insertOptions,
                     cancellationToken);
@@ -49,12 +53,16 @@ namespace Test.Dal.Repositories
             return mongoTest.ConvertToDomainEntity();
         }
 
-        public async Task DeleteTest(long id, CancellationToken cancellationToken = default)
+        public async Task DeleteTest(
+            long id, 
+            IDatabaseSession? session = null, 
+            CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoTest>.Filter
                 .Eq(x => x.Id, id);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Tests.DeleteOneAsync(
                     filter,
@@ -63,7 +71,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Tests.DeleteOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }
@@ -109,7 +117,10 @@ namespace Test.Dal.Repositories
             return tests.Select(x => x.ConvertToDomainEntity());
         }
 
-        public async Task UpdateTest(long id, TestEntity updatedTest, 
+        public async Task UpdateTest(
+            long id, 
+            TestEntity updatedTest, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoTest = new MongoTest();
@@ -125,7 +136,8 @@ namespace Test.Dal.Repositories
                 .Set(x => x.TestType, mongoTest.TestType)
                 .Set(x => x.DurationInMinutes, mongoTest.DurationInMinutes);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Tests.UpdateOneAsync(
                     filter,
@@ -135,7 +147,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Tests.UpdateOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     update,
                     cancellationToken: cancellationToken);

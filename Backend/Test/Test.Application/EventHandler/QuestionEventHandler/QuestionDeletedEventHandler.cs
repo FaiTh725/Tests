@@ -33,7 +33,7 @@ namespace Test.Application.EventHandler.QuestionEventHandler
                 new AnswersByQuestionIdSpecification(notification.QuestionId), 
                 cancellationToken);
 
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
             {
@@ -41,6 +41,7 @@ namespace Test.Application.EventHandler.QuestionEventHandler
                         questionAnswer
                             .Select(x => x.Id)
                             .ToList(), 
+                        transaction,
                         cancellationToken);
 
                 var imagesFolderToDelete = questionAnswer
@@ -53,9 +54,10 @@ namespace Test.Application.EventHandler.QuestionEventHandler
                         .Select(x => x.ImageFolder)
                         .ToList()
                 }, 
+                transaction,
                 cancellationToken);
 
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
 
                 logger.LogInformation("QuestionDeleted event handler executed");
             }
@@ -64,7 +66,7 @@ namespace Test.Application.EventHandler.QuestionEventHandler
                 logger.LogError("Error execute question deleted event handler. " +
                     ex.Message);
 
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
             }
         }
     }

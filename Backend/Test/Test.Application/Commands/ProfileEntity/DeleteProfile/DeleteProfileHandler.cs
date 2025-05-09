@@ -28,7 +28,7 @@ namespace Test.Application.Commands.ProfileEntity.DeleteProfile
             }
 
             await unitOfWork.ProfileRepository
-                .DeleteProfile(request.ProfileId, cancellationToken);
+                .DeleteProfile(request.ProfileId, cancellationToken: cancellationToken);
         }
     }
 }
