@@ -32,8 +32,13 @@ namespace Test.Domain.Entities
             MembersId = membersId;
         }
 
-        public void AddMember(long memberId)
+        public Result AddMember(long memberId)
         {
+            if (MembersId.Contains(memberId))
+            {
+                return Result.Failure("Member already in group");
+            }
+
             MembersId.Add(memberId);
 
             RaiseDomainEvent(new AddedNewGroupMember
@@ -41,6 +46,8 @@ namespace Test.Domain.Entities
                 ProfileId = memberId,
                 GroupId = Id
             });
+
+            return Result.Success();
         }
 
         public Result DeleteMembers(List<long> membersId)
@@ -103,7 +110,7 @@ namespace Test.Domain.Entities
                 groupName.Length < ProfileGroupValidator.MIN_GROUP_NAME_LENGTH ||
                 groupName.Length > ProfileGroupValidator.MAX_GROUP_NAME_LENGTH)
             {
-                return Result.Failure("Name group is null or length greate " +
+                return Result.Failure("Name group is null or length great " +
                     $"{ProfileGroupValidator.MAX_GROUP_NAME_LENGTH} or less {ProfileGroupValidator.MIN_GROUP_NAME_LENGTH}");
             }
 

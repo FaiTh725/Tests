@@ -34,6 +34,11 @@ namespace Test.Domain.Entities
             List<long> questionAnswersId,
             bool isCorrect)
         {
+            if(questionAnswersId is null)
+            {
+                return Result.Failure<ProfileAnswer>("AnswersId is null");
+            }
+
             return Result.Success(new ProfileAnswer(
                 sessionId,
                 questionId,

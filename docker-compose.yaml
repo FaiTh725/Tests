@@ -237,9 +237,16 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - testing_mongo_volume:/data/db
-      - ./conf/mongo-keyfile:/etc/mongo/mongo-keyfile
+      - ./conf/mongo/mongo-keyfile:/etc/mongo/mongo-keyfile
     networks:
       - testing_mongo_net
+    entrypoint:
+      - bash
+      - -c
+      - |
+          chmod 400 /etc/mongo/mongo-keyfile
+          chown 999:999 /etc/mongo/mongo-keyfile
+          exec docker-entrypoint.sh $$@     
     command: > 
       mongod --auth --replSet rs0 --keyFile /etc/mongo/mongo-keyfile --bind_ip_all
     healthcheck:

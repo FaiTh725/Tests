@@ -66,6 +66,7 @@ namespace Test.Domain.Entities
             Name = name;
             Description = description;
             IsPublic = isPublic;
+            TestType = testType;
             DurationInMinutes = durationInMinutes;
 
             return Result.Success();
@@ -120,10 +121,13 @@ namespace Test.Domain.Entities
                     $"length greater than {TestValidator.MAX_DESCRIPTION_LENGTH}");
             }
 
-            if(testType == TestType.Timed &&
-                durationInMinutes == null)
+            if((testType == TestType.Timed &&
+                durationInMinutes == null) ||
+                (testType == TestType.Progressive &&
+                durationInMinutes != null))
             {
-                return Result.Failure("If TestType has timed status than duration is required");
+                return Result.Failure("If TestType has timed status than duration is required and " +
+                    "if TestType is progressive duration should be null");
             }
 
             if(durationInMinutes < TestValidator.MIN_TEST_DURATION)
