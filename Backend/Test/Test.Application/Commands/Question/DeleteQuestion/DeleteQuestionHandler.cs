@@ -33,7 +33,7 @@ namespace Test.Application.Commands.Question.DeleteQuestion
             }
 
             await unitOfWork.QuestionRepository
-                .DeleteQuestion(request.QuestionId, cancellationToken);
+                .DeleteQuestion(request.QuestionId, cancellationToken: cancellationToken);
 
             await bus.Publish(new DeleteFilesFromStorage
             {

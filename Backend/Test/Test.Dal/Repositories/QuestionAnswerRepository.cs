@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Dal.Specifications;
 using Test.Domain.Entities;
@@ -18,7 +19,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<QuestionAnswer> AddQuestionAnswer(
-            QuestionAnswer questionAnswer, 
+            QuestionAnswer questionAnswer,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoQuestionAnswer = new MongoQuestionAnswer();
@@ -31,14 +33,31 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Answers
-                .InsertOneAsync(mongoQuestionAnswer, insertOptions, cancellationToken);
-        
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Answers.InsertOneAsync(
+                    mongoQuestionAnswer,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Answers.InsertOneAsync(
+                    mongoSession,
+                    mongoQuestionAnswer,
+                    insertOptions,
+                    cancellationToken);
+            }
+
+
             return mongoQuestionAnswer.ConvertToDomainEntity();
         }
 
         public async Task<IEnumerable<QuestionAnswer>> AddQuestionAnswers(
-            List<QuestionAnswer> questionAnswers, CancellationToken cancellationToken = default)
+            List<QuestionAnswer> questionAnswers,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
         {
             var mongoQuestions = questionAnswers.Select(x =>
             {
@@ -55,18 +74,50 @@ namespace Test.Dal.Repositories
                 IsOrdered = false,
             };
 
-            await context.Answers.InsertManyAsync(
-                mongoQuestions, insertQuestion, cancellationToken);
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Answers.InsertManyAsync(
+                mongoQuestions,
+                insertQuestion,
+                cancellationToken);
+            }
+            else
+            {
+                await context.Answers.InsertManyAsync(
+                    mongoSession,
+                    mongoQuestions,
+                    insertQuestion,
+                    cancellationToken);
+            }
 
             return mongoQuestions
                 .Select(x => x.ConvertToDomainEntity())
                 .AsEnumerable();
         }
 
-        public async Task DeleteAnswers(List<long> idList, CancellationToken cancellationToken = default)
+        public async Task DeleteAnswers(
+            List<long> idList,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
         {
-            await context.Answers
-                .DeleteManyAsync(x => idList.Contains(x.Id), cancellationToken);
+            var filter = Builders<MongoQuestionAnswer>.Filter
+                .In(x => x.Id, idList);
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Answers.DeleteManyAsync(
+                filter,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Answers.DeleteManyAsync(
+                    mongoSession,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<QuestionAnswer?> GetQuestionAnswer(

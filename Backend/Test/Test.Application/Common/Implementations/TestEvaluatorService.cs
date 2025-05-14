@@ -44,7 +44,7 @@ namespace Test.Application.Common.Implementations
 
                 var correctAnswersId = correctAnswer.Value.Select(x => x.Id);
 
-                var isCorrectAnswer = profileAnswer is null ||
+                var isCorrectAnswer = profileAnswer is not null &&
                     !correctAnswersId.ToHashSet().SetEquals(profileAnswer.QuestionAnswersId);
 
                 profilePoints += isCorrectAnswer ? question.QuestionWeight: 0;
@@ -70,7 +70,7 @@ namespace Test.Application.Common.Implementations
             {
                 TestId = testId,
                 ProfileAnswers = profileAnswersEntity,
-                Percent = profilePoints * 100 / maxPoints
+                Percent = maxPoints == 0 ? 100 : profilePoints * 100 / maxPoints
             });
         }
     }

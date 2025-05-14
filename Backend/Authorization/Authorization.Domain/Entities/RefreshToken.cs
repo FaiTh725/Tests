@@ -49,7 +49,7 @@ namespace Authorization.Domain.Entities
         {
             if(string.IsNullOrWhiteSpace(token))
             {
-                return Result.Failure<RefreshToken>("Token is emprt or null");
+                return Result.Failure<RefreshToken>("Token is empty or null");
             }
 
             if(user is null)

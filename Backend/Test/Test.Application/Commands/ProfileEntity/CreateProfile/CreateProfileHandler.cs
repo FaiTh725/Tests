@@ -39,7 +39,7 @@ namespace Test.Application.Commands.ProfileEntity.CreateProfile
             }
 
             var newProfie = await unitOfWork.ProfileRepository
-                .AddProfile(profileEntity.Value, cancellationToken);
+                .AddProfile(profileEntity.Value, cancellationToken: cancellationToken);
 
             return newProfie.Id;
         }

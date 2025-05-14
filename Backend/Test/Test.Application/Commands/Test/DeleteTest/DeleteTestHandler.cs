@@ -26,7 +26,7 @@ namespace Test.Application.Commands.Test.DeleteTest
             }
 
             await unitOfWork.TestRepository
-                .DeleteTest(request.TestId, cancellationToken);
+                .DeleteTest(request.TestId, cancellationToken: cancellationToken);
 
             test.Delete();
             unitOfWork.TrackEntity(test);

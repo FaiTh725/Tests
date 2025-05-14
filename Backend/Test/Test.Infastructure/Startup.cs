@@ -19,6 +19,8 @@ using Test.Application.Consumers.FileConsumers;
 using Redis.OM;
 using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
+using Test.Application.Consumers.QuestionConsumers;
+using Test.Application.Consumers.TestConsumers;
 
 namespace Test.Infrastructure
 {
@@ -158,6 +160,8 @@ namespace Test.Infrastructure
                 conf.SetKebabCaseEndpointNameFormatter();
 
                 conf.AddConsumer<ClearStorageConsumer>();
+                conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

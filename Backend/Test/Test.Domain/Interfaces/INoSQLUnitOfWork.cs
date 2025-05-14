@@ -23,7 +23,7 @@ namespace Test.Domain.Interfaces
 
         IReadOnlyCollection<DomainEventEntity> GetTrackedEntities();
 
-        // is used to add an entity to its event tracking
+        // it's used to add entities to the tracking
         void TrackEntity(DomainEventEntity entity);
     }
 }

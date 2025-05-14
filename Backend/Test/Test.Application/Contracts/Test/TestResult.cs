@@ -8,7 +8,6 @@ namespace Test.Application.Contracts.Test
 
         public int Percent {  get; set; }
 
-        // Replace to another class
         public List<ProfileAnswer> ProfileAnswers { get; set; } = new List<ProfileAnswer>();
     }
 }

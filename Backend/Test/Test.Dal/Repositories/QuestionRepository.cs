@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Dal.Specifications;
 using Test.Domain.Entities;
@@ -19,7 +20,9 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<Question> AddQuestion(
-            Question question, CancellationToken cancellationToken = default)
+            Question question,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
         {
             var mongoQuestion = new MongoQuestion();
             mongoQuestion.ConvertToMongoEntity(question);
@@ -31,24 +34,72 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Questions
-                .InsertOneAsync(mongoQuestion, insertOptions, cancellationToken);
-            
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Questions.InsertOneAsync(
+                    mongoQuestion,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Questions.InsertOneAsync(
+                    mongoSession,
+                    mongoQuestion,
+                    insertOptions,
+                    cancellationToken);
+            }
+
             return mongoQuestion.ConvertToDomainEntity();
         }
 
-        public async Task DeleteQuestion(long id, CancellationToken cancellationToken = default)
-        {
-            await context.Questions.DeleteManyAsync(x => x.Id == id, 
-                cancellationToken);
-        }
-
-        public async Task DeleteQuestions(List<long> questionIdList, 
+        public async Task DeleteQuestion(
+            long id,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
-            await context.Questions
-                .DeleteManyAsync(x => questionIdList.Contains(x.Id), 
-                cancellationToken);
+            var filter = Builders<MongoQuestion>.Filter
+                .Eq(x => x.Id, id);
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Questions.DeleteManyAsync(
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Questions.DeleteManyAsync(
+                    mongoSession,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+        }
+
+        public async Task DeleteQuestions(
+            List<long> questionIdList,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
+        {
+            var filter = Builders<MongoQuestion>.Filter
+                .In(x => x.Id, questionIdList);
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Questions.DeleteManyAsync(
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Questions.DeleteManyAsync(
+                    mongoSession,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
         }
 
         public async Task<Question?> GetQuestion(
@@ -96,7 +147,10 @@ namespace Test.Dal.Repositories
                 .Select(x => x.ConvertToDomainEntity());
         }
 
-        public async Task UpdateQuestion(long id, Question updatedQuestion, 
+        public async Task UpdateQuestion(
+            long id,
+            Question updatedQuestion,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoQuestion = new MongoQuestion();
@@ -109,8 +163,22 @@ namespace Test.Dal.Repositories
                 .Set(x => x.TestQuestion, updatedQuestion.TestQuestion)
                 .Set(x => x.QuestionWeight, updatedQuestion.QuestionWeight);
 
-            await context.Questions.UpdateOneAsync(filter, update, 
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Questions.UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Questions.UpdateOneAsync(
+                mongoSession,
+                filter,
+                update,
                 cancellationToken: cancellationToken);
+            }
         }
     }
 }

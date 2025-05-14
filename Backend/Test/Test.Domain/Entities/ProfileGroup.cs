@@ -103,7 +103,7 @@ namespace Test.Domain.Entities
                 groupName.Length < ProfileGroupValidator.MIN_GROUP_NAME_LENGTH ||
                 groupName.Length > ProfileGroupValidator.MAX_GROUP_NAME_LENGTH)
             {
-                return Result.Failure("Name group is null or length greate " +
+                return Result.Failure("Name group is null or length great " +
                     $"{ProfileGroupValidator.MAX_GROUP_NAME_LENGTH} or less {ProfileGroupValidator.MIN_GROUP_NAME_LENGTH}");
             }
 

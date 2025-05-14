@@ -10,9 +10,9 @@ using System.Threading.RateLimiting;
 using Test.API.Grpc;
 using Test.Contracts.Profile;
 
-namespace Authorization.API.Extention
+namespace Authorization.API.Extension
 {
-    public static class AppExtention
+    public static class AppExtension
     {
         public static IServiceCollection ConfigureApiServices(
             this IServiceCollection services,

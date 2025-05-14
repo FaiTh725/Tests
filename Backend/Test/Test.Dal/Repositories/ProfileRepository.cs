@@ -1,7 +1,9 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -16,7 +18,10 @@ namespace Test.Dal.Repositories
             this.context = context;
         }
 
-        public async Task<Profile> AddProfile(Profile profile, CancellationToken cancellationToken = default)
+        public async Task<Profile> AddProfile(
+            Profile profile,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
         {
             var mongoProfile = new MongoProfile();
             mongoProfile.ConvertToMongoEntity(profile);
@@ -28,10 +33,22 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Profiles.InsertOneAsync(
-                mongoProfile, 
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Profiles.InsertOneAsync(
+                mongoProfile,
                 insertParameters,
                 cancellationToken);
+            }
+            else
+            {
+                await context.Profiles.InsertOneAsync(
+                    mongoSession,
+                    mongoProfile,
+                    insertParameters,
+                    cancellationToken);
+            }
 
             return mongoProfile.ConvertToDomainEntity();
         }

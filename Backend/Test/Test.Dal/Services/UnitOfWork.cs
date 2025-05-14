@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+﻿using Test.Dal.Adapters;
 using Test.Dal.Repositories;
 using Test.Domain.Interfaces;
 using Test.Domain.Primitives;
@@ -9,9 +9,6 @@ namespace Test.Dal.Services
     public class UnitOfWork : INoSQLUnitOfWork
     {
         private readonly AppDbContext context;
-        private IClientSessionHandle session;
-
-        private bool isTransactionStarted;
 
         private readonly Lazy<IProfileRepository> profileRepository;
         private readonly Lazy<ITestRepository> testRepository;
@@ -55,63 +52,72 @@ namespace Test.Dal.Services
 
         public ITestAccessRepository AccessRepository => testAccessRepository.Value;
 
-        public void BeginTransaction()
+        public IDatabaseSession BeginTransaction()
         {
-            session = context.Client.StartSession();
-            session.StartTransaction();
+            var mongoSession = context.Client.StartSession();
+            mongoSession.StartTransaction();
 
-            isTransactionStarted = true;
+            return new MongoSessionAdapter(mongoSession);
         }
 
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task<IDatabaseSession> BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            session = await context.Client.StartSessionAsync(cancellationToken: cancellationToken);
-            session.StartTransaction();
+            var mongoSession = await context.Client.StartSessionAsync(cancellationToken: cancellationToken);
+            mongoSession.StartTransaction();
 
-            isTransactionStarted = true;
+            return new MongoSessionAdapter(mongoSession);
         }
 
-        public void CommitTransaction()
+        public void CommitTransaction(IDatabaseSession session)
         {
-            AssuranceTransaction();
+            var mongoSession = session as MongoSessionAdapter;
+            AssuranceTransaction(mongoSession);
 
-            session.CommitTransaction();
-
-            isTransactionStarted = false;
+            mongoSession!.Session.CommitTransaction();
+            mongoSession.CloseSession();
         }
 
-        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task CommitTransactionAsync(
+            IDatabaseSession session,
+            CancellationToken cancellationToken = default)
         {
-            AssuranceTransaction();
+            var mongoSession = session as MongoSessionAdapter;
+            AssuranceTransaction(mongoSession);
 
-            await session.CommitTransactionAsync(cancellationToken: cancellationToken);
-
-            isTransactionStarted = false;
+            await mongoSession!.Session
+                .CommitTransactionAsync(cancellationToken: cancellationToken);
+            mongoSession.CloseSession();
         }
 
-        public void RollBackTransaction()
+        public void RollBackTransaction(
+            IDatabaseSession session)
         {
-            AssuranceTransaction();
+            var mongoSession = session as MongoSessionAdapter;
+            AssuranceTransaction(mongoSession);
 
-            session.AbortTransaction();
+            mongoSession!.Session.AbortTransaction();
+            mongoSession.CloseSession();
         }
 
-        public async Task RollBackTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task RollBackTransactionAsync(
+            IDatabaseSession session,
+            CancellationToken cancellationToken = default)
         {
-            AssuranceTransaction();
+            var mongoSession = session as MongoSessionAdapter;
+            AssuranceTransaction(mongoSession);
 
-            await session.AbortTransactionAsync(cancellationToken: cancellationToken);
+            await mongoSession!.Session
+                .AbortTransactionAsync(cancellationToken: cancellationToken);
+            mongoSession.CloseSession();
         }
 
         public void Dispose()
         {
-            session?.Dispose();
         }
 
-        private void AssuranceTransaction()
+        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
         {
-            if(!isTransactionStarted ||
-                session is null)
+            if(mongoSession?.Session.IsInTransaction != true)
             {
                 throw new InvalidOperationException("Transaction is not started");
             }

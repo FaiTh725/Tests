@@ -37,7 +37,7 @@ namespace Test.Application.Commands.Test.CreateTest
             }
 
             var newTest = await unitOfWork.TestRepository
-                .AddTest(testEntity.Value, cancellationToken);
+                .AddTest(testEntity.Value, cancellationToken: cancellationToken);
 
             return newTest.Id;
         }

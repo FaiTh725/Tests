@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -16,7 +18,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<TestSession> AddTestSession(
-            TestSession testSession, 
+            TestSession testSession,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoTestSession = new MongoTestSession();
@@ -29,10 +32,22 @@ namespace Test.Dal.Repositories
                 BypassDocumentValidation = true
             };
 
-            await context.Sessions.InsertOneAsync(
-                mongoTestSession,
-                insertOptions,
-                cancellationToken);
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Sessions.InsertOneAsync(
+                    mongoTestSession,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Sessions.InsertOneAsync(
+                    mongoSession,
+                    mongoTestSession,
+                    insertOptions,
+                    cancellationToken);
+            }
 
             return mongoTestSession.ConvertToDomainEntity();
         }
@@ -49,8 +64,9 @@ namespace Test.Dal.Repositories
         }
 
         public async Task UpdateTestSession(
-            long id, 
-            TestSession updatedSession, 
+            long id,
+            TestSession updatedSession,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoTestSession>.Filter
@@ -61,8 +77,24 @@ namespace Test.Dal.Repositories
                 .Set(x => x.IsEnded, updatedSession.IsEnded)
                 .Set(x => x.Percent, updatedSession.Percent);
 
-            await context.Sessions
-                .UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Sessions
+                    .UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Sessions
+                    .UpdateOneAsync(
+                    mongoSession,
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
         }
     }
 }

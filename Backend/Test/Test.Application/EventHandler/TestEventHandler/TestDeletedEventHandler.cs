@@ -1,82 +1,35 @@
 ﻿using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Test.Application.Contracts.File;
-using Test.Application.Queries.QuestionAnswerEntity.Specifications;
-using Test.Application.Queries.QuestionEntity.Specifications;
+using Test.Application.Contracts.Test;
 using Test.Domain.Events;
-using Test.Domain.Interfaces;
 
 namespace Test.Application.EventHandler.TestEventHandler
 {
-    public class TestDeletedEventHandler : INotificationHandler<TestDeletedEvent>
+    public class TestDeletedEventHandler : 
+        INotificationHandler<TestDeletedEvent>
     {
-        private readonly INoSQLUnitOfWork unitOfWork;
+        private readonly IPublishEndpoint bus;
         private readonly ILogger<TestDeletedEventHandler> logger;
-        private readonly IBus bus;
 
         public TestDeletedEventHandler(
-            INoSQLUnitOfWork unitOfWork,
-            ILogger<TestDeletedEventHandler> logger,
-            IBus bus)
+            IPublishEndpoint bus,
+            ILogger<TestDeletedEventHandler> logger)
         {
-            this.unitOfWork = unitOfWork;
             this.bus = bus;
+            this.logger = logger;
         }
 
         public async Task Handle(
-            TestDeletedEvent notification, 
+            TestDeletedEvent notification,
             CancellationToken cancellationToken)
         {
-            var testQuestion = await unitOfWork.QuestionRepository
-                .GetQuestionsByCriteria(
-                new QuestionsByTestIdSpecification(notification.TestId), 
-                cancellationToken);
-            
-            var testQuestionIdList = testQuestion
-                        .Select(x => x.Id)
-                        .ToList();
+            logger.LogInformation("Test deleted event handler starts executing");
 
-            var questionAnswers = await unitOfWork.QuestionAnswerRepository
-                .GetQuestionAnswersByCriteria(
-                    new AnswersByQuestionsIdSpecification(testQuestionIdList),
-                    cancellationToken);
-
-            var questionAnswersIdList = questionAnswers
-                .Select(x => x.Id)
-                .ToList();
-
-            var imagesFolderToDelete = testQuestion
-                .Select(x => x.ImageFolder)
-                .ToList();
-
-            imagesFolderToDelete.AddRange(questionAnswers
-                .Select(x => x.ImageFolder));
-
-            await bus.Publish(new DeleteFilesFromStorage 
-                { 
-                    PathFiles = imagesFolderToDelete
-                }, cancellationToken);
-
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
-            
-            try
+            await bus.Publish(new DeleteDependentsTestEntities
             {
-                await unitOfWork.QuestionRepository
-                    .DeleteQuestions(testQuestionIdList, cancellationToken);
-
-                await unitOfWork.QuestionAnswerRepository
-                    .DeleteAnswers(questionAnswersIdList, cancellationToken);
-
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
-            }
-            catch(Exception ex)
-            {
-                logger.LogError("Error clear data after deleting test. " +
-                    $"Error message: {ex.Message}");   
-
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
-            }
+                TestId = notification.TestId,
+            }, cancellationToken);
         }
     }
 }

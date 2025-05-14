@@ -38,7 +38,7 @@ namespace Test.Application.Commands.Question.UpdateQuestion
             }
 
             await unitOfWork.QuestionRepository
-                .UpdateQuestion(question.Id, question, cancellationToken);
+                .UpdateQuestion(question.Id, question, cancellationToken: cancellationToken);
 
             return question.Id;
         }
