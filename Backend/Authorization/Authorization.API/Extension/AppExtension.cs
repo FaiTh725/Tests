@@ -58,7 +58,7 @@ namespace Authorization.API.Extension
 
             return services;
         }
-
+      
         private static IServiceCollection AddGrpcProvider(
             this IServiceCollection services,
             IConfiguration configuration)

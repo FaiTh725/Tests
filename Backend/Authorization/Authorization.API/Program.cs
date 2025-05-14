@@ -18,7 +18,8 @@ builder.Services
     .ConfigureApiServices(builder.Configuration)
     .ConfigureDalServices()
     .ConfigureAppServices()
-    .ConfigureInfastructureServices(builder.Configuration);
+    .ConfigureInfrastructureServices(builder.Configuration);
+
 
 
 var app = builder.Build();
