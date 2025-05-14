@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+
+WORKDIR /src
+
+
+COPY ["Backend/Test/", "Test/"]
+COPY ["Backend/Application.Shared/", "Application.Shared/"]
+COPY ["Backend/Notification/Notification.Contracts", "Notification/Notification.Contracts"]
+
+
+RUN dotnet restore 'Test/Test.API/Test.API.csproj'
+
+COPY . .
+
+WORKDIR /src/Test/Test.API
+RUN dotnet build "Test.API.csproj" -c Release -o /app/build
+
+FROM build as publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 
+ENV ASPNETCORE_HTTP_PORTS=5301
+ENV ASPNETCORE_HTTPS_PORTS=5302
+EXPOSE 5301
+EXPOSE 5302
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [ "dotnet", "Test.API.dll" ]

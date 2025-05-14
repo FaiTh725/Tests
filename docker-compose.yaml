@@ -3,6 +3,44 @@ version: "3.8"
 name: "Testing"
 
 services:
+  testing_testing_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Testing
+    container_name: testing_testing_api
+    ports:
+      - "5301:5301"
+      - "5302:5302"
+    environment:
+      - ConnectionStrings__RedisConnection=redis://:${REDIS_PASSWORD}@redis:6379
+      - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__ExpirationTimeRefreshTokenInDays=${JWT_EXPIRATIONTIME_IN_DAYS}
+      - JwtSettings__ExpirationTimeInMinutes=${JWT_EXPIRATIONTIME_IN_MINUTES}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - RabbitMqSettings__User=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+      - RabbitMqSettings__Host=rabbitmq
+      - ASPNETCORE_URLS=https://+:5302;http://+:5301
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - testing_mongo_net
+      - message_broker_net
+      - redis_net
+      - application_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongo_db:
+        condition: service_healthy
+
   testing_authorization_api:
     build:
       context: .
@@ -14,23 +52,25 @@ services:
     environment:
       - ConnectionStrings__RedisCacheConnection=redis:6379,password=${REDIS_PASSWORD}
       - ConnectionStrings__NpgConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Authorize;Port=5432
-      - JwtSettings__SecretKey=${JWT_SECRETKEY}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
-      - JwtSettings__ExpirationTimeRefreshTokenInDays=${JWT_EXPIRATIONTIMEINDAYS}
-      - JwtSettings__ExpirationTimeInMinutes=${JWT_EXPIRATIONTIMEINMINUTES}
+      - JwtSettings__ExpirationTimeRefreshTokenInDays=${JWT_EXPIRATIONTIME_IN_DAYS}
+      - JwtSettings__ExpirationTimeInMinutes=${JWT_EXPIRATIONTIME_IN_MINUTES}
       - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
+      - GrpcServer=https://testing_testing_api:5302
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
     volumes:
       - ./certs:/https:ro
     networks:
       - testing_postgres_net
       - message_broker_net
       - redis_net
+      - application_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -64,6 +104,52 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  mongo_db:
+    image: mongo
+    container_name: testing_mongo_db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    volumes:
+      - testing_mongo_volume:/data/db
+      - ./conf/mongo-keyfile:/etc/mongo/mongo-keyfile
+    networks:
+      - testing_mongo_net
+    entrypoint:
+      - bash
+      - -c
+      - |
+          chmod 400 /etc/mongo/mongo-keyfile
+          chown 999:999 /etc/mongo/mongo-keyfile
+          exec docker-entrypoint.sh $$@ 
+    command: >
+      mongod --auth --replSet rs0 --keyFile /etc/mongo/mongo-keyfile --bind_ip_all
+    healthcheck:
+      test: mongosh --eval "db.adminCommand('ping')" || exit 1
+      interval: 5s
+      timeout: 30s
+      retries: 10
+
+  testing_mongo_express:
+    image: mongo-express
+    container_name: testing_mongo_express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_PASSWORD}
+      - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0
+      - ME_CONFIG_BASICAUTH=false
+    networks:
+      - testing_mongo_net
+    depends_on:
+      mongo_db:
+        condition: service_healthy
+
   postgres_db:
     restart: always
     image: postgres
@@ -79,10 +165,20 @@ services:
     networks:
       - testing_postgres_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U FaITh725"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  azurite_storage:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: testing_blob_storage
+    ports:
+      - "10000:10000"
+    environment:
+      - "AZURITE_ACCOUNTS=${AZURITE_USER}:${AZURITE_PASSWORD}"
+    volumes:
+      - testing_blob_volume:/data
 
   rabbitmq:
     image: rabbitmq:management
@@ -121,11 +217,19 @@ services:
 networks:
   testing_postgres_net:
     driver: bridge
+  testing_mongo_net:
+    driver: bridge
   message_broker_net:
     driver: bridge
   redis_net:
     driver: bridge
+  application_net:
+    driver: bridge
 
 volumes:
   testing_postgres_volume:
+    driver: local
+  testing_mongo_volume:
+    driver: local
+  testing_blob_volume:
     driver: local

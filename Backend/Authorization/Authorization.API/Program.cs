@@ -15,10 +15,11 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 
 builder.Services
-    .ConfigureApiServices()
+    .ConfigureApiServices(builder.Configuration)
     .ConfigureDalServices()
     .ConfigureAppServices()
     .ConfigureInfrastructureServices(builder.Configuration);
+
 
 
 var app = builder.Build();
