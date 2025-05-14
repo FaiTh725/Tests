@@ -1,9 +1,9 @@
-using Authorization.API.Extention;
+using Authorization.API.Extension;
 using Authorization.API.Middlewares;
 using Authorization.Application;
 using Authorization.Dal;
-using Authorization.Infastructure;
 using Serilog;
+using Authorization.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +20,7 @@ builder.Host.UseSerilog();
 builder.Services
     .ConfigureApiServices(builder.Configuration)
     .ConfigureDalServices()
-    .ConfigureAppSerrvices()
+    .ConfigureAppServices()
     .ConfigureInfastructureServices(builder.Configuration);
 
 

@@ -105,7 +105,7 @@ namespace Authorization.Application.UnitTests.Users.Commands
             await act.Should()
                 .ThrowAsync<BadRequestException>()
                 .WithMessage("Password must has one letter and one number, " +
-                    $"in range size from {UserValidator.MIN_PASSWORD_LENGHT} to {UserValidator.MAX_PASSWORD_LENGHT}");
+                    $"in range size from {UserValidator.MIN_PASSWORD_LENGTH} to {UserValidator.MAX_PASSWORD_LENGTH}");
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Authorization.Application.UnitTests.Users.Commands
             await act.Should()
                 .ThrowAsync<BadRequestException>()
                 .WithMessage("Password must has one letter and one number, " +
-                    $"in range size from {UserValidator.MIN_PASSWORD_LENGHT} to {UserValidator.MAX_PASSWORD_LENGHT}");
+                    $"in range size from {UserValidator.MIN_PASSWORD_LENGTH} to {UserValidator.MAX_PASSWORD_LENGTH}");
         }
 
         [Fact]
@@ -161,7 +161,7 @@ namespace Authorization.Application.UnitTests.Users.Commands
             await act.Should()
                 .ThrowAsync<BadRequestException>()
                 .WithMessage("Password must has one letter and one number, " +
-                    $"in range size from {UserValidator.MIN_PASSWORD_LENGHT} to {UserValidator.MAX_PASSWORD_LENGHT}");
+                    $"in range size from {UserValidator.MIN_PASSWORD_LENGTH} to {UserValidator.MAX_PASSWORD_LENGTH}");
         }
 
         [Fact]

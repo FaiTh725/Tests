@@ -5,15 +5,16 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Authorization.Dal.Implementations
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext context;
 
-        private Lazy<IUserRepository> userRepository;
-        private Lazy<IRoleRepository> roleRepository;
-        private Lazy<IRefreshTokenRepository> refreshTokenRepository;
+        private readonly Lazy<IUserRepository> userRepository;
+        private readonly Lazy<IRoleRepository> roleRepository;
+        private readonly Lazy<IRefreshTokenRepository> refreshTokenRepository;
 
         private IDbContextTransaction transaction;
+        private bool disposed = false;
 
         public UnitOfWork(
             AppDbContext context)
@@ -101,8 +102,8 @@ namespace Authorization.Dal.Implementations
 
         public void Dispose()
         {
-            context.Dispose();
-            transaction?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         private void AssuranceTransaction()
@@ -111,6 +112,16 @@ namespace Authorization.Dal.Implementations
             {
                 throw new InvalidOperationException("Transaction hasnt been started");
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(!disposed && disposing)
+            {
+                context.Dispose();
+                transaction?.Dispose();
+            }
+            disposed = true;
         }
     }
 }

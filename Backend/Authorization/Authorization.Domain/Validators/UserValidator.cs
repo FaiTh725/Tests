@@ -4,8 +4,8 @@ namespace Authorization.Domain.Validators
 {
     public class UserValidator
     {
-        public static int MAX_PASSWORD_LENGHT = 30;
-        public static int MIN_PASSWORD_LENGHT = 5;
+        public const int MAX_PASSWORD_LENGTH = 30;
+        public const int MIN_PASSWORD_LENGTH = 5;
 
         public static bool IsValidEmail(string email)
         {
@@ -16,8 +16,8 @@ namespace Authorization.Domain.Validators
 
         public static bool IsValidPassword(string password)
         {
-            if(password.Length < MIN_PASSWORD_LENGHT ||
-                password.Length > MAX_PASSWORD_LENGHT)
+            if(password.Length < MIN_PASSWORD_LENGTH ||
+                password.Length > MAX_PASSWORD_LENGTH)
             {
                 return false;
             }

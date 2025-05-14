@@ -2,6 +2,6 @@
 {
     public static class RoleValidator
     {
-        public static IEnumerable<string> Roles => ["Admin", "User"];
+        public static IReadOnlyList<string> Roles { get; } = new List<string> { "Admin", "User" }.AsReadOnly();
     }
 }

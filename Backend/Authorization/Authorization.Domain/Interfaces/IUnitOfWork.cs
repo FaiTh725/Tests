@@ -2,7 +2,7 @@
 
 namespace Authorization.Domain.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork: IDisposable
     {
         public IUserRepository UserRepository { get; }
 

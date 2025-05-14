@@ -50,7 +50,7 @@ namespace Authorization.Application.Commands.UserEntity.Register
             if(!UserValidator.IsValidPassword(request.Password))
             {
                 throw new BadRequestException("Password must has one letter and one number, " +
-                    $"in range size from {UserValidator.MIN_PASSWORD_LENGHT} to {UserValidator.MAX_PASSWORD_LENGHT}");
+                    $"in range size from {UserValidator.MIN_PASSWORD_LENGTH} to {UserValidator.MAX_PASSWORD_LENGTH}");
             }
 
             var passwordHash = hashService.GenerateHash(request.Password);

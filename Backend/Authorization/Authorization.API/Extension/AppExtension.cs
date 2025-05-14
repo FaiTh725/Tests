@@ -9,9 +9,9 @@ using Serilog;
 using Serilog.Sinks.Network;
 using System.Threading.RateLimiting;
 
-namespace Authorization.API.Extention
+namespace Authorization.API.Extension
 {
-    public static class AppExtention
+    public static class AppExtension
     {
         public static IServiceCollection ConfigureApiServices(
             this IServiceCollection services,
