@@ -24,16 +24,14 @@ namespace TestRating.Application.Behaviors
             CancellationToken cancellationToken)
         {
             var reply = await unitOfWork.ReplyRepository
-                .GetReplyByCriteria(new ReplyByIdWithOwnerSpecification(
-                    request.ReplyId), 
-                    cancellationToken);
+                .GetReply(request.ReplyId, cancellationToken);
         
             if(reply is null)
             {
                 throw new BadRequestException("Feedback Reply doesnt exist");
             }
 
-            if(reply.Owner.Id != request.ProfileId &&
+            if(reply.OwnerId != request.ProfileId &&
                 request.ProfileRole != "Admin")
             {
                 throw new ForbiddenAccessException("Only the owner and an admin have access to the feedback");

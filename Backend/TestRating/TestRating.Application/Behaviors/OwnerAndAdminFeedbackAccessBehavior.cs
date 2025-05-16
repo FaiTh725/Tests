@@ -31,7 +31,7 @@ namespace TestRating.Application.Behaviors
             }
 
             if(request.ProfileRole != "Admin" &&
-                feedback.Id != request.ProfileId)
+                feedback.OwnerId != request.ProfileId)
             {
                 throw new ForbiddenAccessException("Only the owner and an admin have access to the feedback");
             }

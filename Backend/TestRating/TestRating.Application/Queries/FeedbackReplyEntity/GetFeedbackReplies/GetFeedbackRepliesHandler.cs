@@ -49,6 +49,8 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
                     request.PageSize,
                     cancellationToken);
 
+                await unitOfWork.CommitTransactionAsync(cancellationToken);
+
                 return new BasePaginationResponse<FeedbackReplyWithOwner>
                 {
                     Page = request.Page,
