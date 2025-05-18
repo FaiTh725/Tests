@@ -26,7 +26,7 @@ namespace Test.Application.Commands.ProfileEntity.CreateProfile
             if(existProfile is not null)
             {
                 throw new ConflictException("Email " + request.Email + 
-                    " is alredy registered");
+                    " has already registered");
             }
 
             var profileEntity = Profile.Initialize(

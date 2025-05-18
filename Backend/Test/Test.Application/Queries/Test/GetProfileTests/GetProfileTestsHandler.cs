@@ -26,7 +26,7 @@ namespace Test.Application.Queries.Test.GetProfileTests
 
             if(profile is null)
             {
-                throw new BadRequestException("Profile doesnt exist");
+                throw new NotFoundException("Profile doesnt exist");
             }
 
             var profileTests = await unitOfWork.TestRepository
@@ -37,6 +37,7 @@ namespace Test.Application.Queries.Test.GetProfileTests
             return profileTests.Select(x => new TestInfo
             {
                 Id = x.Id,
+                Name = x.Name,
                 CreatedTime = x.CreatedTime,
                 Description = x.Description,
                 IsPublic = x.IsPublic,

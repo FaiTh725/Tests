@@ -29,7 +29,7 @@ namespace Test.Application.Commands.Question.DeleteQuestion
 
             if(question is null)
             {
-                throw new NotFoundException("Question doesnt exist");
+                throw new BadRequestException("Question doesnt exist");
             }
 
             await unitOfWork.BeginTransactionAsync(cancellationToken);

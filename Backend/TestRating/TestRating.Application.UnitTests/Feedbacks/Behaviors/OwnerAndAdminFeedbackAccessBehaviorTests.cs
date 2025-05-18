@@ -4,7 +4,6 @@ using MediatR;
 using Moq;
 using TestRating.Application.Behaviors;
 using TestRating.Application.Commands.FeedbackEntity.DeleteFeedback;
-using TestRating.Application.Commands.ReplyEntity.UpdateReply;
 using TestRating.Domain.Entities;
 using TestRating.Domain.Interfaces;
 using TestRating.Domain.Repositories;

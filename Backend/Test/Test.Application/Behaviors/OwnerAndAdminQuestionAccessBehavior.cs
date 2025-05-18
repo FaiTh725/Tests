@@ -27,7 +27,7 @@ namespace Test.Application.Behaviors
 
             if(question is null)
             {
-                throw new NotFoundException("Question doesnt exist");
+                throw new BadRequestException("Question doesnt exist");
             }
 
             var test = await unitOfWork.TestRepository

@@ -29,7 +29,6 @@ namespace Authorization.Domain.Entities
             RoleId = roleName;
         }
 
-        // Fluent validation api
         public static Result<User> Initialize(
             string userName,
             string email,

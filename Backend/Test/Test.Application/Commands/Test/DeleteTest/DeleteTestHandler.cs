@@ -24,7 +24,7 @@ namespace Test.Application.Commands.Test.DeleteTest
 
             if(test is null)
             {
-                throw new NotFoundException("Test doesnt exist");
+                throw new BadRequestException("Test doesnt exist");
             }
 
             await unitOfWork.TestRepository
