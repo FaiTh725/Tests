@@ -66,7 +66,6 @@ namespace Authorization.Infrastructure.BackgroundServices
             logger.LogInformation("Added the required roles");
         }
 
-        // TODO: Try to find better way to check db healthcheck
         private async Task WaitDatabase(CancellationToken cancellationToken)
         {
             using var scope = scopeFactory.CreateAsyncScope();
