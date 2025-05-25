@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Hangfire;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using StackExchange.Redis;
+using Moq;
+using Newtonsoft.Json;
+using Redis.OM;
 using Test.Application.Consumers.FileConsumers;
 using Test.Application.Consumers.ProfileConsumers;
 using Test.Application.Consumers.TestConsumers;
@@ -27,15 +30,16 @@ namespace Test.Integration.Tests
     {
         private readonly MongoDbContainer dbContainer = new MongoDbBuilder()
                         .WithImage("mongo:latest")
-                        .WithUsername("admin")
-                        .WithPassword("admin")
-                        .WithReplicaSet()
+                        .WithUsername("")
+                        .WithPassword("")
+                        .WithCommand("--replSet", "rs0", "--bind_ip_all")
                         .WithCleanUp(true)
                         .Build();
 
         private readonly RedisContainer redisContainer = new RedisBuilder()
                         .WithImage("redis/redis-stack:latest")
                         .WithCleanUp(true)
+                        .WithPortBinding(16379, true)
                         .Build();
 
         private readonly RabbitMqContainer rabbitMqContainer = new RabbitMqBuilder()
@@ -69,7 +73,7 @@ namespace Test.Integration.Tests
             await dbContainer.ExecScriptAsync("rs.initiate();");
 
             DbConnectionString = dbContainer.GetConnectionString();
-            RedisConnectionString = redisContainer.GetConnectionString();
+            RedisConnectionString = @$"redis://:@{redisContainer.Hostname}:{redisContainer.GetMappedPublicPort(16379)}";
             AzuriteConnectionString = azuriteContainer.GetConnectionString();
 
             Environment.SetEnvironmentVariable("ConnectionStrings:MongoDbConnection", DbConnectionString);
@@ -95,7 +99,7 @@ namespace Test.Integration.Tests
                 var azuriteDescriptor = services
                     .SingleOrDefault(x => x.ServiceType == typeof(BlobServiceClient));
                 var redisDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(IConnectionMultiplexer));
+                    .SingleOrDefault(x => x.ServiceType == typeof(RedisConnectionProvider));
 
                 if (dbDescriptor is not null)
                 {
@@ -110,6 +114,11 @@ namespace Test.Integration.Tests
                 if (azuriteDescriptor is not null)
                 {
                     services.Remove(azuriteDescriptor);
+                }
+
+                if(redisDescriptor is not null)
+                {
+                    services.Remove(redisDescriptor);
                 }
 
                 foreach (var massTransitDescriptor in massTransitDescriptors)
@@ -135,7 +144,10 @@ namespace Test.Integration.Tests
 
                 services.AddSingleton(new BlobServiceClient(AzuriteConnectionString));
 
+                services.AddSingleton(new RedisConnectionProvider(RedisConnectionString));
+
                 ConfigureTestAuthPolicy(services);
+                MockHangFire(services);
 
                 services.AddMassTransitTestHarness(conf =>
                 {
@@ -146,7 +158,7 @@ namespace Test.Integration.Tests
                     conf.AddConsumer<DeleteTestProfileConsumer>();
                     conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
 
-                    //conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));
+                    conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));
                     //conf.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(5));
 
                     conf.UsingRabbitMq((context, configurator) =>
@@ -196,6 +208,34 @@ namespace Test.Integration.Tests
                  .RequireAuthenticatedUser()
                  .Build();
             });
+        }
+
+        private void MockHangFire(IServiceCollection services)
+        {
+            var hangfireDescriptors = services
+                .Where(x => x.ServiceType.FullName?
+                    .Contains("hangfire", StringComparison.InvariantCultureIgnoreCase) == true)
+                .ToList();
+            
+            foreach(var descriptor in hangfireDescriptors)
+            {
+                services.Remove(descriptor);
+            }
+
+            var jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            };
+
+            services.AddHangfire(x =>
+            {
+               
+                x.UseSimpleAssemblyNameTypeSerializer()
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseInMemoryStorage()
+                .UseSerializerSettings(jsonSettings);
+            });
+            services.AddHangfireServer();
         }
     }
 }

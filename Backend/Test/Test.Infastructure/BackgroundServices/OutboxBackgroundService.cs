@@ -12,7 +12,7 @@ namespace Test.Infrastructure.BackgroundServices
     {
         private readonly IServiceScopeFactory serviceScopeFactory;
 
-        private const int OutboxProcessorFrequency = 7;
+        private const int OutboxProcessorFrequency = 5;
 
         public OutboxBackgroundService(
             IServiceScopeFactory serviceScopeFactory)
