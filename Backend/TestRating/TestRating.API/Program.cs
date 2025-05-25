@@ -20,7 +20,7 @@ builder.Services
     .ConfigureApiServices(builder.Configuration)
     .ConfigureInfrastructureServices(builder.Configuration)
     .ConfigureAppServices()
-    .ConfigureDalServices();
+    .ConfigureDalServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -37,3 +37,6 @@ app.MapControllers();
 app.UseExceptionHandler();
 
 app.Run();
+
+// For integration tests
+public partial class Program { }

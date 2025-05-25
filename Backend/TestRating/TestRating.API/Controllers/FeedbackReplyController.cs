@@ -13,7 +13,7 @@ using TestRating.Application.Queries.FeedbackReplyEntity.GetReplyWithOwnerById;
 namespace TestRating.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class FeedbackReplyController : ControllerBase
     {
         private readonly IMediator mediator;

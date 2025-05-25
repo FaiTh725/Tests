@@ -45,15 +45,7 @@ namespace Authorization.IntegrationTests
         {
             await respawner.ResetAsync(dbConnection);
 
-            var redis = await ConnectionMultiplexer
-                .ConnectAsync(factory.RedisConnection + ",allowAdmin=true");
-            var redisEndpoints = redis.GetEndPoints();
-
-            foreach (var endpoint in redisEndpoints)
-            {
-                var server = redis.GetServer(endpoint);
-                await server.FlushAllDatabasesAsync();
-            }
+            await ResetCache();
 
             await dbConnection.CloseAsync();
             await massTransitHarness.Stop();
@@ -72,6 +64,19 @@ namespace Authorization.IntegrationTests
             });
 
             await massTransitHarness.Start();
+        }
+
+        private async Task ResetCache()
+        {
+            var redis = await ConnectionMultiplexer
+                .ConnectAsync(factory.RedisConnection + ",allowAdmin=true");
+            var redisEndpoints = redis.GetEndPoints();
+
+            foreach (var endpoint in redisEndpoints)
+            {
+                var server = redis.GetServer(endpoint);
+                await server.FlushAllDatabasesAsync();
+            }
         }
     }
 }

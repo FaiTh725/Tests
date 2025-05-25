@@ -47,3 +47,5 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 app.UseExceptionHandler();
 
 app.Run();
+
+public partial class Program { };

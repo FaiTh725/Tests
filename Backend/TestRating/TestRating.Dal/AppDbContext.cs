@@ -10,18 +10,15 @@ namespace TestRating.Dal
 {
     public class AppDbContext : DbContext
     {
-        private readonly IConfiguration configuration;
         private readonly SoftDeleteInterceptor softDeleteInterceptor;
         private readonly DomainEventsInterceptor domainEventsInterceptor;
 
         public AppDbContext(
             DbContextOptions<AppDbContext> options,
             SoftDeleteInterceptor softDeleteInterceptor,
-            DomainEventsInterceptor domainEventsInterceptor,
-            IConfiguration configuration):
+            DomainEventsInterceptor domainEventsInterceptor):
             base(options)
         {
-            this.configuration = configuration;
             this.softDeleteInterceptor = softDeleteInterceptor;
             this.domainEventsInterceptor = domainEventsInterceptor;
         }
@@ -50,12 +47,7 @@ namespace TestRating.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var postgressConnection = configuration
-                .GetConnectionString("PostgressConnection") ??
-                throw new AppConfigurationException("Postgress connection string");
-
             optionsBuilder
-                .UseNpgsql(postgressConnection)
                 .AddInterceptors(softDeleteInterceptor, domainEventsInterceptor);
         }
     }

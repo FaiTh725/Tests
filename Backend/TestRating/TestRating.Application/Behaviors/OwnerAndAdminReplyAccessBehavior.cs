@@ -1,7 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using TestRating.Application.Common.BehaviorInterfaces;
-using TestRating.Application.Queries.FeedbackReplyEntity.Specifications;
 using TestRating.Domain.Interfaces;
 
 namespace TestRating.Application.Behaviors
@@ -28,7 +27,7 @@ namespace TestRating.Application.Behaviors
         
             if(reply is null)
             {
-                throw new BadRequestException("Feedback Reply doesnt exist");
+                throw new BadRequestException("Reply doesnt exist");
             }
 
             if(reply.OwnerId != request.ProfileId &&

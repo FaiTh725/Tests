@@ -36,7 +36,13 @@ namespace TestRating.Application.Commands.FeedbackEntity.ChangeFeedback
                 throw new BadRequestException("Feedback doesnt exist");
             }
 
-            feedback.ChangeFeedback(request.Text, request.Rating);
+            var updateResult = feedback.ChangeFeedback(request.Text, request.Rating);
+            
+            if(updateResult.IsFailure)
+            {
+                throw new BadRequestException("Invalid command - " + updateResult.Error);
+            }
+
             await unitOfWork.FeedbackRepository
                 .UpdateFeedback(feedback.Id, feedback, cancellationToken);
 

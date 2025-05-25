@@ -66,7 +66,7 @@ namespace TestRating.Infrastructure.Implementations
 
             if(profile is null)
             {
-                throw new NotFoundException("Profile with email - " +
+                throw new BadRequestException("Profile with email - " +
                     decodedToken.Value.Email + " doesnt exist");
             }
 

@@ -1,9 +1,6 @@
 ﻿using Authorization.Application.SagaOrchestrator;
 using Authorization.Application.SagaOrchestrator.States;
 using Authorization.Dal;
-using Authorization.Domain.Entities;
-using Authorization.Domain.Validators;
-using Authorization.IntegrationTests.Configurations;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
