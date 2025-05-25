@@ -32,7 +32,7 @@ namespace Notification.Application.Implementations
 
             emailMessage.From.Add(new MailboxAddress(
                 "Testing",
-                emailServiceConf.ReciverEmail));
+                emailServiceConf.ReceiverEmail));
             emailMessage.To.Add(new MailboxAddress(
                 "",
                 email.Email));
@@ -47,7 +47,7 @@ namespace Notification.Application.Implementations
                 using var client = new SmtpClient();
                 await client.ConnectAsync("smtp.mail.ru", 465);
                 await client.AuthenticateAsync(
-                    emailServiceConf.ReciverEmail,
+                    emailServiceConf.ReceiverEmail,
                     emailServiceConf.Password);
                 await client.SendAsync(emailMessage);
                 await client.DisconnectAsync(true);

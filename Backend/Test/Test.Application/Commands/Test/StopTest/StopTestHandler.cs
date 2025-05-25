@@ -48,11 +48,12 @@ namespace Test.Application.Commands.Test.StopTest
                     $"{testSession.Error}");
             }
 
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
+            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+            
             try
             {
                 var dbTestSession = await unitOfWork.SessionRepository
-                    .AddTestSession(testSession.Value, cancellationToken);
+                    .AddTestSession(testSession.Value, transaction, cancellationToken);
 
                 var lastAnswers = session.Answers
                     .GroupBy(x => x.QuestionId)
@@ -73,7 +74,8 @@ namespace Test.Application.Commands.Test.StopTest
 
                 await unitOfWork.ProfileAnswerRepository
                     .AddProfileAnswers(
-                        testResult.Value.ProfileAnswers, 
+                        testResult.Value.ProfileAnswers,
+                        transaction,
                         cancellationToken);
 
                 var stopSessionResult = dbTestSession
@@ -85,9 +87,9 @@ namespace Test.Application.Commands.Test.StopTest
                 }
 
                 await unitOfWork.SessionRepository
-                    .UpdateTestSession(dbTestSession.Id, dbTestSession, cancellationToken);
+                    .UpdateTestSession(dbTestSession.Id, dbTestSession, transaction, cancellationToken);
 
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
 
                 if(session.TestDuration is not null)
                 {
@@ -100,7 +102,7 @@ namespace Test.Application.Commands.Test.StopTest
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
                 throw;
             }
         }

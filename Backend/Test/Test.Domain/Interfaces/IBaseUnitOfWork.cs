@@ -1,17 +1,19 @@
-﻿namespace Test.Domain.Interfaces
+﻿using Test.Domain.Primitives;
+
+namespace Test.Domain.Interfaces
 {
     public interface IBaseUnitOfWork: IDisposable
     {
-        void BeginTransaction();
+        IDatabaseSession BeginTransaction();
 
-        Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+        Task<IDatabaseSession> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
-        void CommitTransaction();
+        void CommitTransaction(IDatabaseSession session);
 
-        Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+        Task CommitTransactionAsync(IDatabaseSession session, CancellationToken cancellationToken = default);
 
-        void RollBackTransaction();
+        void RollBackTransaction(IDatabaseSession session);
 
-        Task RollBackTransactionAsync(CancellationToken cancellationToken = default);
+        Task RollBackTransactionAsync(IDatabaseSession session, CancellationToken cancellationToken = default);
     }
 }

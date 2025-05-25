@@ -46,7 +46,7 @@ namespace Test.Application.Commands.Question.CreateQuestion
                     "or at least one answer");
             }
 
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
+            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
             {
@@ -61,7 +61,7 @@ namespace Test.Application.Commands.Question.CreateQuestion
                 }
 
                 var questionEntity = await unitOfWork.QuestionRepository
-                    .AddQuestion(question.Value, cancellationToken);
+                    .AddQuestion(question.Value, transaction, cancellationToken);
                    
                 var uploadFilesTasks = new List<Task<IEnumerable<string>>>();
                 foreach (var questionAnswer in request.Answers)
@@ -75,7 +75,7 @@ namespace Test.Application.Commands.Question.CreateQuestion
                     }
 
                     var newQuestionAnswer = await unitOfWork.QuestionAnswerRepository
-                        .AddQuestionAnswer(questionAnswerEntity.Value, cancellationToken);
+                        .AddQuestionAnswer(questionAnswerEntity.Value, transaction, cancellationToken);
 
                     if(questionAnswer.AnswerImages.Count != 0)
                     {
@@ -88,18 +88,18 @@ namespace Test.Application.Commands.Question.CreateQuestion
                 await Task.WhenAll(uploadFilesTasks);
                 await blobService.UploadBlobs(questionEntity.ImageFolder, request.QuestionImages, cancellationToken);
 
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
 
                 return questionEntity.Id;
             }
             catch(ApiException)
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
                 throw;
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
                 throw new InternalServerErrorException("Inner api exception");
             }
         }

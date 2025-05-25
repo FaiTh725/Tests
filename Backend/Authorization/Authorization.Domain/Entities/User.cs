@@ -35,19 +35,34 @@ namespace Authorization.Domain.Entities
             string passwordHash,
             string roleName)
         {
+<<<<<<< HEAD
             if (!UserValidator.IsValidEmail(email))
             {
                 return Result.Failure<User>("Email is invalid, must contain @ and a dot after it");
             }
 
             if(string.IsNullOrEmpty(passwordHash))
+=======
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return Result.Failure<User>("UserName is empty or null");
+            }
+
+            if (string.IsNullOrEmpty(passwordHash))
+>>>>>>> feature-test-service
             {
                 return Result.Failure<User>("PasswordHash is empty or null");
             }
 
+<<<<<<< HEAD
             if (string.IsNullOrWhiteSpace(userName))
             {
                 return Result.Failure<User>("UserName is empty or null");
+=======
+            if (!UserValidator.IsValidEmail(email))
+            {
+                return Result.Failure<User>("Email is invalid, must contains one letter and one number");
+>>>>>>> feature-test-service
             }
 
             if (string.IsNullOrWhiteSpace(roleName))

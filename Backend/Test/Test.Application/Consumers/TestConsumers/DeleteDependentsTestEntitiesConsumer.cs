@@ -1,9 +1,9 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 using Test.Application.Contracts.File;
+using Test.Application.Contracts.Test;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
 using Test.Application.Queries.QuestionEntity.Specifications;
-using Test.Contracts.TestEntity;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.Consumers.TestConsumers
@@ -13,16 +13,16 @@ namespace Test.Application.Consumers.TestConsumers
     {
         private readonly INoSQLUnitOfWork unitOfWork;
         private readonly ILogger<DeleteDependentsTestEntitiesConsumer> logger;
-        private readonly IOutboxService outboxService;
+        private readonly IPublishEndpoint publishEndpoint;
 
         public DeleteDependentsTestEntitiesConsumer(
             INoSQLUnitOfWork unitOfWork,
             ILogger<DeleteDependentsTestEntitiesConsumer> logger,
-            IOutboxService outboxService)
+            IPublishEndpoint publishEndpoint)
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;
-            this.outboxService = outboxService;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public async Task Consume(
@@ -53,22 +53,23 @@ namespace Test.Application.Consumers.TestConsumers
             imagesFolderToDelete.AddRange(questionAnswers
             .Select(x => x.ImageFolder));
 
-            await unitOfWork.BeginTransactionAsync(context.CancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(context.CancellationToken);
 
             try
             {
                 await unitOfWork.QuestionRepository
-                    .DeleteQuestions(testQuestionIdList, context.CancellationToken);
+                    .DeleteQuestions(testQuestionIdList, transaction, context.CancellationToken);
 
                 await unitOfWork.QuestionAnswerRepository
-                    .DeleteAnswers(questionAnswersIdList, context.CancellationToken);
+                    .DeleteAnswers(questionAnswersIdList, transaction, context.CancellationToken);
 
-                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
+                await publishEndpoint.Publish(new DeleteFilesFromStorage
                 {
                     PathFiles = imagesFolderToDelete
-                }, context.CancellationToken);
+                },
+                context.CancellationToken);
 
-                await unitOfWork.CommitTransactionAsync(context.CancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, context.CancellationToken);
 
                 logger.LogInformation("Delete Dependents Test Entities consumer executed");
             }
@@ -77,7 +78,7 @@ namespace Test.Application.Consumers.TestConsumers
                 logger.LogError("Error clear data after deleting test. " +
                     $"Error message: {ex.Message}");
 
-                await unitOfWork.RollBackTransactionAsync(context.CancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, context.CancellationToken);
             }
         }
     }

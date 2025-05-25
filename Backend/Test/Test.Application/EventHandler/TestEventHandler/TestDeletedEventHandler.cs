@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Test.Contracts.TestEntity;
+using Test.Application.Contracts.Test;
 using Test.Domain.Events;
 
 namespace Test.Application.EventHandler.TestEventHandler
@@ -21,7 +21,7 @@ namespace Test.Application.EventHandler.TestEventHandler
         }
 
         public async Task Handle(
-            TestDeletedEvent notification, 
+            TestDeletedEvent notification,
             CancellationToken cancellationToken)
         {
             logger.LogInformation("Test deleted event handler starts executing");

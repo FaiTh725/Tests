@@ -1,5 +1,7 @@
-﻿using Test.Dal.Persistences;
+﻿using Test.Dal.Adapters;
+using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -15,7 +17,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<IEnumerable<ProfileAnswer>> AddProfileAnswers(
-            List<ProfileAnswer> profileAnswers, 
+            List<ProfileAnswer> profileAnswers,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoProfileAnswers = profileAnswers.Select(x =>
@@ -24,11 +27,12 @@ namespace Test.Dal.Repositories
                 mongoProfileAnswer.ConvertToMongoEntity(x);
                 var nextId = context.GetNextId(AppDbContext.PROFILE_ANSWERS_COLLECTION_NAME);
                 mongoProfileAnswer.Id = nextId;
-                
+
                 return mongoProfileAnswer;
             });
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.ProfileAnswers.InsertManyAsync(
                 mongoProfileAnswers,
@@ -37,7 +41,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.ProfileAnswers.InsertManyAsync(
-                    context.Session,
+                    mongoSession,
                     mongoProfileAnswers,
                     cancellationToken: cancellationToken);
             }

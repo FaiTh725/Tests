@@ -32,12 +32,12 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 throw new BadRequestException("Question doesnt exist");
             }
 
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
+            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
             {
                 await unitOfWork.QuestionRepository
-                    .DeleteQuestion(request.QuestionId, cancellationToken);
+                    .DeleteQuestion(request.QuestionId, transaction, cancellationToken);
 
                 await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
@@ -48,11 +48,11 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 question.Delete();
                 unitOfWork.TrackEntity(question);
 
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
                 throw;
             }
         }

@@ -41,7 +41,7 @@ namespace Test.Application.Commands.Test.UpdateTest
             }
 
             await unitOfWork.TestRepository
-                .UpdateTest(test.Id, test, cancellationToken);
+                .UpdateTest(test.Id, test, cancellationToken: cancellationToken);
 
             return test.Id;
         }

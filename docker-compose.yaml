@@ -210,7 +210,7 @@ services:
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
-      - EmailSettings__ReciverEmail=${EMAIL_RECIVER}
+      - EmailSettings__ReceiverEmail=${EMAIL_RECIVER}
       - EmailSettings__Password=${EMAIL_PASSWORD}
       - LogstashSettings__Host=tcp://testing_logstash
       - LogstashSettings__Port=5044
