@@ -8,6 +8,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Commands.Reviews
 {
+    [Collection("Integration Tests")]
     public class SendFeedbackReviewCommandHandlerTests : BaseIntegrationTest
     {
         public SendFeedbackReviewCommandHandlerTests(

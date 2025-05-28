@@ -13,6 +13,7 @@
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="8.2.0" />
     <PackageReference Include="Hangfire.InMemory" Version="1.0.0" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.11" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
@@ -34,6 +35,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Test.API\Test.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Application.Shared">
+      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Notification.Contracts">
+      <HintPath>..\..\Notification\Notification.Contracts\bin\Debug\net8.0\Notification.Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

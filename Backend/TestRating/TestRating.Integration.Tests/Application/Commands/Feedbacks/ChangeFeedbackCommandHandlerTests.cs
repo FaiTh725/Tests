@@ -6,6 +6,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Commands.Feedbacks
 {
+    [Collection("Integration Tests")]
     public class ChangeFeedbackCommandHandlerTests : BaseIntegrationTest
     {
         public ChangeFeedbackCommandHandlerTests(CustomWebFactory factory) : 

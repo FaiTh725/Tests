@@ -8,6 +8,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Queries.Replies
 {
+    [Collection("Integration Tests")]
     public class GetFeedbackRepliesQueryHandlerTests : 
         BaseIntegrationTest
     {

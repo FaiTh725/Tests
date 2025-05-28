@@ -1,5 +1,10 @@
 ﻿using Azure.Storage.Blobs;
+using DotNet.Testcontainers.Builders;
 using Hangfire;
+using Hangfire.InMemory;
+using Hangfire.MemoryStorage;
+using Hangfire.Server;
+using Hangfire.States;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -8,15 +13,21 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Moq;
 using Newtonsoft.Json;
 using Redis.OM;
+using System.Linq.Expressions;
 using Test.Application.Consumers.FileConsumers;
 using Test.Application.Consumers.ProfileConsumers;
+using Test.Application.Consumers.QuestionConsumers;
 using Test.Application.Consumers.TestConsumers;
+using Test.Infrastructure.BackgroundServices;
+using Test.Infrastructure.RedisEntities;
+using Test.Integration.Tests.Consumers;
 using Test.Integration.Tests.JwtAuthenticationMock.cs;
 using Testcontainers.Azurite;
 using Testcontainers.MongoDb;
@@ -39,7 +50,7 @@ namespace Test.Integration.Tests
         private readonly RedisContainer redisContainer = new RedisBuilder()
                         .WithImage("redis/redis-stack:latest")
                         .WithCleanUp(true)
-                        .WithPortBinding(16379, true)
+                        .WithPortBinding(16379, 6379)
                         .Build();
 
         private readonly RabbitMqContainer rabbitMqContainer = new RabbitMqBuilder()
@@ -72,17 +83,20 @@ namespace Test.Integration.Tests
 
             await dbContainer.ExecScriptAsync("rs.initiate();");
 
+
             DbConnectionString = dbContainer.GetConnectionString();
-            RedisConnectionString = @$"redis://:@{redisContainer.Hostname}:{redisContainer.GetMappedPublicPort(16379)}";
+            RedisConnectionString = $"redis://{redisContainer.Hostname}:{redisContainer.GetMappedPublicPort(6379)}"; 
             AzuriteConnectionString = azuriteContainer.GetConnectionString();
 
             Environment.SetEnvironmentVariable("ConnectionStrings:MongoDbConnection", DbConnectionString);
-            Environment.SetEnvironmentVariable("ConnectionStrings:AzuriteBlobStorage", AzuriteConnectionString);
             Environment.SetEnvironmentVariable("ConnectionStrings:RedisConnection", RedisConnectionString);
+            Environment.SetEnvironmentVariable("ConnectionStrings:AzuriteBlobStorage", AzuriteConnectionString);
 
             Environment.SetEnvironmentVariable("RabbitMqSettings:Host", new Uri(rabbitMqContainer.GetConnectionString()).ToString());
             Environment.SetEnvironmentVariable("RabbitMqSettings:Password", "guest");
             Environment.SetEnvironmentVariable("RabbitMqSettings:User", "guest");
+            
+            await CreateIndexes();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -146,8 +160,10 @@ namespace Test.Integration.Tests
 
                 services.AddSingleton(new RedisConnectionProvider(RedisConnectionString));
 
+                // TODO: refactoring
                 ConfigureTestAuthPolicy(services);
                 MockHangFire(services);
+                RemoveBackgroundServices(services);
 
                 services.AddMassTransitTestHarness(conf =>
                 {
@@ -157,6 +173,9 @@ namespace Test.Integration.Tests
                     conf.AddConsumer<CreateTestProfileConsumer>();
                     conf.AddConsumer<DeleteTestProfileConsumer>();
                     conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
+                    conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
+                    
+                    conf.AddConsumer<MessagesConsumer>();
 
                     conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));
                     //conf.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(5));
@@ -229,13 +248,47 @@ namespace Test.Integration.Tests
 
             services.AddHangfire(x =>
             {
-               
+
                 x.UseSimpleAssemblyNameTypeSerializer()
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseInMemoryStorage()
                 .UseSerializerSettings(jsonSettings);
             });
             services.AddHangfireServer();
+        }
+
+        private void RemoveBackgroundServices(IServiceCollection services)
+        {
+            var clearInactiveSessionDescriptor = services
+                .SingleOrDefault(x => x.ImplementationType == typeof(ClearInactiveSessionsBackgroundService));
+            var outboxBackgroundServiceDescriptor = services
+                .SingleOrDefault(x => x.ImplementationType == typeof(OutboxBackgroundService));
+            var createRedisOmIndexesDescriptor = services
+                .SingleOrDefault(x => x.ImplementationType == typeof(CreateRedisOmIndexes));
+
+            if(clearInactiveSessionDescriptor is not null)
+            {
+                services.Remove(clearInactiveSessionDescriptor);
+            }
+
+            if(outboxBackgroundServiceDescriptor is not null)
+            {
+                services.Remove(outboxBackgroundServiceDescriptor);
+            }
+
+            if(createRedisOmIndexesDescriptor is not null)
+            {
+                services.Remove(createRedisOmIndexesDescriptor);
+            }
+        }
+
+        private async Task CreateIndexes()
+        {
+            using var scope = Services.CreateScope();
+            var redisProvider = scope.ServiceProvider
+                .GetRequiredService<RedisConnectionProvider>();
+
+            await redisProvider.Connection.CreateIndexAsync(typeof(RedisTestSession));
         }
     }
 }

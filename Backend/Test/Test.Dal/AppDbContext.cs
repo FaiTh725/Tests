@@ -30,7 +30,7 @@ namespace Test.Dal
             database = mongoDatabase;
 
             counters = database.GetCollection<BsonDocument>("counters");
-
+            
             ProfileConfiguration.ApplyProfileConfigurations(database.GetCollection<MongoProfile>(PROFILES_COLLECTION_NAME));
             TestAccessConfiguration.ApplyTestAccessConfigurations(database.GetCollection<MongoTestAccess>(TEST_ACCESS_COLLECTION_NAME));
         }

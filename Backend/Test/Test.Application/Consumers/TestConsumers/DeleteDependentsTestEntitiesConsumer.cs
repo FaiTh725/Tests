@@ -13,16 +13,16 @@ namespace Test.Application.Consumers.TestConsumers
     {
         private readonly INoSQLUnitOfWork unitOfWork;
         private readonly ILogger<DeleteDependentsTestEntitiesConsumer> logger;
-        private readonly IPublishEndpoint publishEndpoint;
+        private readonly IOutboxService outboxService;
 
         public DeleteDependentsTestEntitiesConsumer(
             INoSQLUnitOfWork unitOfWork,
             ILogger<DeleteDependentsTestEntitiesConsumer> logger,
-            IPublishEndpoint publishEndpoint)
+            IOutboxService outboxService)
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;
-            this.publishEndpoint = publishEndpoint;
+            this.outboxService = outboxService;
         }
 
         public async Task Consume(
@@ -63,7 +63,7 @@ namespace Test.Application.Consumers.TestConsumers
                 await unitOfWork.QuestionAnswerRepository
                     .DeleteAnswers(questionAnswersIdList, transaction, context.CancellationToken);
 
-                await publishEndpoint.Publish(new DeleteFilesFromStorage
+                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
                     PathFiles = imagesFolderToDelete
                 },

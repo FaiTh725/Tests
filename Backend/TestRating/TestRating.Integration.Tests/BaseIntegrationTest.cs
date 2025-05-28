@@ -1,5 +1,4 @@
 ﻿using Azure.Storage.Blobs;
-using MassTransit.Internals;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +10,7 @@ using TestRating.Domain.Interfaces;
 
 namespace TestRating.Integration.Tests
 {
-    public abstract class BaseIntegrationTest :
-        IClassFixture<CustomWebFactory>, IAsyncLifetime
+    public abstract class BaseIntegrationTest : IAsyncLifetime
     {
         protected readonly CustomWebFactory factory;
 
@@ -26,21 +24,12 @@ namespace TestRating.Integration.Tests
 
         private DbConnection dbConnection;
         private Respawner respawner;
+        private IServiceScope scope;
 
         protected BaseIntegrationTest(
             CustomWebFactory factory)
         {
             this.factory = factory;
-
-            var scope = factory.Services.CreateScope();
-            client = factory.CreateClient();
-            massTransitHarness = factory.Services.GetTestHarness();
-            serviceProvider = factory.Services;
-
-            context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            sender = scope.ServiceProvider.GetRequiredService<ISender>();
-            unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            blobStorage = scope.ServiceProvider.GetRequiredService<BlobServiceClient>();
         }
 
         public async Task DisposeAsync()
@@ -53,10 +42,22 @@ namespace TestRating.Integration.Tests
             await dbConnection.CloseAsync();
 
             await ResetBlobStorage();
+
+            scope.Dispose();
         }
 
         public async Task InitializeAsync()
         {
+            scope = factory.Services.CreateScope();
+            client = factory.CreateClient();
+            massTransitHarness = factory.Services.GetTestHarness();
+            serviceProvider = factory.Services;
+
+            context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            sender = scope.ServiceProvider.GetRequiredService<ISender>();
+            unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            blobStorage = scope.ServiceProvider.GetRequiredService<BlobServiceClient>();
+
             dbConnection = new NpgsqlConnection(factory.DbConnectionString);
             await dbConnection.OpenAsync();
 
@@ -80,35 +81,6 @@ namespace TestRating.Integration.Tests
                 {
                     await containerClient.DeleteAsync();
                 }
-            }
-        }
-
-        // TODO: delete
-        private async Task WaitOutboxProcesses()
-        {
-            const int waitTimeSpanInSeconds = 2;
-
-            var publishedMessages = (await massTransitHarness.Published
-                .SelectAsync<object>().ToListAsync())
-                .Select(x => x.Context.MessageId)
-                .ToHashSet();
-            var consumedMessages = (await massTransitHarness.Consumed
-                .SelectAsync<object>().ToListAsync())
-                .Select(x => x.Context.MessageId)
-                .ToHashSet();
-
-            while (!publishedMessages.SetEquals(consumedMessages))
-            {
-                publishedMessages = (await massTransitHarness.Published
-                 .SelectAsync<object>().ToListAsync())
-                 .Select(x => x.Context.MessageId)
-                 .ToHashSet();
-                consumedMessages = (await massTransitHarness.Consumed
-                    .SelectAsync<object>().ToListAsync())
-                    .Select(x => x.Context.MessageId)
-                    .ToHashSet();
-
-                await Task.Delay(TimeSpan.FromSeconds(waitTimeSpanInSeconds));
             }
         }
     }

@@ -4,6 +4,7 @@ using Moq;
 using Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup;
 using Test.Domain.Entities;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.ProfileGroups.Commands
@@ -86,7 +87,8 @@ namespace Testing.Application.UnitTests.ProfileGroups.Commands
             groupRepositoryMock.Verify(x => x
                 .UpdateGroup(
                     It.IsAny<long>(), 
-                    It.IsAny<ProfileGroup>(), 
+                    It.IsAny<ProfileGroup>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

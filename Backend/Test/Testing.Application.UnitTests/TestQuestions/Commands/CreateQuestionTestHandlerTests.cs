@@ -7,6 +7,7 @@ using Test.Application.Contracts.QuestionAnswerEntity;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 using TestEntity = Test.Domain.Entities.Test;
 
@@ -182,7 +183,8 @@ namespace Testing.Application.UnitTests.TestQuestions.Commands
 
             questionRepositoryMock.Setup(x => x
                 .AddQuestion(
-                    It.IsAny<Question>(), 
+                    It.IsAny<Question>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(addedQuestion);
             
@@ -199,17 +201,20 @@ namespace Testing.Application.UnitTests.TestQuestions.Commands
 
             unitOfWorkMock.Verify(x => x
                 .CommitTransactionAsync(
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
             unitOfWorkMock.Verify(x => x
                 .RollBackTransactionAsync(
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
 
             questionRepositoryMock.Verify(x => x
                 .AddQuestion(
-                    It.IsAny<Question>(), 
+                    It.IsAny<Question>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

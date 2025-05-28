@@ -1,7 +1,10 @@
 ﻿using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Test.Application.Contracts.File;
 using Test.Application.Contracts.Test;
+using Test.Application.Queries.QuestionAnswerEntity.Specifications;
+using Test.Application.Queries.QuestionEntity.Specifications;
 using Test.Domain.Events;
 
 namespace Test.Application.EventHandler.TestEventHandler

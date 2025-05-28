@@ -84,6 +84,7 @@ namespace Testing.Application.UnitTests.Tests.Commands
             testRepositoryMock.Verify(x => x
                 .DeleteTest(
                     It.IsAny<long>(), 
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
 

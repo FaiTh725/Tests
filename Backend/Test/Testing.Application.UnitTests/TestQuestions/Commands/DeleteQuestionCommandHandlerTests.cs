@@ -6,6 +6,7 @@ using Test.Application.Contracts.File;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.TestQuestions.Commands
@@ -79,12 +80,14 @@ namespace Testing.Application.UnitTests.TestQuestions.Commands
             // Assert
             questionRepositoryMock.Verify(x => x
                 .DeleteQuestion(
-                    It.IsAny<long>(), 
+                    It.IsAny<long>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
 
             unitOfWorkMock.Verify(x => x
                 .CommitTransactionAsync(
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                     Times.Once);
 
@@ -95,6 +98,7 @@ namespace Testing.Application.UnitTests.TestQuestions.Commands
 
             unitOfWorkMock.Verify(x => x
                 .RollBackTransactionAsync(
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
 

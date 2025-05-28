@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 
 namespace TestRating.Integration.Tests.API.Controllers
 {
-
+    [Collection("Integration Tests")]
     public class FeedbackControllerTests : 
         BaseIntegrationTest
     {

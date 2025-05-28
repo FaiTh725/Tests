@@ -6,6 +6,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Commands.Profiles
 {
+    [Collection("Integration Tests")]
     public class DeleteProfileCommandHandlerTests : 
         BaseIntegrationTest
     {

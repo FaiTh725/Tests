@@ -6,6 +6,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Commands.Replies
 {
+    [Collection("Integration Tests")]
     public class SendReplyCommandHandlerTests : 
         BaseIntegrationTest
     {
@@ -56,7 +57,7 @@ namespace TestRating.Integration.Tests.Application.Commands.Replies
             await context.SaveChangesAsync();
 
             var replyEntity = FeedbackReply.Initialize("reply text", 
-                feedbackFromDb.Entity.Id, feedbackFromDb.Entity.Id).Value;
+                feedbackFromDb.Entity.Id, profileFromDb.Entity.Id).Value;
 
             await context.Replies.AddAsync(replyEntity);
             await context.SaveChangesAsync();

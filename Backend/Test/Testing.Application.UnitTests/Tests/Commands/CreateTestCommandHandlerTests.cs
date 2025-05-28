@@ -5,6 +5,7 @@ using Test.Application.Commands.Test.CreateTest;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 using TestEntity = Test.Domain.Entities.Test;
 
@@ -90,7 +91,8 @@ namespace Testing.Application.UnitTests.Tests.Commands
 
             testRepositoryMock.Setup(x => x
                 .AddTest(
-                    It.IsAny<TestEntity>(), 
+                    It.IsAny<TestEntity>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(newTestFromDb);
 
@@ -102,7 +104,8 @@ namespace Testing.Application.UnitTests.Tests.Commands
 
             testRepositoryMock.Verify(x => x
                 .AddTest(
-                    It.IsAny<TestEntity>(), 
+                    It.IsAny<TestEntity>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

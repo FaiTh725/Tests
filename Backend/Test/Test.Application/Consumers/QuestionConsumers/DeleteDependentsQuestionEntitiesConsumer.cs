@@ -11,16 +11,16 @@ namespace Test.Application.Consumers.QuestionConsumers
         IConsumer<DeleteDependentsQuestionEntities>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly IPublishEndpoint publishEndpoint;
+        private readonly IOutboxService outboxService;
         private readonly ILogger<DeleteDependentsQuestionEntitiesConsumer> logger;
 
         public DeleteDependentsQuestionEntitiesConsumer(
             INoSQLUnitOfWork unitOfWork,
-            IPublishEndpoint publishEndpoint,
+            IOutboxService outboxService,
             ILogger<DeleteDependentsQuestionEntitiesConsumer> logger)
         {
             this.unitOfWork = unitOfWork;
-            this.publishEndpoint = publishEndpoint;
+            this.outboxService = outboxService;
             this.logger = logger;
         }
 
@@ -47,7 +47,7 @@ namespace Test.Application.Consumers.QuestionConsumers
                         .Select(x => x.ImageFolder)
                         .ToList();
 
-                await publishEndpoint.Publish(new DeleteFilesFromStorage
+                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
                     PathFiles = questionAnswer
                     .Select(x => x.ImageFolder)

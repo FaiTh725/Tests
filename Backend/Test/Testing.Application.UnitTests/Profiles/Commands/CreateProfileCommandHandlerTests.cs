@@ -4,6 +4,7 @@ using Moq;
 using Test.Application.Commands.ProfileEntity.CreateProfile;
 using Test.Domain.Entities;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.Profiles.Commands
@@ -77,7 +78,8 @@ namespace Testing.Application.UnitTests.Profiles.Commands
 
             profileRepositoryMock.Setup(x => x
                 .AddProfile(
-                    It.IsAny<Profile>(), 
+                    It.IsAny<Profile>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(addedProfile);
 
@@ -89,7 +91,8 @@ namespace Testing.Application.UnitTests.Profiles.Commands
 
             profileRepositoryMock.Verify(x => x
                 .AddProfile(
-                    It.IsAny<Profile>(), 
+                    It.IsAny<Profile>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

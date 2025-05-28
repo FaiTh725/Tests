@@ -85,8 +85,11 @@ namespace Test.Application.Commands.Question.CreateQuestion
                     }
                 }
 
+                uploadFilesTasks.Add(blobService.UploadBlobs(
+                    questionEntity.ImageFolder, request.QuestionImages, 
+                    cancellationToken));
+
                 await Task.WhenAll(uploadFilesTasks);
-                await blobService.UploadBlobs(questionEntity.ImageFolder, request.QuestionImages, cancellationToken);
 
                 await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
 

@@ -1,16 +1,21 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using MassTransit.Internals;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.IO;
+using System.Threading;
+using Test.Application.Common.Interfaces;
+using Test.Application.Contracts.TestSession;
 using Test.Dal;
 using Test.Domain.Interfaces;
 
 namespace Test.Integration.Tests
 {
-    public abstract class BaseIntegrationTest : 
-        IClassFixture<CustomWebFactory>, IAsyncLifetime
+    public abstract class BaseIntegrationTest : IAsyncLifetime
     {
         protected readonly CustomWebFactory factory;
 
@@ -21,6 +26,7 @@ namespace Test.Integration.Tests
         protected ITestHarness massTransitHarness;
         protected BlobServiceClient blobStorage;
         protected AppDbContext context;
+        protected ITempDbService<TempTestSession> tempDbService;
 
         private IMongoClient mongoClient;
         private IServiceScope scope;
@@ -38,8 +44,9 @@ namespace Test.Integration.Tests
             await massTransitHarness.InactivityTask;
             await massTransitHarness.Stop();
 
-            await ResetBlobStorage();
+
             await ResetDb();
+            await ResetBlobStorage();
 
             scope.Dispose();
         }
@@ -48,8 +55,8 @@ namespace Test.Integration.Tests
         {
             scope = factory.Services.CreateScope();
             client = factory.CreateClient();
-            massTransitHarness = factory.Services.GetTestHarness();
             serviceProvider = factory.Services;
+            massTransitHarness = scope.ServiceProvider.GetTestHarness();
 
             mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
 
@@ -57,21 +64,26 @@ namespace Test.Integration.Tests
             unitOfWork = scope.ServiceProvider.GetRequiredService<INoSQLUnitOfWork>();
             blobStorage = scope.ServiceProvider.GetRequiredService<BlobServiceClient>();
             context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            tempDbService = scope.ServiceProvider.GetRequiredService<ITempDbService<TempTestSession>>();
 
             await massTransitHarness.Start();
         }
 
         private async Task ResetBlobStorage()
         {
-            await foreach (var container in blobStorage.GetBlobContainersAsync())
+            var blobContainer = blobStorage.GetBlobContainerClient("images");
+            await blobContainer.CreateIfNotExistsAsync();
+            blobContainer.SetAccessPolicy(PublicAccessType.Blob);
+
+            var deleteTasks = new List<Task>();
+
+            await foreach (var blobItem in blobContainer.GetBlobsAsync())
             {
-                var containerClient = blobStorage.GetBlobContainerClient(container.Name);
-                await containerClient.CreateIfNotExistsAsync();
-                if (await containerClient.ExistsAsync())
-                {
-                    await containerClient.DeleteAsync();
-                }
+                var blobClient = blobContainer.GetBlobClient(blobItem.Name);
+                deleteTasks.Add(blobClient.DeleteIfExistsAsync());
             }
+
+            await Task.WhenAll(deleteTasks);
         }
 
         private async Task ResetDb()
@@ -106,19 +118,27 @@ namespace Test.Integration.Tests
             }
         }
 
-        private async Task WaitOutboxMessages()
+        protected async Task WaitOutboxMessages()
         {
-            var unreadedMessages = await context.OutboxMessages
-                .Find(x => x.ProcessedOnUtc == null)
-                .CountDocumentsAsync();
+            // it doesnt work
+            await massTransitHarness.InactivityTask;
+            var publishedMessagesCount = await massTransitHarness.Published
+                .SelectAsync<object>()
+                .Count();
+            var consumedMessagesCount = await massTransitHarness.Consumed
+                .SelectAsync<object>()
+                .Count();
         
-            while(unreadedMessages != 0)
+            while(consumedMessagesCount != publishedMessagesCount)
             {
                 await Task.Delay(3);
 
-                unreadedMessages = await context.OutboxMessages
-                .Find(x => x.ProcessedOnUtc == null)
-                .CountDocumentsAsync();
+                publishedMessagesCount = await massTransitHarness.Published
+                    .SelectAsync<object>()
+                    .Count();
+                consumedMessagesCount = await massTransitHarness.Consumed
+                    .SelectAsync<object>()
+                    .Count();
             }
         }
     }

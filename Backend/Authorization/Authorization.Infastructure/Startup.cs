@@ -1,19 +1,12 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
-<<<<<<< HEAD
 using Authorization.Application.SagaOrchestrator;
 using Authorization.Application.SagaOrchestrator.States;
 using Authorization.Infastructure.Configurations;
 using Authorization.Infrastructure.BackgroundServices;
 using Authorization.Infrastructure.Implementations;
 using MassTransit;
-=======
-using Authorization.Infastructure.Configurations;
-using MassTransit;
-using Authorization.Infrastructure.BackgroundServices;
-using Authorization.Infrastructure.Implementations;
->>>>>>> feature-test-service
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;

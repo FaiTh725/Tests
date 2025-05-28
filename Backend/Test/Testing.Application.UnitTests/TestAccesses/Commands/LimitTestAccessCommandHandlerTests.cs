@@ -5,6 +5,7 @@ using Test.Application.Commands.TestAccessEntity.LimitTestAccess;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.TestAccesses.Commands
@@ -86,7 +87,8 @@ namespace Testing.Application.UnitTests.TestAccesses.Commands
 
             testAccessRepositoryMock.Verify(x => x
                 .DeleteTestAccess(
-                    It.IsAny<long>(), 
+                    It.IsAny<long>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

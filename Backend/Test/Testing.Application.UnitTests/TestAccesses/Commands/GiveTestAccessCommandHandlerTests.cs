@@ -1,13 +1,14 @@
-﻿using Moq;
+﻿using Application.Shared.Exceptions;
+using FluentAssertions;
+using Moq;
 using Test.Application.Commands.TestAccessEntity.GiveAccessTest;
 using Test.Application.Queries.ProfileGroupEntity.Specifications;
-using TestEntity = Test.Domain.Entities.Test;
+using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
-using FluentAssertions;
-using Application.Shared.Exceptions;
-using Test.Domain.Entities;
+using TestEntity = Test.Domain.Entities.Test;
 
 namespace Testing.Application.UnitTests.TestAccesses.Commands
 {
@@ -236,7 +237,8 @@ namespace Testing.Application.UnitTests.TestAccesses.Commands
 
             testAccessRepositoryMock.Setup(x => x
                 .AddTestAccess(
-                    It.IsAny<TestAccess>(), 
+                    It.IsAny<TestAccess>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(addedTestAccess);
 
@@ -248,7 +250,8 @@ namespace Testing.Application.UnitTests.TestAccesses.Commands
 
             testAccessRepositoryMock.Verify(x => x
                 .AddTestAccess(
-                    It.IsAny<TestAccess>(), 
+                    It.IsAny<TestAccess>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

@@ -69,7 +69,7 @@ namespace Test.API.Controllers
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("[action]")]
@@ -90,7 +90,7 @@ namespace Test.API.Controllers
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("[action]")]
@@ -110,7 +110,7 @@ namespace Test.API.Controllers
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -46,7 +46,9 @@ namespace Testing.Application.UnitTests.Profiles.Queries
             var act = async () => await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<NotFoundException>().WithMessage("Profile doesnt exist");
+            await act.Should()
+                .ThrowAsync<NotFoundException>()
+                .WithMessage("Profile doesnt exist");
         }
 
         [Fact]

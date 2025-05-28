@@ -90,7 +90,7 @@ namespace Test.API.Controllers
             }, 
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("[action]")]

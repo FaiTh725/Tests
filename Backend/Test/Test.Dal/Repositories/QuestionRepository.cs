@@ -161,7 +161,8 @@ namespace Test.Dal.Repositories
 
             var update = Builders<MongoQuestion>.Update
                 .Set(x => x.TestQuestion, updatedQuestion.TestQuestion)
-                .Set(x => x.QuestionWeight, updatedQuestion.QuestionWeight);
+                .Set(x => x.QuestionWeight, updatedQuestion.QuestionWeight)
+                .Set(x => x.QuestionType, updatedQuestion.QuestionType);
 
             var mongoSession = (session as MongoSessionAdapter)?.Session;
             if (mongoSession is null)

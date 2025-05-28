@@ -68,7 +68,7 @@ namespace Test.API.Controllers
         {
             await mediator.Send(request, cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

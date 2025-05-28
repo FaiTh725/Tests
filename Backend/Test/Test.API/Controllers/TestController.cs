@@ -87,7 +87,7 @@ namespace Test.API.Controllers
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("[action]")]
@@ -106,7 +106,9 @@ namespace Test.API.Controllers
                 IsPublic = request.IsPublic,
                 Name = request.Name,
                 OwnerId = profile.Id,
-                Role = profile.Role
+                Role = profile.Role,
+                TestType = request.TestType,    
+                DurationInMinutes = request.TestDuration
             }, cancellationToken);
 
             return Ok(updatedTestId);
@@ -153,7 +155,7 @@ namespace Test.API.Controllers
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

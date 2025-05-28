@@ -6,6 +6,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Commands.Replies
 {
+    [Collection("Integration Tests")]
     public class DeleteReplyCommandHandlerTests : 
         BaseIntegrationTest
     {

@@ -6,6 +6,7 @@ using TestRating.Domain.Entities;
 
 namespace TestRating.Integration.Tests.Application.Commands.Feedbacks
 {
+    [Collection("Integration Tests")]
     public class DeleteFeedbackCommandHandlerTests : 
         BaseIntegrationTest
     {
@@ -50,7 +51,7 @@ namespace TestRating.Integration.Tests.Application.Commands.Feedbacks
             var command = new DeleteFeedbackCommand
             {
                 FeedbackId = feedbackFromDb.Entity.Id,
-                ProfileId = 1,
+                ProfileId = profileFromDb.Entity.Id,
                 ProfileRole = "User"
             };
 

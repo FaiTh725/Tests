@@ -10,6 +10,7 @@ using TestRating.Integration.Tests.JwtToken;
 
 namespace TestRating.Integration.Tests.API.Controllers
 {
+    [Collection("Integration Tests")]
     public class FeedbackReplyControllerTests : 
         BaseIntegrationTest
     {

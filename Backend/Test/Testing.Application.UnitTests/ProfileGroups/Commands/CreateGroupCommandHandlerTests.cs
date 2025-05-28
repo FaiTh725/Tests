@@ -4,6 +4,7 @@ using Moq;
 using Test.Application.Commands.ProfileGroupEntity.CreateGroup;
 using Test.Domain.Entities;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.ProfileGroups.Commands
@@ -82,7 +83,8 @@ namespace Testing.Application.UnitTests.ProfileGroups.Commands
 
             profileGroupRepositoryMock.Setup(x => x
                 .AddGroup(
-                    It.IsAny<ProfileGroup>(), 
+                    It.IsAny<ProfileGroup>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(addedGroup);
 
@@ -95,6 +97,7 @@ namespace Testing.Application.UnitTests.ProfileGroups.Commands
             profileGroupRepositoryMock.Verify(x => x
                 .AddGroup(
                     It.IsAny<ProfileGroup>(), 
+                    It.IsAny<IDatabaseSession>(), 
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

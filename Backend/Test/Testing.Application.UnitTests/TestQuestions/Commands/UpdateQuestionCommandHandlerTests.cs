@@ -5,6 +5,7 @@ using Test.Application.Commands.Question.UpdateQuestion;
 using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.TestQuestions.Commands
@@ -91,7 +92,8 @@ namespace Testing.Application.UnitTests.TestQuestions.Commands
             questionRepositoryMock.Verify(x => x
                 .UpdateQuestion(
                     It.IsAny<long>(), 
-                    It.IsAny<Question>(), 
+                    It.IsAny<Question>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

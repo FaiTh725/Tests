@@ -10,6 +10,7 @@ using Test.Application.Contracts.Test;
 using Test.Application.Contracts.TestSession;
 using Test.Domain.Entities;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.Tests.Commands
@@ -99,7 +100,8 @@ namespace Testing.Application.UnitTests.Tests.Commands
 
             sessionRepositoryMock.Setup(x => x
                 .AddTestSession(
-                    It.IsAny<TestSession>(), 
+                    It.IsAny<TestSession>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(addedTestSession);
 
@@ -128,17 +130,20 @@ namespace Testing.Application.UnitTests.Tests.Commands
 
             unitOfWorkMock.Verify(x => x
                 .CommitTransactionAsync(
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
             unitOfWorkMock.Verify(x => x
                 .RollBackTransactionAsync(
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
 
             sessionRepositoryMock.Verify(x => x
                 .AddTestSession(
                     It.IsAny<TestSession>(), 
+                    It.IsAny<IDatabaseSession>(), 
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
 
@@ -146,6 +151,7 @@ namespace Testing.Application.UnitTests.Tests.Commands
                 .UpdateTestSession(
                     It.IsAny<long>(),
                     It.IsAny<TestSession>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
