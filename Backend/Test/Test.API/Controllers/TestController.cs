@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
 using Test.API.Contracts.TestAccess;
+using Test.API.Filters;
 using Test.Application.Commands.Test.CreateTest;
 using Test.Application.Commands.Test.DeleteTest;
 using Test.Application.Commands.Test.UpdateTest;
 using Test.Application.Commands.TestAccessEntity.GiveAccessTest;
 using Test.Application.Commands.TestAccessEntity.LimitTestAccess;
-using Test.Application.Common.Interfaces;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.Test.GetTestInfoById;
 
 namespace Test.API.Controllers
@@ -18,28 +19,24 @@ namespace Test.API.Controllers
     public class TestController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IProfileService profileService;
 
         public TestController(
-            IMediator mediator,
-            IProfileService profileService)
+            IMediator mediator)
         {
             this.mediator = mediator;
-            this.profileService = profileService;
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> CreateTest(
             CreateTestRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profileFromToken = await profileService
-                .DecodeProfileFromToken(token, cancellationToken);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var testId = await mediator.Send(new CreateTestCommand
             {
-                ProfileId = profileFromToken.Id,
+                ProfileId = profile.Id,
                 Name = request.Name,
                 Description = request.Description,
                 IsPublic = request.IsPublic,
@@ -72,30 +69,30 @@ namespace Test.API.Controllers
 
         [HttpDelete("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> DeleteTest(
             long testId, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new DeleteTestCommand
             {
                 TestId = testId,
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> UpdateTest(
             UpdateTestRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var updatedTestId = await mediator.Send(new UpdateTestCommand
             {
@@ -103,27 +100,32 @@ namespace Test.API.Controllers
                 Description = request.Description,
                 IsPublic = request.IsPublic,
                 Name = request.Name,
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             }, cancellationToken);
 
-            return Ok(updatedTestId);
+            var test = await mediator.Send(new GetTestInfoByIdQuery
+            {
+                Id = updatedTestId
+            }, cancellationToken);
+
+            return Ok(test);
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> ProviderTestAccess(
             ProvideTestAccessRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var testAccessId = await mediator.Send(new GiveAccessTestCommand
                 {
                     AccessTargetEntityId = request.TargetEntityId,
                     TargetEntity = request.TargetAccessEntityType,
                     TestId = request.TestId,
-                    Email = profile.Email,
+                    OwnerId = profile.Id,
                     Role = profile.Role
                 },
                 cancellationToken);
@@ -133,15 +135,15 @@ namespace Test.API.Controllers
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> LimitTestAccess(
             LimitTestAccessRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new LimitTestAccessCommand
             {
-                Email = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role,
                 TargetEntityId = request.TargetEntityId,
                 TestId = request.TestId,
@@ -149,7 +151,7 @@ namespace Test.API.Controllers
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

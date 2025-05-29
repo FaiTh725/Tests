@@ -3,7 +3,6 @@ using MediatR;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfileByEmail;
-using Test.Domain.Entities;
 
 namespace Test.Application.Common.Implementations
 {
@@ -20,7 +19,7 @@ namespace Test.Application.Common.Implementations
             this.mediator = mediator;
         }
 
-        public async Task<ProfileResponse> DecodeProfileFromToken(
+        public async Task<VerifiedProfile> DecodeProfileFromToken(
             string? token,
             CancellationToken cancellationToken = default)
         {
@@ -32,7 +31,12 @@ namespace Test.Application.Common.Implementations
             }, 
             cancellationToken);
 
-            return profile;
+            return new VerifiedProfile
+            {
+                Id = profile.Id,
+                Email = profile.Email,
+                Role = profileToken.Role
+            };
         }
 
         public ProfileToken VerifyProfileFromToken(

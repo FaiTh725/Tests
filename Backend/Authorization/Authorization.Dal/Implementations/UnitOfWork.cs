@@ -13,6 +13,7 @@ namespace Authorization.Dal.Implementations
         private readonly Lazy<IRoleRepository> roleRepository;
         private readonly Lazy<IRefreshTokenRepository> refreshTokenRepository;
 
+        // TODO: refactoring - not thread safety
         private IDbContextTransaction transaction;
         private bool disposed = false;
 

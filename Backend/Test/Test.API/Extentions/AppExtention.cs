@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Test.API.Contracts.Question;
 using Test.API.Contracts.Test;
+using Test.API.Filters;
 using Test.API.Validators.QuestionValidators;
 using Test.API.Validators.TestValidators;
 
@@ -16,7 +18,18 @@ namespace Test.API.Extentions
                 .AddGrpcProvider()
                 .AddFluentValidation();
 
+            services.AddScoped<VerifyProfileFilter>();
+
             return services;
+        }
+
+        public static void ConfigureHangfireDashBoard(
+            this WebApplication app)
+        {
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = [new HangfireAuthorizationFilter()]
+            });
         }
 
         private static IServiceCollection AddGrpcProvider(

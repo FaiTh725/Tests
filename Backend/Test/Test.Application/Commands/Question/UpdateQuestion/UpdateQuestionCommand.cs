@@ -12,9 +12,9 @@ namespace Test.Application.Commands.Question.UpdateQuestion
         public string TestQuestion { get; set; } = string.Empty;
 
         public long QuestionId { get; set; }
-        
-        public string Email { get; set; } = string.Empty;
 
         public string Role { get; set; } = string.Empty;
+
+        public long OwnerId { get; set; }
     }
 }

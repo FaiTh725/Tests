@@ -7,6 +7,6 @@ namespace Test.Application.Common.Interfaces
     {
         ProfileToken VerifyProfileFromToken(string? token);
 
-        Task<ProfileResponse> DecodeProfileFromToken(string? token, CancellationToken cancellationToken = default);
+        Task<VerifiedProfile> DecodeProfileFromToken(string? token, CancellationToken cancellationToken = default);
     }
 }

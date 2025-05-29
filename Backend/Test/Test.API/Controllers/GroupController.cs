@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.ProfileGroupEntity;
+using Test.API.Filters;
 using Test.Application.Commands.ProfileGroupEntity.AddGroupMember;
 using Test.Application.Commands.ProfileGroupEntity.CreateGroup;
 using Test.Application.Commands.ProfileGroupEntity.DeleteGroup;
 using Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup;
-using Test.Application.Common.Interfaces;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileGroupEntity.GetGroupById;
 
 namespace Test.API.Controllers
@@ -16,29 +17,25 @@ namespace Test.API.Controllers
     public class GroupController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IProfileService profileService;
 
         public GroupController(
-            IMediator mediator,
-            IProfileService profileService)
+            IMediator mediator)
         {
             this.mediator = mediator;
-            this.profileService = profileService;
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> CreateGroup(
             CreateGroupRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var decodeProfile = await profileService
-                .DecodeProfileFromToken(token, cancellationToken);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var groupId = await mediator.Send(new CreateGroupCommand
             {
                 GroupName = request.Name,
-                OwnerId = decodeProfile.Id
+                OwnerId = profile.Id
             },
             cancellationToken);
 
@@ -53,61 +50,61 @@ namespace Test.API.Controllers
 
         [HttpPatch("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> AddGroupMember(
             AddGroupMemberRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new AddGroupMemberCommand
             {
                 GroupId = request.GroupId,
                 ProfileId = request.MemberId,
-                OwnerEmail = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> DeleteMembersGroup(
             DeleteMembersGroupRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new DeleteMembersGroupCommand
             {
                 GroupId = request.GroupId,
                 MembersId = request.MembersId,
-                OwnerEmail = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> DeleteGroup(
             DeleteGroupRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = profileService.VerifyProfileFromToken(token);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new DeleteGroupCommand
             {
                 GroupId = request.GroupId,
-                OwnerEmail = profile.Email,
+                OwnerId = profile.Id,
                 Role = profile.Role
             },
             cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

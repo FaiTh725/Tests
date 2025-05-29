@@ -70,7 +70,17 @@ namespace Authorization.API.Extension
             services.AddGrpcClient<ProfileService.ProfileServiceClient>(option =>
             {
                 option.Address = new Uri(serverAdress);
-            });
+            })
+            // only for local development
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+
+                handler.ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                return handler;
+            }); ;
 
             return services;
         }

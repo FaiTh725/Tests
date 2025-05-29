@@ -14,8 +14,8 @@ namespace Test.Application.Commands.TestAccessEntity.GiveAccessTest
 
         public long TestId { get; set; }
 
-        public string Email { get; set; } = string.Empty;
-
         public string Role { get; set; } = string.Empty;
+
+        public long OwnerId { get; set; }
     }
 }

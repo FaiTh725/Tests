@@ -25,10 +25,10 @@ namespace Test.API.Controllers
             long profileId, CancellationToken cancellationToken)
         {
             var tests = await mediator.Send(new GetProfileTestsQuery
-            {
-                ProfileId = profileId,
-            },
-            cancellationToken);
+                {
+                    ProfileId = profileId,
+                },
+                cancellationToken);
 
             return Ok(tests);
         }
@@ -38,8 +38,7 @@ namespace Test.API.Controllers
         public async Task<IActionResult> GetProfileCreatedGroups(
             long profileId, CancellationToken cancellationToken)
         {
-            var groups = await mediator.Send(
-                new GetProfileCreatedGroupQuery 
+            var groups = await mediator.Send(new GetProfileCreatedGroupQuery 
                 { 
                     ProfileId = profileId
                 },
@@ -53,8 +52,7 @@ namespace Test.API.Controllers
         public async Task<IActionResult> GetProfileJoinedGroups(
             long profileId, CancellationToken cancellationToken)
         {
-            var groups = await mediator.Send(
-                new GetProfileJoinedGroupQuery
+            var groups = await mediator.Send(new GetProfileJoinedGroupQuery
                 {
                     ProfileId = profileId
                 },

@@ -3,8 +3,6 @@ using Test.API.Middlewares;
 using Test.API.Grpc.Services;
 using Test.API.Extentions;
 using Test.Application;
-using Hangfire;
-using Test.API.Filters;
 using Test.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,10 +39,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHangfireDashboard("/hangfire", new DashboardOptions
-{
-    Authorization = [new HangfireAuthorizationFilter()]
-});
+app.ConfigureHangfireDashBoard();
 
 app.UseExceptionHandler();
 

@@ -13,6 +13,6 @@ namespace Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup
         
         public string Role { get; set; } = string.Empty;
 
-        public string OwnerEmail { get; set; } = string.Empty;
+        public long OwnerId { get; set; }
     }
 }
