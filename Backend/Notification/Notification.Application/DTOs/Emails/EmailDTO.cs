@@ -1,4 +1,4 @@
-﻿namespace Notification.Application.DTO
+﻿namespace Notification.Application.DTOs.Emails
 {
     public class EmailDTO
     {

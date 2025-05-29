@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using Notification.Application.Configurations;
-using Notification.Application.DTO;
+using Notification.Application.DTOs.Emails;
 using Notification.Application.Interfaces;
 
 namespace Notification.Application.Implementations

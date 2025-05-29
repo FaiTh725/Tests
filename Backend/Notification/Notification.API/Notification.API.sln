@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Contracts", "..\Notification.Contracts\Notification.Contracts.csproj", "{0714F741-5D8C-4A83-8641-FAAEAF5A3553}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Domain", "..\Notification.Domain\Notification.Domain.csproj", "{758A9187-C925-45CE-9247-5FC6988E15D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0714F741-5D8C-4A83-8641-FAAEAF5A3553}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0714F741-5D8C-4A83-8641-FAAEAF5A3553}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0714F741-5D8C-4A83-8641-FAAEAF5A3553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
