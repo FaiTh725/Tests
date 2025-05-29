@@ -2,7 +2,7 @@
 {
     public class EmailServiceConf
     {
-        public string ReciverEmail { get; set; } = string.Empty;
+        public string ReceiverEmail { get; set; } = string.Empty;
 
         public string Password { get; set; } = string.Empty;
     }

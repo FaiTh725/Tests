@@ -68,7 +68,7 @@ namespace Test.Dal.Services
         {
             var mongoSession = await context.Client.StartSessionAsync(cancellationToken: cancellationToken);
             mongoSession.StartTransaction();
-        
+
             return new MongoSessionAdapter(mongoSession);
         }
 
@@ -82,7 +82,7 @@ namespace Test.Dal.Services
         }
 
         public async Task CommitTransactionAsync(
-            IDatabaseSession session, 
+            IDatabaseSession session,
             CancellationToken cancellationToken = default)
         {
             var mongoSession = session as MongoSessionAdapter;
@@ -104,7 +104,7 @@ namespace Test.Dal.Services
         }
 
         public async Task RollBackTransactionAsync(
-            IDatabaseSession session, 
+            IDatabaseSession session,
             CancellationToken cancellationToken = default)
         {
             var mongoSession = session as MongoSessionAdapter;
@@ -119,14 +119,6 @@ namespace Test.Dal.Services
         {
         }
 
-        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
-        {
-            if (!mongoSession?.Session.IsInTransaction != true)
-            {
-                throw new InvalidOperationException("Transaction is not started");
-            }
-        }
-
         public IReadOnlyCollection<DomainEventEntity> GetTrackedEntities()
         {
             return trackedEntities.AsReadOnly();
@@ -135,6 +127,14 @@ namespace Test.Dal.Services
         public void TrackEntity(DomainEventEntity entity)
         {
             trackedEntities.Add(entity);
+        }
+
+        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
+        {
+            if(mongoSession?.Session.IsInTransaction != true)
+            {
+                throw new InvalidOperationException("Transaction is not started");
+            }
         }
     }
 }

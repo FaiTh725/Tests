@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using TestRating.Domain.Primitives;
 using TestRating.Domain.Repositories;
 
 namespace TestRating.Domain.Interfaces
@@ -19,17 +20,17 @@ namespace TestRating.Domain.Interfaces
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
-        void BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+        IDatabaseTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
 
-        Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
+        Task<IDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 
-        void CommitTransaction();
+        void CommitTransaction(IDatabaseTransaction transaction);
 
-        Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+        Task CommitTransactionAsync(IDatabaseTransaction transaction, CancellationToken cancellationToken = default);
 
-        void RollBackTransaction();
+        void RollBackTransaction(IDatabaseTransaction transaction);
 
-        Task RollBackTransactionAsync(CancellationToken cancellationToken = default);
+        Task RollBackTransactionAsync(IDatabaseTransaction transaction, CancellationToken cancellationToken = default);
 
         bool CanConnect();
 

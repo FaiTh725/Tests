@@ -1,6 +1,6 @@
 ﻿namespace Authorization.Application
 {
-    public class AssemplyReference
+    public class AssemblyReference
     {
     }
 }

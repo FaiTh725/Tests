@@ -55,7 +55,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task DeleteTestAccess(
-            long testAccessId, 
+            long testAccessId,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {

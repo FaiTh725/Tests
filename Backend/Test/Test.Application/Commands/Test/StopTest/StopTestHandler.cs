@@ -49,6 +49,7 @@ namespace Test.Application.Commands.Test.StopTest
             }
 
             using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+
             try
             {
                 var dbTestSession = await unitOfWork.SessionRepository
@@ -73,7 +74,7 @@ namespace Test.Application.Commands.Test.StopTest
 
                 await unitOfWork.ProfileAnswerRepository
                     .AddProfileAnswers(
-                        testResult.Value.ProfileAnswers, 
+                        testResult.Value.ProfileAnswers,
                         transaction,
                         cancellationToken);
 

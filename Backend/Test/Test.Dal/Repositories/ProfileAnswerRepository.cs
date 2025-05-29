@@ -17,7 +17,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<IEnumerable<ProfileAnswer>> AddProfileAnswers(
-            List<ProfileAnswer> profileAnswers, 
+            List<ProfileAnswer> profileAnswers,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
@@ -27,7 +27,7 @@ namespace Test.Dal.Repositories
                 mongoProfileAnswer.ConvertToMongoEntity(x);
                 var nextId = context.GetNextId(AppDbContext.PROFILE_ANSWERS_COLLECTION_NAME);
                 mongoProfileAnswer.Id = nextId;
-                
+
                 return mongoProfileAnswer;
             });
 

@@ -1,6 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using TestRating.Application.Common.BehaviorInterfaces;
+using TestRating.Application.Common.Constants;
 using TestRating.Domain.Interfaces;
 
 namespace TestRating.Application.Behaviors
@@ -30,7 +31,7 @@ namespace TestRating.Application.Behaviors
                 throw new BadRequestException("Feedback doesnt exist");
             }
 
-            if(request.ProfileRole != "Admin" &&
+            if(request.ProfileRole != UserRoles.Administrator &&
                 feedback.Id != request.ProfileId)
             {
                 throw new ForbiddenAccessException("Only the owner and an admin have access to the feedback");

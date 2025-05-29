@@ -19,8 +19,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<Profile> AddProfile(
-            Profile profile, 
-            IDatabaseSession? session = null, 
+            Profile profile,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoProfile = new MongoProfile();

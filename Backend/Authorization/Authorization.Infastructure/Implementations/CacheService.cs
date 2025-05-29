@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
-namespace Authorization.Infastructure.Implementations
+namespace Authorization.Infrastructure.Implementations
 {
     public class CacheService : ICacheService
     {

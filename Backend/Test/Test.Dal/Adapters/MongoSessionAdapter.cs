@@ -6,7 +6,8 @@ namespace Test.Dal.Adapters
     public class MongoSessionAdapter : IDatabaseSession
     {
         private bool isClosed;
-
+        private bool disposed = false;
+       
         public IClientSessionHandle Session { get; init; }
 
         public bool IsClosed => isClosed;
@@ -18,6 +19,10 @@ namespace Test.Dal.Adapters
 
             isClosed = false;
         }
+        ~MongoSessionAdapter()
+        {
+            Dispose(false);
+        }
 
         public void CloseSession()
         {
@@ -26,19 +31,37 @@ namespace Test.Dal.Adapters
 
         public void Dispose()
         {
-            if(!isClosed && Session.IsInTransaction)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed)
+            {
+                return;
+            }
+
+            if (disposing)
             {
                 try
                 {
-                    Session.AbortTransaction();
+                    if (!isClosed && Session.IsInTransaction)
+                    {
+                        Session.AbortTransaction();
+                    }
                 }
                 catch
                 {
-
+                    
+                }
+                finally
+                {
+                    Session.Dispose();
                 }
             }
 
-            Session.Dispose();
+            disposed = true;
         }
     }
 }

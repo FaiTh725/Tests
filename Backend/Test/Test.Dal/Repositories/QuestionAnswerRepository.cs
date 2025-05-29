@@ -19,7 +19,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<QuestionAnswer> AddQuestionAnswer(
-            QuestionAnswer questionAnswer, 
+            QuestionAnswer questionAnswer,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
@@ -55,8 +55,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<IEnumerable<QuestionAnswer>> AddQuestionAnswers(
-            List<QuestionAnswer> questionAnswers, 
-            IDatabaseSession? session = null, 
+            List<QuestionAnswer> questionAnswers,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoQuestions = questionAnswers.Select(x =>
@@ -97,8 +97,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task DeleteAnswers(
-            List<long> idList, 
-            IDatabaseSession? session = null, 
+            List<long> idList,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoQuestionAnswer>.Filter

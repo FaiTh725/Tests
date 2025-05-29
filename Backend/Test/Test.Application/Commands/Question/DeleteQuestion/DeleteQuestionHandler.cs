@@ -1,5 +1,4 @@
 ﻿using Application.Shared.Exceptions;
-using MassTransit;
 using MediatR;
 using Test.Application.Contracts.File;
 using Test.Domain.Interfaces;

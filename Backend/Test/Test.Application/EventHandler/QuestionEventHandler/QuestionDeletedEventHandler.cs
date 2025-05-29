@@ -17,7 +17,7 @@ namespace Test.Application.EventHandler.QuestionEventHandler
         }
 
         public async Task Handle(
-            QuestionDeletedEvent notification, 
+            QuestionDeletedEvent notification,
             CancellationToken cancellationToken)
         {
             await bus.Publish(new DeleteDependentsQuestionEntities

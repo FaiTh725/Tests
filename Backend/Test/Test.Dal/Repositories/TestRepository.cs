@@ -19,8 +19,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<TestEntity> AddTest(
-            TestEntity test, 
-            IDatabaseSession? session = null, 
+            TestEntity test,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoTest = new MongoTest();
@@ -54,8 +54,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task DeleteTest(
-            long id, 
-            IDatabaseSession? session = null, 
+            long id,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoTest>.Filter
@@ -118,8 +118,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task UpdateTest(
-            long id, 
-            TestEntity updatedTest, 
+            long id,
+            TestEntity updatedTest,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {

@@ -1,4 +1,4 @@
-﻿namespace Authorization.Infastructure.Configurations
+﻿namespace Authorization.Infrastructure.Configurations
 {
     public class JwtTokenConf
     {

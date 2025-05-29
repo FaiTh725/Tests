@@ -50,7 +50,7 @@ namespace Authorization.Application.Commands.UserEntity.Register
             if(!UserValidator.IsValidPassword(request.Password))
             {
                 throw new BadRequestException("Password must has one letter and one number, " +
-                    $"in range size from {UserValidator.MIN_PASSWORD_LENGHT} to {UserValidator.MAX_PASSWORD_LENGHT}");
+                    $"in range size from {UserValidator.MIN_PASSWORD_LENGTH} to {UserValidator.MAX_PASSWORD_LENGTH}");
             }
 
             var passwordHash = hashService.GenerateHash(request.Password);
@@ -67,9 +67,10 @@ namespace Authorization.Application.Commands.UserEntity.Register
                     userEntity.Error);
             }
 
+            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
+
             try
             {
-                await unitOfWork.BeginTransactionAsync(cancellationToken);
 
                 var userDb = await unitOfWork.UserRepository
                     .AddUser(userEntity.Value, cancellationToken);
@@ -91,7 +92,8 @@ namespace Authorization.Application.Commands.UserEntity.Register
 
                 if (refreshTokenEntity.IsFailure)
                 {
-                    await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                    await unitOfWork
+                        .RollBackTransactionAsync(transaction, cancellationToken);
                     throw new InternalServerErrorException("Error initialize refresh token");
                 }
 
@@ -99,13 +101,15 @@ namespace Authorization.Application.Commands.UserEntity.Register
                     .AddRefreshToken(refreshTokenEntity.Value, cancellationToken);
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(
+                    transaction, cancellationToken);
 
                 return (userDb.Id, refreshToken);
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(
+                    transaction, cancellationToken);
                 throw new InternalServerErrorException("Critical Server Error");
             }
         }

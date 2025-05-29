@@ -28,7 +28,7 @@ namespace Authorization.Dal
         {
             modelBuilder.ApplyConfiguration(new RefreshTokenConfigurations());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new UserConfigiration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

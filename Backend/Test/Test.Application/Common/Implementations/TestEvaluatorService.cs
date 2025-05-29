@@ -44,8 +44,8 @@ namespace Test.Application.Common.Implementations
 
                 var correctAnswersId = correctAnswer.Value.Select(x => x.Id);
 
-                var isCorrectAnswer = profileAnswer is null ||
-                    !correctAnswersId.ToHashSet().SetEquals(profileAnswer.QuestionAnswersId);
+                var isCorrectAnswer = profileAnswer is not null &&
+                    correctAnswersId.ToHashSet().SetEquals(profileAnswer.QuestionAnswersId);
 
                 profilePoints += isCorrectAnswer ? question.QuestionWeight: 0;
                 maxPoints += question.QuestionWeight;

@@ -18,7 +18,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<TestSession> AddTestSession(
-            TestSession testSession, 
+            TestSession testSession,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
@@ -64,8 +64,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task UpdateTestSession(
-            long id, 
-            TestSession updatedSession, 
+            long id,
+            TestSession updatedSession,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {

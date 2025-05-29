@@ -6,7 +6,7 @@ namespace Test.Domain.Repositories
 {
     public interface IProfileGroupRepository
     {
-        Task<ProfileGroup> AddGroup(ProfileGroup profileGroup, IDatabaseSession? session = null,CancellationToken cancellationToken = default);
+        Task<ProfileGroup> AddGroup(ProfileGroup profileGroup, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
         Task<ProfileGroup?> GetProfileGroup(long id, CancellationToken cancellationToken = default);
 

@@ -20,8 +20,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<Question> AddQuestion(
-            Question question, 
-            IDatabaseSession? session = null, 
+            Question question,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoQuestion = new MongoQuestion();
@@ -55,8 +55,8 @@ namespace Test.Dal.Repositories
         }
 
         public async Task DeleteQuestion(
-            long id, 
-            IDatabaseSession? session = null, 
+            long id,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoQuestion>.Filter
@@ -79,7 +79,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task DeleteQuestions(
-            List<long> questionIdList, 
+            List<long> questionIdList,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
@@ -148,7 +148,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task UpdateQuestion(
-            long id, 
+            long id,
             Question updatedQuestion,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)

@@ -168,23 +168,8 @@ namespace Test.Infrastructure
                 conf.AddConsumer<DeleteTestProfileConsumer>();
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                 conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
-
-                //conf.AddConfigureEndpointsCallback((context, name, cfg) =>
-                //{
-                //    cfg.UseMessageRetry(r => r.Intervals(100, 500, 1000, 5000, 10000));
-                //    cfg.UseMongoDbOutbox(context);
-                //});
-
-                //conf.AddMongoDbOutbox(x =>
-                //{
-                //    x.QueryDelay = TimeSpan.FromSeconds(5);
-                //    x.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
-
-                //    x.UseBusOutbox();
-
-                //    x.ClientFactory(provider => provider.GetRequiredService<IMongoClient>());
-                //    x.DatabaseFactory(provider => provider.GetRequiredService<IMongoDatabase>());
-                //});
+                conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

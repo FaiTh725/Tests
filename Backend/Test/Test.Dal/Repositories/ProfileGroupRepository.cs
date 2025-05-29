@@ -19,7 +19,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task<ProfileGroup> AddGroup(
-            ProfileGroup profileGroup, 
+            ProfileGroup profileGroup,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
@@ -54,7 +54,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task DeleteGroup(
-            long groupId, 
+            long groupId,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
@@ -104,7 +104,7 @@ namespace Test.Dal.Repositories
         }
 
         public async Task UpdateGroup(
-            long groupId, 
+            long groupId,
             ProfileGroup updatedGroup,
             IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
