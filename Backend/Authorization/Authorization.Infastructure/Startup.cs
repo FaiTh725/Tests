@@ -13,7 +13,7 @@ namespace Authorization.Infrastructure
 {
     public static class Startup
     {
-        public static IServiceCollection ConfigureInfastructureServices(
+        public static IServiceCollection ConfigureInfrastructureServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {

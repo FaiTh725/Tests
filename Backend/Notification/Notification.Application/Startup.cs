@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Notification.Application.Configurations;
 using Notification.Application.Implementations;
-using Notification.Application.Infastructure.Consumers;
+using Notification.Application.Infrastructure.Consumers;
 using Notification.Application.Interfaces;
 
 namespace Notification.Application

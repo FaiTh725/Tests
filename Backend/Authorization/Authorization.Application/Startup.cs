@@ -23,6 +23,7 @@ namespace Authorization.Application
         {
             services.AddMediatR(cfg =>
             {
+                cfg.AddOpenBehavior(typeof(RegistrationAccessBehavior<,>));
                 cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
                 cfg.AddOpenBehavior(typeof(RegistrationAccessBehavior<,>));
             });
