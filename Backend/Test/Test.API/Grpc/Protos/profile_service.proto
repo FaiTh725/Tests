@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "Test.API.Grpc";
+
+package profile;
+
+service ProfileService
+{
+	rpc AddProfile(AddProfileRequest) returns (AddProfileResponse);
+}
+
+message AddProfileRequest
+{
+	string email = 1;
+	string name = 2;
+}
+
+message AddProfileResponse
+{
+	int64 id = 1;
+	string email = 2;
+	string name = 3;
+}

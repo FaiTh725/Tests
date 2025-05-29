@@ -6,6 +6,7 @@ WORKDIR /src
 COPY ["Backend/Authorization/", "Authorization/"]
 COPY ["Backend/Application.Shared/", "Application.Shared/"]
 COPY ["Backend/Notification/Notification.Contracts", "Notification/Notification.Contracts"]
+COPY ["Backend/Test/Test.Contracts", "Test/Test.Contracts"]
 
 
 RUN dotnet restore 'Authorization/Authorization.API/Authorization.API.csproj'

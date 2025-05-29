@@ -1,20 +1,29 @@
-﻿using Authorization.API.Validators.UserEntity;
+﻿using Application.Shared.Exceptions;
+using Authorization.API.Grpc.Clients;
+using Authorization.API.Validators.UserEntity;
 using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
+using Authorization.Application.Common.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Threading.RateLimiting;
+using Test.API.Grpc;
+using Test.Contracts.Profile;
 
 namespace Authorization.API.Extension
 {
     public static class AppExtension
     {
         public static IServiceCollection ConfigureApiServices(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services
                 .AddFlientValidation()
-                .AddRateLimits();
+                .AddRateLimits()
+                .AddGrpcProvider(configuration);
+
+            services.AddScoped<IExternalService<ProfileRequest, ProfileResponse>, ProfileClient>();
 
             return services;
         }
@@ -46,6 +55,32 @@ namespace Authorization.API.Extension
                          })
                  );
              });
+
+            return services;
+        }
+      
+        private static IServiceCollection AddGrpcProvider(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var serverAdress = configuration
+                .GetValue<string>("GrpcServer") ??
+                throw new AppConfigurationException("Grpc Test service address");
+
+            services.AddGrpcClient<ProfileService.ProfileServiceClient>(option =>
+            {
+                option.Address = new Uri(serverAdress);
+            })
+            // only for local development
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+
+                handler.ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                return handler;
+            }); ;
 
             return services;
         }

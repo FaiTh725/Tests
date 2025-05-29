@@ -1,0 +1,137 @@
+﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
+using Test.Dal.Persistences;
+using Test.Dal.Specifications;
+using Test.Domain.Entities;
+using Test.Domain.Primitives;
+using Test.Domain.Repositories;
+
+namespace Test.Dal.Repositories
+{
+    public class ProfileGroupRepository : IProfileGroupRepository
+    {
+        private readonly AppDbContext context;
+
+        public ProfileGroupRepository(
+            AppDbContext context)
+        {
+            this.context = context;
+        }
+
+        public async Task<ProfileGroup> AddGroup(
+            ProfileGroup profileGroup,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
+        {
+            var mongoProfileGroup = new MongoProfileGroup();
+            mongoProfileGroup.ConvertToMongoEntity(profileGroup);
+            var nextId = context.GetNextId(AppDbContext.GROUPS_COLLECTION_NAME);
+            mongoProfileGroup.Id = nextId;
+
+            var insertOptions = new InsertOneOptions
+            {
+                BypassDocumentValidation = true
+            };
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Groups.InsertOneAsync(
+                    mongoProfileGroup,
+                    insertOptions,
+                    cancellationToken);
+            }
+            else
+            {
+                await context.Groups.InsertOneAsync(
+                    mongoSession,
+                    mongoProfileGroup,
+                    insertOptions,
+                    cancellationToken);
+            }
+
+            return mongoProfileGroup.ConvertToDomainEntity();
+        }
+
+        public async Task DeleteGroup(
+            long groupId,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
+        {
+            var filter = Builders<MongoProfileGroup>.Filter
+                .Eq(x => x.Id, groupId);
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Groups.DeleteOneAsync(
+                filter,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Groups.DeleteOneAsync(
+                    mongoSession,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+        }
+
+        public async Task<ProfileGroup?> GetProfileGroup(
+            long id, 
+            CancellationToken cancellationToken = default)
+        {
+            var mongoProfileGroup = await context.Groups
+                .Find(x => x.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return mongoProfileGroup?.ConvertToDomainEntity();
+        }
+
+        public async Task<IEnumerable<ProfileGroup>> GetProfileGroupsByCriteria(
+            BaseSpecification<ProfileGroup> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            var filter = specification.Criteria is null ?
+                Builders<MongoProfileGroup>.Filter.Empty :
+                new ExpressionConverter<ProfileGroup, MongoProfileGroup>().Rewrite(specification.Criteria);
+
+            var groups = await context.Groups
+                .Find(filter)
+                .ToListAsync(cancellationToken);
+
+            return groups.Select(x => x.ConvertToDomainEntity());
+        }
+
+        public async Task UpdateGroup(
+            long groupId,
+            ProfileGroup updatedGroup,
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
+        {
+            var filter = Builders<MongoProfileGroup>.Filter
+                .Eq(x => x.Id, groupId);
+
+            var update = Builders<MongoProfileGroup>.Update
+                .Set(x => x.GroupName, updatedGroup.GroupName)
+                .Set(x => x.MembersId, [.. updatedGroup.MembersId]);
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Groups.UpdateOneAsync(
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Groups.UpdateOneAsync(
+                    mongoSession,
+                    filter,
+                    update,
+                    cancellationToken: cancellationToken);
+            }
+        }
+    }
+}
