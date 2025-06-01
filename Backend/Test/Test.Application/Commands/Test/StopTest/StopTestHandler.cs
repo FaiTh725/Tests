@@ -48,8 +48,8 @@ namespace Test.Application.Commands.Test.StopTest
                     $"{testSession.Error}");
             }
 
-            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-            
+            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+
             try
             {
                 var dbTestSession = await unitOfWork.SessionRepository

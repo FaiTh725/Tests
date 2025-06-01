@@ -168,6 +168,8 @@ namespace Test.Infrastructure
                 conf.AddConsumer<DeleteTestProfileConsumer>();
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                 conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
+                conf.AddConsumer<TestAccessNotificationConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

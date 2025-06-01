@@ -2,9 +2,10 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Notification.Application.Behaviors;
 using Notification.Application.Configurations;
 using Notification.Application.Implementations;
-using Notification.Application.Infastructure.Consumers;
+using Notification.Application.Infrastructure.Consumers;
 using Notification.Application.Interfaces;
 
 namespace Notification.Application
@@ -16,9 +17,11 @@ namespace Notification.Application
            IConfiguration configuration)
         {
             services
+                .AddMediatrProvider()
                 .AddMasstransitProvider(configuration);
 
             services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IProfileService, ProfileService>();
 
             return services;
         }
@@ -37,6 +40,7 @@ namespace Notification.Application
                 conf.SetKebabCaseEndpointNameFormatter();
 
                 conf.AddConsumer<SendEmailConsumer>();
+                conf.AddConsumer<SendNotificationConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {
@@ -46,8 +50,36 @@ namespace Notification.Application
                         h.Password(rabbitMqConf.Password);
                     });
 
+                    configurator.ReceiveEndpoint("send-notification", x =>
+                    {
+                        x.UseMessageRetry(r => r
+                            .Interval(3, TimeSpan.FromSeconds(3)));
+
+                        x.ConfigureConsumer<SendNotificationConsumer>(context, conf =>
+                        {
+                            conf.UseMessageRetry(r =>
+                            {
+                                r.Interval(3, TimeSpan.FromSeconds(3));
+                                r.Ignore<ApiException>();
+                            });
+                        });
+                    });
+
                     configurator.ConfigureEndpoints(context);
                 });
+            });
+
+            return services;
+        }
+
+        private static IServiceCollection AddMediatrProvider(
+            this IServiceCollection services)
+        {
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
+
+                cfg.AddOpenBehavior(typeof(NotifyUserNotificationsChangedBehavior<,>));
             });
 
             return services;

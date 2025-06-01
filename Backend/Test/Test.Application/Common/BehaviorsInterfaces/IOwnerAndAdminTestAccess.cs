@@ -2,10 +2,10 @@
 {
     public interface IOwnerAndAdminTestAccess
     {
-        public long TestId { get; set; }
+        long TestId { get; set; }
 
-        public long OwnerId { get; set; }
+        long OwnerId { get; set; }
 
-        public string Role { get; set; }
+        string Role { get; set; }
     }
 }

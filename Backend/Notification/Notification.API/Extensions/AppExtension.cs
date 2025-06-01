@@ -1,7 +1,16 @@
 ﻿using Application.Shared.Exceptions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
 using Notification.API.Configuration;
+using Notification.API.Filters;
+using Notification.API.Hubs;
+using Notification.API.Hubs.Instances;
+using Notification.API.Services;
+using Notification.Application.Interfaces;
 using Serilog;
 using Serilog.Sinks.Network;
+using System.Text;
 
 namespace Notification.API.Extensions
 {
@@ -12,7 +21,21 @@ namespace Notification.API.Extensions
             IConfiguration configuration)
         {
             services
-                .AddLogstashLoging(configuration);
+                .AddLogstashLoging(configuration)
+                .AddJwtAuthorization(configuration);
+
+            services
+                .AddSignalR()
+                .AddHubOptions<NotificationHub>(options =>
+                {
+                    options.AddFilter<HubAuthenticationFilter>();
+                });
+
+            services.AddScoped<DecodeTokenFilter>();
+
+            services.AddSingleton<INotificationService, HubNotificationSender>();
+            services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
+            services.AddSingleton<HubAuthenticationFilter>();
 
             return services;
         }
@@ -35,6 +58,63 @@ namespace Notification.API.Extensions
                     logstashConf.Port,
                     new Serilog.Formatting.Json.JsonFormatter())
                 .CreateLogger();
+
+            return services;
+        }
+
+        private static IServiceCollection AddJwtAuthorization(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var jwtConf = configuration
+                .GetSection("JwtSettings")
+                .Get<JwtConf>() ??
+                throw new AppConfigurationException("Jwt Configuration Settings");
+
+            services.AddAuthentication()
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+                jwtOptions =>
+                {
+                    jwtOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidAudience = jwtConf.Audience,
+                        ValidIssuer = jwtConf.Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                        .GetBytes(jwtConf.SecretKey))
+                    };
+
+                    jwtOptions.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = ctx =>
+                        {
+                            var isHubRequest = ctx.Request.Path.StartsWithSegments("/hub");
+                            var token = string.Empty;
+
+                            // if request is through hub and pass token in query
+                            if (isHubRequest)
+                            {
+                                token = ctx.Request.Query["token"];
+                            }
+                            else
+                            {
+                                token = ctx.Request.Cookies["token"];
+                            }
+
+                            if (!string.IsNullOrEmpty(token))
+                            {
+                                ctx.Token = token;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+            services.AddAuthorization();
 
             return services;
         }

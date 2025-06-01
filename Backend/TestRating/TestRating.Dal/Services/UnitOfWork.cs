@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using TestRating.Dal.Adapters;
 using TestRating.Dal.Repositories;
 using TestRating.Domain.Interfaces;
+using TestRating.Domain.Primitives;
 using TestRating.Domain.Repositories;
 
 namespace TestRating.Dal.Services
@@ -18,8 +19,6 @@ namespace TestRating.Dal.Services
         private readonly Lazy<IFeedbackReviewRepository> reviewRepository;
         private readonly Lazy<IProfileRepository> profileRepository;
         private readonly Lazy<IFeedbackReplyRepository> replyRepository;
-
-        private IDbContextTransaction transaction;
 
         public UnitOfWork(
             AppDbContext context)
@@ -43,19 +42,23 @@ namespace TestRating.Dal.Services
 
         public IFeedbackReplyRepository ReplyRepository => replyRepository.Value;
 
-        public void BeginTransaction(
+        public IDatabaseTransaction BeginTransaction(
             IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            transaction = context.Database
+            var transaction = context.Database
                 .BeginTransaction(isolationLevel);
+
+            return new DbContextTransactionAdapter(transaction);
         }
 
-        public async Task BeginTransactionAsync(
+        public async Task<IDatabaseTransaction> BeginTransactionAsync(
             IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, 
             CancellationToken cancellationToken = default)
         {
-            transaction = await context.Database
+            var transaction = await context.Database
                 .BeginTransactionAsync(cancellationToken);
+
+            return new DbContextTransactionAdapter(transaction);
         }
 
         public bool CanConnect()
@@ -70,38 +73,43 @@ namespace TestRating.Dal.Services
                 .CanConnectAsync(cancellationToken);
         }
 
-        public void CommitTransaction()
+        public void CommitTransaction(IDatabaseTransaction transaction)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            transaction.Commit();
-            transaction.Dispose();
+            dbTransaction!.Transaction.Commit();
         }
 
         public async Task CommitTransactionAsync(
+            IDatabaseTransaction transaction,
             CancellationToken cancellationToken = default)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            await transaction.CommitAsync(cancellationToken);
-            await transaction.DisposeAsync();
+            await dbTransaction!.Transaction
+                .CommitAsync(cancellationToken);
         }
 
-        public void RollBackTransaction()
+        public void RollBackTransaction(
+            IDatabaseTransaction transaction)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            transaction.Rollback();
-            transaction.Dispose();
+            dbTransaction!.Transaction.Rollback();
         }
 
         public async Task RollBackTransactionAsync(
+            IDatabaseTransaction transaction,
             CancellationToken cancellationToken = default)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            await transaction.RollbackAsync(cancellationToken);
-            await transaction.DisposeAsync();
+            await dbTransaction!.Transaction
+                .RollbackAsync(cancellationToken);
         }
 
         public int SaveChanges()
@@ -118,14 +126,14 @@ namespace TestRating.Dal.Services
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
-        private void AssuranceTransaction()
+        private void AssuranceTransaction(IDatabaseTransaction? transaction)
         {
-            if (transaction is null)
+            if (transaction is not null && 
+                !transaction.IsInTransaction)
             {
-                throw new InvalidOperationException("Transaction hasnt been started");
+                throw new InvalidOperationException("Transaction isnt started");
             }
         }
 
@@ -134,7 +142,6 @@ namespace TestRating.Dal.Services
             if (!disposed && disposing)
             {
                 context.Dispose();
-                transaction?.Dispose();
             }
             disposed = true;
         }

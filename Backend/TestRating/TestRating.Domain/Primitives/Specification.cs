@@ -14,6 +14,12 @@ namespace TestRating.Domain.Primitives
 
         public Expression<Func<T, object>>? OrderByDescendingExpression { get; private set; }
 
+        public int? Page { get; private set; }
+
+        public int? PageSize { get; private set; }
+
+        public bool IsEnablePagination { get; private set; }
+
         protected void AddInclude(Expression<Func<T, object>> includeExpression)
         {
             IncludeExpressions.Add(includeExpression);
@@ -39,5 +45,12 @@ namespace TestRating.Domain.Primitives
             OrderByDescendingExpression = orderByDescendingExpression;
         }
 
+        protected void EnablePagination(int page, int pageSize)
+        {
+            IsEnablePagination = true;
+
+            Page = page;
+            PageSize = pageSize;
+        }
     }
 }

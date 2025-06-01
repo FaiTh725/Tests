@@ -1,5 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using FluentAssertions;
+using MassTransit;
 using Moq;
 using TestRating.Application.Commands.FeedbackEntity.SendFeedback;
 using TestRating.Application.Common.Interfaces;
@@ -17,6 +18,7 @@ namespace TestRating.Application.UnitTests.Feedbacks.Commands
         private readonly Mock<IBlobService> blobServiceMock;
         private readonly Mock<IProfileRepository> profileRepositoryMock;
         private readonly Mock<IFeedbackRepository> feedbackRepositoryMock;
+        private readonly Mock<IPublishEndpoint> publishEndpointMock;
 
         private readonly SendFeedbackHandler handler;
 
@@ -28,9 +30,12 @@ namespace TestRating.Application.UnitTests.Feedbacks.Commands
             blobServiceMock = new();
             profileRepositoryMock = new();
             feedbackRepositoryMock = new();
+            publishEndpointMock = new();
 
             handler = new SendFeedbackHandler(
-                unitOfWorkMock.Object, blobServiceMock.Object);
+                unitOfWorkMock.Object, 
+                blobServiceMock.Object, 
+                publishEndpointMock.Object);
 
             unitOfWorkMock.Setup(x => x.ProfileRepository)
                 .Returns(profileRepositoryMock.Object);

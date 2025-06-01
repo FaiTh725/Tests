@@ -32,7 +32,7 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
                 throw new NotFoundException("Feedback doesnt exist");
             }
 
-            await unitOfWork.BeginTransactionAsync(
+            var transaction = await unitOfWork.BeginTransactionAsync(
                 IsolationLevel.RepeatableRead, 
                 cancellationToken);
             try
@@ -43,13 +43,14 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
                         cancellationToken);
 
                 var feedbackReplies = await unitOfWork.ReplyRepository
-                    .GetRepliesByCriteria(new RepliesByFeedbackIdWithOwnerSpecification(
-                        request.FeedbackId),
-                    request.Page,
-                    request.PageSize,
+                    .GetRepliesByCriteria(new RepliesPaginationByFeedbackIdWithOwnerSpecification(
+                        request.FeedbackId,
+                        request.Page,
+                        request.PageSize),
                     cancellationToken);
 
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(
+                    transaction, cancellationToken);
 
                 return new BasePaginationResponse<FeedbackReplyWithOwner>
                 {
@@ -74,7 +75,8 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(
+                    transaction, cancellationToken);
                 throw;
             }
         }

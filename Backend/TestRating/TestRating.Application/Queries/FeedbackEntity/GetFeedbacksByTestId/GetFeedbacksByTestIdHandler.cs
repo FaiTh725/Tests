@@ -39,7 +39,7 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
                 throw new NotFoundException("Test doesnt exist");
             }
 
-            await unitOfWork.BeginTransactionAsync(
+            var transaction = await unitOfWork.BeginTransactionAsync(
                 IsolationLevel.RepeatableRead, 
                 cancellationToken);
 
@@ -47,9 +47,10 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
             {
                 var feedbacks = await unitOfWork.FeedbackRepository
                     .GetFeedbacksByCriteria(
-                    new FeedbacksByTestIdWithOwnerAndReviewsSpecification(request.TestId), 
-                    request.Page,
-                    request.PageSize,
+                    new FeedbacksPaginationByTestIdWithOwnerAndReviewsSpecification(
+                        request.TestId, 
+                        request.Page,
+                        request.PageSize),
                     cancellationToken);
 
                 var allFeedbacks = await unitOfWork.FeedbackRepository
@@ -80,7 +81,8 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
 
                 var feedbacksResponse = await Task.WhenAll(getFeedbacksImagesTasks);
         
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
+                await unitOfWork.CommitTransactionAsync(
+                    transaction, cancellationToken);
 
                 return new BasePaginationResponse<FeedbackWithReviewsResponse>
                 {
@@ -92,7 +94,8 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(
+                    transaction, cancellationToken);
                 throw;
             }
         }

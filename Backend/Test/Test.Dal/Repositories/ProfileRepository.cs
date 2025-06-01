@@ -2,6 +2,7 @@
 using MongoDB.Driver.Linq;
 using Test.Dal.Adapters;
 using Test.Dal.Persistences;
+using Test.Dal.Specifications;
 using Test.Domain.Entities;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -55,12 +56,14 @@ namespace Test.Dal.Repositories
 
         public async Task DeleteProfile(
             long id, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoProfile>.Filter
                 .Eq(x => x.Id, id);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Profiles.DeleteOneAsync(
                 filter,
@@ -69,13 +72,15 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Profiles.DeleteOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }
         }
 
-        public async Task<Profile?> GetProfile(long id, CancellationToken cancellationToken = default)
+        public async Task<Profile?> GetProfile(
+            long id, 
+            CancellationToken cancellationToken = default)
         {
             var mongorProfile =  await context.Profiles
                 .Find(x => x.Id == id)
@@ -84,13 +89,30 @@ namespace Test.Dal.Repositories
             return mongorProfile?.ConvertToDomainEntity();
         }
 
-        public async Task<Profile?> GetProfile(string email, CancellationToken cancellationToken = default)
+        public async Task<Profile?> GetProfile(
+            string email, 
+            CancellationToken cancellationToken = default)
         {
             var mongorProfile = await context.Profiles
                 .Find(x => x.Email == email)
                 .FirstOrDefaultAsync(cancellationToken);
 
             return mongorProfile?.ConvertToDomainEntity();
+        }
+
+        public async Task<IEnumerable<Profile>> GetProfilesByCriteria(
+            BaseSpecification<Profile> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            var filter = specification.Criteria is null ?
+                Builders<MongoProfile>.Filter.Empty :
+                new ExpressionConverter<Profile, MongoProfile>().Rewrite(specification.Criteria);
+
+            var profiles = await context.Profiles
+                .Find(filter)
+                .ToListAsync(cancellationToken);
+
+            return profiles.Select(x => x.ConvertToDomainEntity());
         }
     }
 }

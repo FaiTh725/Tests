@@ -4,6 +4,7 @@ using Moq;
 using Test.Application.Commands.ProfileEntity.DeleteProfile;
 using Test.Domain.Entities;
 using Test.Domain.Interfaces;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Testing.Application.UnitTests.Profiles.Commands
@@ -72,7 +73,8 @@ namespace Testing.Application.UnitTests.Profiles.Commands
             // Assert
             profileRepositoryMock.Verify(x => x
                 .DeleteProfile(
-                    It.IsAny<long>(), 
+                    It.IsAny<long>(),
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }

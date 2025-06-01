@@ -1,4 +1,5 @@
-﻿using Notification.Domain.Repositories;
+﻿using Notification.Domain.Primitives;
+using Notification.Domain.Repositories;
 
 namespace Notification.Domain.Interfaces
 {
@@ -6,6 +7,16 @@ namespace Notification.Domain.Interfaces
     {
         INotificationRepository NotificationRepository { get; }
 
+        IDatabaseTransaction BeginTransaction();
 
+        Task<IDatabaseTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+
+        void CommitTransaction(IDatabaseTransaction session);
+
+        Task CommitTransactionAsync(IDatabaseTransaction session, CancellationToken cancellationToken = default);
+
+        void RollBackTransaction(IDatabaseTransaction session);
+
+        Task RollBackTransactionAsync(IDatabaseTransaction session, CancellationToken cancellationToken = default);
     }
 }

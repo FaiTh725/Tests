@@ -41,12 +41,14 @@ namespace Test.Application.Commands.ProfileGroupEntity.AddGroupMember
                 throw new BadRequestException("Profile doesnt exist");
             }
 
+            
             group.AddMember(newMember.Id);
 
-            unitOfWork.TrackEntity(group);
-            
+
             await unitOfWork.ProfileGroupRepository
                 .UpdateGroup(group.Id, group, cancellationToken: cancellationToken);
+            
+            unitOfWork.TrackEntity(group);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using TestRating.Domain.Events;
 using TestRating.Domain.Primitives;
 using TestRating.Domain.Validators;
 

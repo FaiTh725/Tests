@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
 option csharp_namespace = "Test.API.Grpc";
 
 package test;
@@ -7,6 +10,7 @@ package test;
 service TestService
 {
 	rpc TestIsExists(TestIsExistsRequest) returns (TestIsExistsResponse);
+	rpc GetTestInfoWithOwner(TestInfoRequest) returns(TestInfoResponse);
 }
 
 message TestIsExistsRequest
@@ -17,4 +21,25 @@ message TestIsExistsRequest
 message TestIsExistsResponse
 {
 	bool isExists = 1;
+}
+
+message TestInfoRequest{
+	int64 testId = 1;
+}
+
+message TestInfoResponse{
+	int64 id = 1;
+	string name = 2;
+	string description = 3;
+	google.protobuf.Timestamp createdTime = 4;
+	bool isPublic = 5;
+	google.protobuf.DoubleValue durationInMinutes = 6;
+	TestOwner owner = 10;
+	int32 type = 7;
+}
+
+message TestOwner{
+	string email = 1;
+	string name = 2;
+	int64 id = 3;
 }

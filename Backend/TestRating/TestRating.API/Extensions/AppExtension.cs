@@ -8,10 +8,12 @@ using TestRating.API.Configurations;
 using TestRating.API.Contracts.Feedback;
 using TestRating.API.Contracts.FeedbackReply;
 using TestRating.API.Contracts.FeedbackReport;
+using TestRating.API.Filters;
 using TestRating.API.Grpc.Services;
 using TestRating.API.Validators.FeedbackValidators;
 using TestRating.API.Validators.ReplyValidators;
 using TestRating.API.Validators.ReportFeedbackValidators;
+using TestRating.Application.Common.Constants;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
 using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
@@ -30,6 +32,9 @@ namespace TestRating.API.Extensions
                 .ConfigureFluentValidation();
 
             services.AddScoped<ITestExternalService, TestExternalService>();
+            services.AddScoped<VerifyProfileFilter>();
+
+            services.AddCustomPolicies();
 
             return services;
         }
@@ -55,6 +60,18 @@ namespace TestRating.API.Extensions
                     HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
                 return handler;
+            });
+
+            return services;
+        }
+
+        private static IServiceCollection AddCustomPolicies(
+            this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole(UserRoles.Administrator));
             });
 
             return services;

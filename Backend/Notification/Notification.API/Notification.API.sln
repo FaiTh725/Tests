@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Contracts", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Domain", "..\Notification.Domain\Notification.Domain.csproj", "{758A9187-C925-45CE-9247-5FC6988E15D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Infrastructure", "..\Notification.Infastructure\Notification.Infrastructure.csproj", "{260BE336-35E2-4BC7-958B-CDFE0F54FE21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{758A9187-C925-45CE-9247-5FC6988E15D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{758A9187-C925-45CE-9247-5FC6988E15D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{758A9187-C925-45CE-9247-5FC6988E15D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

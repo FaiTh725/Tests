@@ -13,7 +13,7 @@ namespace TestRating.Domain.Repositories
 
         Task<Feedback?> GetFeedbackByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(Specification<Feedback> specification, int page, int pageSize, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
         
         Task<IEnumerable<Feedback>> GetFeedbacksExcludeFiltersByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
 

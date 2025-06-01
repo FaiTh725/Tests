@@ -1,7 +1,11 @@
-﻿using Authorization.Dal.Repositories;
+﻿using Authorization.Dal.Adapters;
+using Authorization.Dal.Repositories;
 using Authorization.Domain.Interfaces;
+using Authorization.Domain.Primitives;
 using Authorization.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 
 namespace Authorization.Dal.Implementations
 {
@@ -13,6 +17,7 @@ namespace Authorization.Dal.Implementations
         private readonly Lazy<IRoleRepository> roleRepository;
         private readonly Lazy<IRefreshTokenRepository> refreshTokenRepository;
 
+        // TODO: refactoring - not thread safety
         private IDbContextTransaction transaction;
         private bool disposed = false;
 
@@ -32,15 +37,23 @@ namespace Authorization.Dal.Implementations
 
         public IRefreshTokenRepository RefreshTokenRepository => refreshTokenRepository.Value;
 
-        public void BeginTransaction()
+        public IDatabaseTransaction BeginTransaction(
+            IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            transaction = context.Database.BeginTransaction();
+            var transaction = context.Database
+                .BeginTransaction(isolationLevel);
+
+            return new DbContextTransactionAdapter(transaction);
         }
 
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        public async Task<IDatabaseTransaction> BeginTransactionAsync(
+            IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+            CancellationToken cancellationToken = default)
         {
-            transaction = await context.Database
+            var transaction = await context.Database
                 .BeginTransactionAsync(cancellationToken);
+
+            return new DbContextTransactionAdapter(transaction);
         }
 
         public bool CanConnect()
@@ -55,38 +68,43 @@ namespace Authorization.Dal.Implementations
                 .CanConnectAsync(cancellationToken);
         }
 
-        public void CommitTransaction()
+        public void CommitTransaction(IDatabaseTransaction transaction)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            transaction.Commit();
-            transaction.Dispose();
+            dbTransaction!.Transaction.Commit();
         }
 
         public async Task CommitTransactionAsync(
+            IDatabaseTransaction transaction,
             CancellationToken cancellationToken = default)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            await transaction.CommitAsync(cancellationToken);
-            await transaction.DisposeAsync();
+            await dbTransaction!.Transaction
+                .CommitAsync(cancellationToken);
         }
 
-        public void RollBackTransaction()
+        public void RollBackTransaction(
+            IDatabaseTransaction transaction)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            transaction.Rollback();
-            transaction.Dispose();
+            dbTransaction!.Transaction.Rollback();
         }
 
         public async Task RollBackTransactionAsync(
+            IDatabaseTransaction transaction,
             CancellationToken cancellationToken = default)
         {
-            AssuranceTransaction();
+            var dbTransaction = transaction as DbContextTransactionAdapter;
+            AssuranceTransaction(dbTransaction);
 
-            await transaction.RollbackAsync(cancellationToken);
-            await transaction.DisposeAsync();
+            await dbTransaction!.Transaction
+                .RollbackAsync(cancellationToken);
         }
 
         public int SaveChanges()
@@ -103,14 +121,14 @@ namespace Authorization.Dal.Implementations
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
-        private void AssuranceTransaction()
+        private void AssuranceTransaction(IDatabaseTransaction? transaction)
         {
-            if(transaction is null)
+            if (transaction is not null &&
+                !transaction.IsInTransaction)
             {
-                throw new InvalidOperationException("Transaction hasnt been started");
+                throw new InvalidOperationException("Transaction isnt started");
             }
         }
 

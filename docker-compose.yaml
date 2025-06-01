@@ -15,7 +15,7 @@ services:
       - AllowedUrl="https://localhost:5173"
       - ASPNETCORE_URLS=https://+:5502;http://+:5501
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/testing_app.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
       - ./certs:/https:ro
     networks:
@@ -214,6 +214,11 @@ services:
       - EmailSettings__Password=${EMAIL_PASSWORD}
       - LogstashSettings__Host=tcp://testing_logstash
       - LogstashSettings__Port=5044
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - ConnectionStrings__MongoConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
+      - MongoDatabase=Notification
       - ASPNETCORE_URLS=https://+:5102;http://+:5101
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -222,6 +227,7 @@ services:
     networks:
       - message_broker_net
       - loging_net
+      - testing_mongo_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -246,8 +252,8 @@ services:
       - |
           chmod 400 /etc/mongo/mongo-keyfile
           chown 999:999 /etc/mongo/mongo-keyfile
-          exec docker-entrypoint.sh $$@     
-    command: > 
+          exec docker-entrypoint.sh $$@ 
+    command: >
       mongod --auth --replSet rs0 --keyFile /etc/mongo/mongo-keyfile --bind_ip_all
     healthcheck:
       test: mongosh --eval "db.adminCommand('ping')" || exit 1

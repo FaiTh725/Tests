@@ -58,7 +58,7 @@ namespace TestRating.Integration.Tests.Application.Commands.Feedbacks
                 ProfileId = profileFromDb.Entity.Id,
                 Rating = rate,
                 Text = text,
-                ProfileRole = "Role"
+                ProfileRole = "User"
             };
 
             // Act
@@ -89,7 +89,7 @@ namespace TestRating.Integration.Tests.Application.Commands.Feedbacks
                 ProfileId = profileFromDb.Entity.Id,
                 Rating = 2,
                 Text = "new text",
-                ProfileRole = "Role"
+                ProfileRole = "Admin"
             };
 
             // Act

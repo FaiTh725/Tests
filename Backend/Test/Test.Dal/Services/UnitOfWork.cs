@@ -10,7 +10,6 @@ namespace Test.Dal.Services
     public class UnitOfWork : INoSQLUnitOfWork
     {
         private readonly AppDbContext context;
-        private IClientSessionHandle session;
 
         private readonly Lazy<IProfileRepository> profileRepository;
         private readonly Lazy<ITestRepository> testRepository;
@@ -119,15 +118,6 @@ namespace Test.Dal.Services
 
         public void Dispose()
         {
-            session?.Dispose();
-        }
-
-        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
-        {
-            if (mongoSession?.Session.IsInTransaction != true)
-            {
-                throw new InvalidOperationException("Transaction is not started");
-            }
         }
 
         public IReadOnlyCollection<DomainEventEntity> GetTrackedEntities()
@@ -138,6 +128,14 @@ namespace Test.Dal.Services
         public void TrackEntity(DomainEventEntity entity)
         {
             trackedEntities.Add(entity);
+        }
+
+        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
+        {
+            if(mongoSession?.Session.IsInTransaction != true)
+            {
+                throw new InvalidOperationException("Transaction is not started");
+            }
         }
     }
 }

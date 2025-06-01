@@ -11,6 +11,8 @@ namespace Test.Domain.Repositories
 
         Task<Profile?> GetProfile(string email, CancellationToken cancellationToken = default);
 
-        Task DeleteProfile(long id, CancellationToken cancellationToken = default);
+        Task DeleteProfile(long id, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Profile>> GetProfilesByCriteria(BaseSpecification<Profile> specification, CancellationToken cancellationToken = default);
     }
 }

@@ -27,12 +27,23 @@ namespace TestRating.Dal.Specification
                 query = query.OrderByDescending(specification.OrderByDescendingExpression);
             }
 
-            query = specification.IncludeExpressions.Aggregate(
-                query,
-                (current, includeExpression) =>
-                current.Include(includeExpression));
+            if(specification.IsEnablePagination)
+            {
+                if(specification.Page is null || specification.Page < 1 ||
+                    specification.PageSize is null || specification.PageSize < 1)
+                {
+                    throw new InvalidOperationException("Unable to execute pagination with invalid page and page size");
+                }
 
-            query = specification.IncludeExpressionsStrings.Aggregate(
+                var page = specification.Page.Value;
+                var pageSize = specification.PageSize.Value;
+
+                query = query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize);
+            }
+
+            query = specification.IncludeExpressions.Aggregate(
                 query,
                 (current, includeExpression) =>
                 current.Include(includeExpression));

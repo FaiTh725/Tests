@@ -1,5 +1,4 @@
 ﻿using Application.Shared.Exceptions;
-using MassTransit;
 using MediatR;
 using Test.Application.Contracts.File;
 using Test.Domain.Interfaces;
@@ -32,7 +31,7 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 throw new BadRequestException("Question doesnt exist");
             }
 
-            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
             {
@@ -43,6 +42,7 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 {
                     PathFiles = [question.ImageFolder]
                 },
+                transaction,
                 cancellationToken);
 
                 question.Delete();

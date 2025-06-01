@@ -18,7 +18,7 @@ using Testcontainers.Redis;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Consumers.Blobs;
 using TestRating.Application.Consumers.ProfileConsumers;
-using TestRating.Application.Consumers.TestConsumer;
+using TestRating.Application.Consumers.TestConsumers;
 using TestRating.Dal;
 using TestRating.Integration.Tests.JwtAuthenticationMock;
 

@@ -67,11 +67,14 @@ namespace Test.Application.Commands.TestAccessEntity.GiveAccessTest
             if(testAccessEntity.IsFailure)
             {
                 throw new BadRequestException("Request has invalid value - "
-                    +testAccessEntity.Error);
+                    + testAccessEntity.Error);
             }
 
             var testAccess = await unitOfWork.AccessRepository
                 .AddTestAccess(testAccessEntity.Value, cancellationToken: cancellationToken);
+
+            testAccess.ProvideAccess();
+            unitOfWork.TrackEntity(testAccess);
 
             return testAccess.Id;
         }
