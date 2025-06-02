@@ -46,7 +46,9 @@ namespace Notification.Application.Behaviors
                     Id = x.Id,
                     ConsumerEmail = x.ConsumerEmail,
                     Message = x.Message,
-                    Title = x.Title
+                    Title = x.Title,
+                    IsRead = x.IsRead,
+                    SendTime = x.SendTime
                 })
                 .ToList());
 

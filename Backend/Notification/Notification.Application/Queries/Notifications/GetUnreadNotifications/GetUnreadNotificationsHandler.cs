@@ -22,7 +22,7 @@ namespace Notification.Application.Queries.Notifications.GetUnreadNotifications
         {
             var notifications = await unitOfWork.NotificationRepository
                 .GetNotificationsByCriteria(
-                new GetNotificationsByUserEmailSpecification(
+                new GetUnreadNotificationsByUserEmailSpecification(
                         request.UserEmail, 
                         request.Page, 
                         request.PageSize), 
@@ -33,7 +33,9 @@ namespace Notification.Application.Queries.Notifications.GetUnreadNotifications
                 Id = x.Id,
                 ConsumerEmail = x.UserEmail,
                 Message = x.Message,
-                Title = x.Title
+                Title = x.Title,
+                SendTime = x.SendTime,
+                IsRead = x.IsRead
             });
         }
     }

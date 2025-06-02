@@ -49,7 +49,9 @@ namespace Notification.Application.Infrastructure.Consumers
                 Id = notificationFromDb.Id,
                 ConsumerEmail = notificationFromDb.UserEmail,
                 Title = notificationFromDb.Title,
-                Message = notificationFromDb.Message
+                Message = notificationFromDb.Message,
+                SendTime = notificationFromDb.SendTime,
+                IsRead = notificationFromDb.IsRead
             });
 
             logger.LogInformation("Notification consumer processed notification");

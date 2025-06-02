@@ -59,8 +59,8 @@ namespace Notification.Domain.Entities
             }
 
             if(string.IsNullOrWhiteSpace(message) ||
-                title.Length < NotificationValidator.MIN_MESSAGE_LENGTH ||
-                title.Length > NotificationValidator.MAX_MESSAGE_LENGTH)
+                message.Length < NotificationValidator.MIN_MESSAGE_LENGTH ||
+                message.Length > NotificationValidator.MAX_MESSAGE_LENGTH)
             {
                 return Result.Failure<NotificationEntity>("Message is empty or length out of bounds " +
                     $"{NotificationValidator.MIN_MESSAGE_LENGTH} - {NotificationValidator.MAX_MESSAGE_LENGTH}");

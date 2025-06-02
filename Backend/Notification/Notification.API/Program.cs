@@ -38,3 +38,6 @@ app.MapHub<NotificationHub>("/hub/notification");
 app.UseExceptionHandler();
 
 app.Run();
+
+// For integration tests
+public partial class Program() { }

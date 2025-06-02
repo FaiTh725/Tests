@@ -1,10 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using DotNet.Testcontainers.Builders;
 using Hangfire;
-using Hangfire.InMemory;
-using Hangfire.MemoryStorage;
-using Hangfire.Server;
-using Hangfire.States;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -13,14 +8,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Moq;
 using Newtonsoft.Json;
 using Redis.OM;
-using System.Linq.Expressions;
 using Test.Application.Consumers.FileConsumers;
 using Test.Application.Consumers.ProfileConsumers;
 using Test.Application.Consumers.QuestionConsumers;
@@ -174,7 +167,8 @@ namespace Test.Integration.Tests
                     conf.AddConsumer<DeleteTestProfileConsumer>();
                     conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                     conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
-                    
+                    conf.AddConsumer<TestAccessNotificationConsumer>();
+
                     conf.AddConsumer<MessagesConsumer>();
 
                     conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));

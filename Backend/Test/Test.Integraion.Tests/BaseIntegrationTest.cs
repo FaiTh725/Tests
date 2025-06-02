@@ -6,8 +6,6 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.IO;
-using System.Threading;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.TestSession;
 using Test.Dal;

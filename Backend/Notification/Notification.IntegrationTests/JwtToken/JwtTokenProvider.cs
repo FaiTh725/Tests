@@ -1,10 +1,9 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Test.Integration.Tests.JwtToken
+namespace Notification.IntegrationTests.JwtToken
 {
     public static class JwtTokenProvider
     {

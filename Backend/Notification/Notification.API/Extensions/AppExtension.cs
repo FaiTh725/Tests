@@ -1,12 +1,16 @@
 ﻿using Application.Shared.Exceptions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Notification.API.Configuration;
+using Notification.API.Contracts.Notifications;
 using Notification.API.Filters;
 using Notification.API.Hubs;
 using Notification.API.Hubs.Instances;
 using Notification.API.Services;
+using Notification.API.Validators.Notifications;
 using Notification.Application.Interfaces;
 using Serilog;
 using Serilog.Sinks.Network;
@@ -21,6 +25,7 @@ namespace Notification.API.Extensions
             IConfiguration configuration)
         {
             services
+                .AddFluentValidatorProvider()
                 .AddLogstashLoging(configuration)
                 .AddJwtAuthorization(configuration);
 
@@ -115,6 +120,16 @@ namespace Notification.API.Extensions
                 });
 
             services.AddAuthorization();
+
+            return services;
+        }
+
+        private static  IServiceCollection AddFluentValidatorProvider(
+            this IServiceCollection services)
+        {
+            services.AddFluentValidationAutoValidation();
+
+            services.AddScoped<IValidator<DeleteNotificationsRequest>, DeleteNotificationsValidator>();
 
             return services;
         }

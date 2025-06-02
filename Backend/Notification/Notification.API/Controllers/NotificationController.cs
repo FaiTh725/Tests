@@ -5,6 +5,7 @@ using Notification.API.Contracts.Notifications;
 using Notification.API.Filters;
 using Notification.Application.Commands.Notifications.DeleteUserNotifications;
 using Notification.Application.Commands.Notifications.ReadAllNotifications;
+using Notification.Application.Commands.Notifications.ReadNotification;
 using Notification.Application.DTOs.Profiles;
 
 namespace Notification.API.Controllers
@@ -62,6 +63,15 @@ namespace Notification.API.Controllers
             ReadNotificationRequest request,
             CancellationToken cancellationToken)
         {
+            var profile = (ProfileDTO)HttpContext.Items["profile"]!;
+
+            await mediator.Send(new ReadNotificationCommand
+            {
+                NotificationId = request.NotificationId,
+                UserEmail = profile.Email
+            }, 
+            cancellationToken);
+
             return NoContent();
         }
     }

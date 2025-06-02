@@ -9,5 +9,9 @@
         public string Title {  get; set; } = string.Empty;
 
         public string Message { get; set; } = string.Empty;
+
+        public DateTime SendTime {  get; set; }
+
+        public bool IsRead { get; set; }
     }
 }

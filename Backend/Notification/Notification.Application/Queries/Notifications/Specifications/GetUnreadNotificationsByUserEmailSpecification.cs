@@ -3,13 +3,15 @@ using Notification.Domain.Primitives;
 
 namespace Notification.Application.Queries.Notifications.Specifications
 {
-    public class GetNotificationsByUserEmailSpecification : 
+    public class GetUnreadNotificationsByUserEmailSpecification : 
         BaseSpecification<NotificationEntity>
     {
-        public GetNotificationsByUserEmailSpecification(
+        public GetUnreadNotificationsByUserEmailSpecification(
             string userEmail, int page, int pageSize)
         {
-            Criteria = notification => notification.UserEmail == userEmail;
+            Criteria = notification => 
+                notification.UserEmail == userEmail && 
+                notification.IsRead == false;
 
             OrderByDescendingExpression = notification => notification.SendTime;
 
