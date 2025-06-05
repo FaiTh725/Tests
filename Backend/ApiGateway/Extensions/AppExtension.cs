@@ -26,7 +26,7 @@ namespace ApiGateway.Extensions
             services.AddCors(conf =>
             {
                 conf.AddPolicy("client", policy => 
-                    policy.WithOrigins(corsAllowUrl)
+                    policy.WithOrigins("https://localhost:4200")
                         .AllowAnyHeader()
                         .AllowCredentials()
                         .AllowAnyMethod());

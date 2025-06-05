@@ -1,0 +1,47 @@
+<app-auth-layout [headerNavigation]="
+  {
+    BtnName: 'Sign-Up', 
+    NavigateUrl: '/authorization/sign-up'
+  }"
+  >
+  <div class="login-content">
+    <h2 class="login-header">log in to an existing account</h2>
+    <div class="login-form" action="">
+      <div class="login-form__input">
+        <app-primary-input [inputConfiguration]="{
+          Value: form.Email,
+          IsReadonly: false,
+          InputName: 'email',
+          PlaceHolder: 'Email',
+          ErrorMessage: errorForm.EmailError}"
+          (onChange)="form.Email = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-primary-input>
+      </div>
+      <div class="login-form__input">
+        <app-password-input [inputConfiguration]="{
+          Value: form.Password,
+          IsReadonly: false,
+          InputName: 'password',
+          PlaceHolder: 'Password',
+          ErrorMessage: errorForm.PasswordError}"
+          (onChange)="form.Password = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-password-input>
+      </div>
+    </div>
+    <div class="login-submit-form">
+      <app-primary-button [btnConfiguration]="{
+        Text: 'SignIn',
+        BackgroundColor: 'var(--light-blue-color)',
+        BorderColor: '#2da0d6',
+        BorderWith: 2,
+        FontSize: 18,
+        HoverBackgroundColor: 'var(--light-blue-color)',
+        HoverColor: 'var(--primary-black-color)',
+        TextColor: 'var(--primary-black-color)'}"
+        (handleClick)="handleLogin()">
+      </app-primary-button>
+    </div>
+  </div>
+</app-auth-layout>

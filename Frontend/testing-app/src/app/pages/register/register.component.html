@@ -1,0 +1,71 @@
+<app-auth-layout [headerNavigation]="
+  {
+    BtnName: 'Sign-In', 
+    NavigateUrl: '/authorization/sign-in'
+  }">
+  <div class="register-content">
+    <h2 class="register-header">Create an account</h2>
+    <div class="register-form" action="">
+      <div class="register-form__input">
+        <app-primary-input [inputConfiguration]="{
+          Value: form.Name,
+          IsReadonly: false,
+          InputName: 'name',
+          PlaceHolder: 'Name',
+          ErrorMessage: formError.NameError}"
+          (onChange)="form.Name = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-primary-input>
+      </div>
+      <div class="register-form__input">
+        <app-primary-input [inputConfiguration]="{
+          Value: form.Email,
+          IsReadonly: false,
+          InputName: 'email',
+          PlaceHolder: 'Email',
+          ErrorMessage: formError.EmailError}"
+          (onChange)="form.Email = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-primary-input>
+      </div>
+      <div class="register-form__input">
+        <app-password-input [inputConfiguration]="{
+          Value: form.Password,
+          IsReadonly: false,
+          InputName: 'password',
+          PlaceHolder: 'Password',
+          ErrorMessage: formError.PasswordError}"
+          (onChange)="form.Password = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-password-input>
+      </div>
+      <div class="register-form__input">
+        <app-password-input [inputConfiguration]="{
+          Value: form.RepeatPassword,
+          IsReadonly: false,
+          InputName: 'repeatPassword',
+          PlaceHolder: 'Repeat Password',
+          ErrorMessage: formError.RepeatPasswordError}"
+          (onChange)="form.RepeatPassword = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-password-input>
+      </div>
+    </div>
+    <div class="register-link">
+      <p [routerLink]="['/authorization/confirm-email']">If your email is unconfirmed, you can confirm it now</p>
+    </div>
+    <div class="register-submit-form">
+      <app-primary-button [btnConfiguration]="{
+        Text: 'SignUp',
+        BackgroundColor: 'var(--light-blue-color)',
+        BorderColor: '#2da0d6',
+        BorderWith: 2,
+        FontSize: 18,
+        HoverBackgroundColor: 'var(--light-blue-color)',
+        HoverColor: 'var(--primary-black-color)',
+        TextColor: 'var(--primary-black-color)'}"
+        (handleClick)="handleRegister()">
+      </app-primary-button>
+    </div>
+  </div>
+</app-auth-layout>

@@ -1,0 +1,18 @@
+.login-form__input + .login-form__input {
+  margin-top: 30px;
+}
+
+.login-form__input {
+  min-width: 350px;
+  margin-top: 50px;
+} 
+
+.login-header {
+  text-align: center;
+  font-size: 30px;
+  color: var(--primary-write-color);
+}
+
+.login-submit-form {
+  margin-top: 30px;
+}

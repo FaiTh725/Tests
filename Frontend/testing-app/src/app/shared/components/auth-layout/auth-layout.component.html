@@ -1,0 +1,22 @@
+<div class="auth-main">
+  <div class="auth-header">
+    <div class="auth-header__btn-wrapper">
+      <app-primary-button [btnConfiguration]="{
+        Text: headerNavigation.BtnName,
+        BackgroundColor: 'var(--primary-black-color)',
+        BorderColor: 'var(--shadow-color)',
+        BorderWith: 2,
+        FontSize: 18,
+        HoverBackgroundColor: '#132f45',
+        HoverColor: 'var(--light-blue-color)',
+        TextColor: 'var(--light-blue-color)'}"
+        (handleClick)="handleHeaderClick($event)">
+      </app-primary-button>
+    </div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
