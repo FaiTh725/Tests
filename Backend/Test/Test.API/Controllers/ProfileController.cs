@@ -22,13 +22,10 @@ namespace Test.API.Controllers
         [HttpGet("[action]")]
         [Authorize]
         public async Task<IActionResult> GetProfileTests(
-            long profileId, CancellationToken cancellationToken)
+            [FromQuery]GetProfileTestsQuery request, CancellationToken cancellationToken)
         {
-            var tests = await mediator.Send(new GetProfileTestsQuery
-                {
-                    ProfileId = profileId,
-                },
-                cancellationToken);
+            var tests = await mediator
+                .Send(request, cancellationToken);
 
             return Ok(tests);
         }
@@ -36,13 +33,10 @@ namespace Test.API.Controllers
         [HttpGet("[action]")]
         [Authorize]
         public async Task<IActionResult> GetProfileCreatedGroups(
-            long profileId, CancellationToken cancellationToken)
+            [FromQuery]GetProfileCreatedGroupQuery request, CancellationToken cancellationToken)
         {
-            var groups = await mediator.Send(new GetProfileCreatedGroupQuery 
-                { 
-                    ProfileId = profileId
-                },
-                cancellationToken);
+            var groups = await mediator
+                .Send(request, cancellationToken);
 
             return Ok(groups);
         }
@@ -50,13 +44,10 @@ namespace Test.API.Controllers
         [HttpGet("[action]")]
         [Authorize]
         public async Task<IActionResult> GetProfileJoinedGroups(
-            long profileId, CancellationToken cancellationToken)
+            [FromQuery]GetProfileJoinedGroupQuery request, CancellationToken cancellationToken)
         {
-            var groups = await mediator.Send(new GetProfileJoinedGroupQuery
-                {
-                    ProfileId = profileId
-                },
-                cancellationToken);
+            var groups = await mediator
+                .Send(request, cancellationToken);
 
             return Ok(groups);
         }

@@ -28,14 +28,14 @@ namespace Test.Integration.Tests.Application.Queries.ProfileGroups
 
             var query = new GetProfileCreatedGroupQuery
             {
-                ProfileId = profile.Id
+                ProfileEmail = profile.Email
             };
 
             // Act
             var groups = await sender.Send(query, CancellationToken.None);
 
             // Assert
-            groups.Should().BeEmpty();
+            groups.Data.Should().BeEmpty();
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Test.Integration.Tests.Application.Queries.ProfileGroups
 
             var query = new GetProfileCreatedGroupQuery
             {
-                ProfileId = profile.Id
+                ProfileEmail = profile.Email
             };
 
             var expectedGroups = new List<GroupInfo>

@@ -66,10 +66,6 @@ export class PrimaryInputComponent {
       timer(this.timeToShowError).subscribe(() => 
       { 
         this.clearError.emit();
-        // this.inputConfiguration = { 
-        //   ... this.inputConfiguration,
-        //   ErrorMessage: ""
-        // }
       });
     }
   }

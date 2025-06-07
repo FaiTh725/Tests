@@ -47,7 +47,7 @@ namespace Test.Integration.Tests.Application.Queries.ProfileGroups
 
             var query = new GetProfileJoinedGroupQuery
             {
-                ProfileId = member.Id
+                ProfileEmail = "test@mail.com"
             };
 
             var expectedGroups = new List<GroupInfo>

@@ -1,0 +1,44 @@
+<div class="profile-main">
+  <div class="profile-wrapper">
+    <div class="profile-header">
+      <div class="profile-header__user-info">
+        <p>Hello {{userService.User?.Name}}!!!</p>
+        <p>{{userService.User?.Email}}</p>
+      </div>
+      <div class="profile-header__exit-btn">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Exit',
+          BackgroundColor: 'var(--primary-black-color)',
+          BorderColor: 'var(--shadow-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--primary-black-color)',
+          HoverColor: 'var(--light-blue-color)',
+          TextColor: 'var(--light-blue-color)'}"
+          (handleClick)="handleExit()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="profile-tests">
+      <h2 class="profile-tests-header">Your tests</h2>
+      <div class="profile-tests-tests-list">
+        @for (test of profileCreatedTests; track test.Id) {
+          <div class="profile-tests-tests__list-item">
+            <app-test-editable-card 
+              [test]="test"
+              (delete)="handleDeleteTest(test.Id)">
+            </app-test-editable-card>
+          </div>
+        }
+      </div>
+    </div>
+    <app-pagination [paginationConf]="{
+        Page: createdTestsPagination.Page,
+        PageSize: createdTestsPagination.PageSize,
+        MaxSize: createdTestsPagination.MaxSize
+      }"
+      (next)="executeNextPagination()"
+      (prev)="executePrevPagination()">
+    </app-pagination>
+  </div>
+</div>

@@ -56,7 +56,7 @@ export class LoginComponent {
       next: (data: any) => {
         this.authService.Login({
           Email: data.email,
-          Name: data.name,
+          Name: data.userName,
           Role: data.role
         });
         this.router.navigate([""]);

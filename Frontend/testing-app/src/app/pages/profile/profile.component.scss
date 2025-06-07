@@ -1,0 +1,45 @@
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 30px;
+  border-bottom: 2px solid var(--shadow-color);
+}
+
+.profile-wrapper {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.profile-header__user-info {
+  flex: 1;
+  font-size: 20px;
+  color: var(--primary-write-color);
+  font-family: var(--font-family);
+  font-weight: 600;
+}
+
+.profile-header__user-info > p {
+  margin-bottom: 15px;
+}
+
+.profile-header__user-info:last-child {
+  color: var(--shadow-color);
+  font-size: 18px;
+}
+
+.profile-tests {
+  margin: 40px 0;
+}
+
+.profile-tests-header {
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-write-color);
+  margin-left: 50px;
+  margin-bottom: 30px;
+}
+
+.profile-tests-tests__list-item + .profile-tests-tests__list-item {
+  margin-top: 60px;
+} 

@@ -77,6 +77,16 @@ namespace Test.Dal.Repositories
             }
         }
 
+        public async Task<IEnumerable<ProfileGroup>> GetGroups(
+            CancellationToken cancellationToken = default)
+        {
+            var mongoGroups = await context.Groups
+                .Find(_ => true)
+                .ToListAsync(cancellationToken);
+
+            return mongoGroups.Select(x => x.ConvertToDomainEntity());
+        }
+
         public async Task<ProfileGroup?> GetProfileGroup(
             long id, 
             CancellationToken cancellationToken = default)
@@ -92,15 +102,11 @@ namespace Test.Dal.Repositories
             BaseSpecification<ProfileGroup> specification, 
             CancellationToken cancellationToken = default)
         {
-            var filter = specification.Criteria is null ?
-                Builders<MongoProfileGroup>.Filter.Empty :
-                new ExpressionConverter<ProfileGroup, MongoProfileGroup>().Rewrite(specification.Criteria);
-
-            var groups = await context.Groups
-                .Find(filter)
-                .ToListAsync(cancellationToken);
-
-            return groups.Select(x => x.ConvertToDomainEntity());
+            return await SpecificationEvaluator
+                .GetQueryAsync(
+                    context.Groups, 
+                    specification, 
+                    cancellationToken);
         }
 
         public async Task UpdateGroup(

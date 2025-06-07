@@ -1,10 +1,11 @@
-using Test.Dal;
-using Test.API.Middlewares;
-using Test.API.Grpc.Services;
-using Test.API.Extensions;
-using Test.Application;
-using Test.Infrastructure;
 using Serilog;
+using System.Text.Json.Serialization;
+using Test.API.Extensions;
+using Test.API.Grpc.Services;
+using Test.API.Middlewares;
+using Test.Application;
+using Test.Dal;
+using Test.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

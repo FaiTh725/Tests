@@ -1,5 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
+using Test.Application.Contracts.Common;
 using Test.Application.Contracts.ProfileGroupEntity;
 using Test.Application.Queries.ProfileGroupEntity.Specifications;
 using Test.Domain.Interfaces;
@@ -7,7 +8,7 @@ using Test.Domain.Interfaces;
 namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
 {
     public class GetProfileCreatedGroupHandler :
-        IRequestHandler<GetProfileCreatedGroupQuery, IEnumerable<GroupInfo>>
+        IRequestHandler<GetProfileCreatedGroupQuery, PaginationResponse<GroupInfo>>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
 
@@ -17,28 +18,46 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<GroupInfo>> Handle(
+        public async Task<PaginationResponse<GroupInfo>> Handle(
             GetProfileCreatedGroupQuery request, 
             CancellationToken cancellationToken)
         {
             var profile = await unitOfWork.ProfileRepository
-                .GetProfile(request.ProfileId, cancellationToken);
+                .GetProfile(request.ProfileEmail, cancellationToken);
 
             if(profile is null)
             {
                 throw new BadRequestException("Profile doesnt exist");
             }
 
-            var groups = await unitOfWork.ProfileGroupRepository
+            var allGroups = await unitOfWork.ProfileGroupRepository
                 .GetProfileGroupsByCriteria(
-                    new GroupsByProfileIdSpecification(profile.Id), 
+                    new GroupsByProfileIdSpecification(
+                        profile.Id),
                     cancellationToken);
 
-            return groups.Select(groups => new GroupInfo
-            {
-                Id = groups.Id,
-                Name = groups.GroupName
-            });
+            var groups = await unitOfWork.ProfileGroupRepository
+                .GetProfileGroupsByCriteria(
+                    new GroupsByProfileIdPaginationSpecification(
+                        profile.Id,
+                        request.Page,
+                        request.PageSize), 
+                    cancellationToken);
+
+            var groupsInfo = groups.Select(groups => new GroupInfo
+                {
+                    Id = groups.Id,
+                    Name = groups.GroupName
+                });
+
+            return new PaginationResponse<GroupInfo> 
+            { 
+                Data = groupsInfo,
+                PageSize = request.PageSize,
+                Page = request.Page,
+                MaxSize = allGroups.Count()
+            };
+
         }
     }
 }

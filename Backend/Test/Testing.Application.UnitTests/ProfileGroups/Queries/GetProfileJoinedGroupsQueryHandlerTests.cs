@@ -39,7 +39,7 @@ namespace Testing.Application.UnitTests.ProfileGroups.Queries
             // Arrange
             var query = new GetProfileJoinedGroupQuery()
             {
-                ProfileId = 1
+                ProfileEmail = "test@mail.com"
             };
 
             profileRepositoryMock.Setup(x => x
@@ -77,7 +77,7 @@ namespace Testing.Application.UnitTests.ProfileGroups.Queries
 
             var query = new GetProfileJoinedGroupQuery
             {
-                ProfileId = 1
+                ProfileEmail = "test@mail.com"
             };
             var existedProfile = Profile.Initialize("test", "test@mail.com").Value;
 
@@ -98,7 +98,7 @@ namespace Testing.Application.UnitTests.ProfileGroups.Queries
 
             groupRepositoryMock.Setup(x => x
                 .GetProfileGroupsByCriteria(
-                    It.IsAny<GroupsProfileJoinedSpecification>(),
+                    It.IsAny<GroupsProfileJoinedPaginationSpecification>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync([existedGroup, existedGroup1]);
 

@@ -1,0 +1,11 @@
+<div class="test-layout-main">
+  <div class="test-layout-wrapper">
+    @for (test of tests; track test.Id) {
+      <div class="tets-layout-test"
+        [style.padding-top]="calculatePadding($index)"
+        >
+        <app-test-card [test]="test"></app-test-card>
+      </div>
+    }
+  </div>
+</div>

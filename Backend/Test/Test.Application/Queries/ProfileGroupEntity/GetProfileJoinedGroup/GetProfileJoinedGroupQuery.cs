@@ -1,11 +1,16 @@
 ﻿using MediatR;
+using Test.Application.Contracts.Common;
 using Test.Application.Contracts.ProfileGroupEntity;
 
 namespace Test.Application.Queries.ProfileGroupEntity.GetProfileJoinedGroup
 {
     public class GetProfileJoinedGroupQuery :
-        IRequest<IEnumerable<GroupInfo>>
+        IRequest<PaginationResponse<GroupInfo>>
     {
-        public long ProfileId { get; set; }
+        public string ProfileEmail { get; set; } = string.Empty;
+
+        public int Page { get; set; }
+
+        public int PageSize { get; set; }   
     }
 }

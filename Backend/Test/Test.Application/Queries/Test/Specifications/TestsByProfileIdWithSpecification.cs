@@ -3,10 +3,10 @@ using TestEntity = Test.Domain.Entities.Test;
 
 namespace Test.Application.Queries.Test.Specifications
 {
-    public class TestsByProfileIdSpecification :
+    public class TestsByProfileIdWithSpecification : 
         BaseSpecification<TestEntity>
     {
-        public TestsByProfileIdSpecification(
+        public TestsByProfileIdWithSpecification(
             long profileId)
         {
             Criteria = test => test.ProfileId == profileId;

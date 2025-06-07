@@ -26,6 +26,13 @@ export class HttpService {
       withCredentials: true
     }).pipe(catchError(error => this.processError(error, 'GET', address)))
   }
+
+  deleteRequest(address: string, data?: any) {
+    return this.httpClient.delete(this.apiBaseUrl + address, {
+      body: data,
+      withCredentials: true
+    }).pipe(catchError(error => this.processError(error, 'DELETE', address, data)));
+  }
   
   private processError(
     error: any, method: string, 

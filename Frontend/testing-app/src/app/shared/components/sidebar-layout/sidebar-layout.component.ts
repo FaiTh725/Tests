@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar-layout',
@@ -25,8 +25,13 @@ export class SidebarLayoutComponent {
 
   selectedNavigate = "";
 
+  constructor(private router: Router) {
+
+  }
+
   handleSelectNavigate(url: string) {
     this.selectedNavigate = url;
+    this.router.navigate([this.selectedNavigate]);
   }
 }
 

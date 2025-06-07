@@ -9,6 +9,7 @@ using Test.Domain.Entities;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
 using Test.Domain.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using TestEntity = Test.Domain.Entities.Test;
 
 namespace Testing.Application.UnitTests.Tests.Queries
@@ -41,12 +42,12 @@ namespace Testing.Application.UnitTests.Tests.Queries
             // Arrange
             var query = new GetProfileTestsQuery
             {
-                ProfileId = 1
+                ProfileEmail = "test@mail.com"
             };
 
             profileRepositoryMock.Setup(x => x
                 .GetProfile(
-                    query.ProfileId,
+                    query.ProfileEmail,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(null as Profile);
 
@@ -85,7 +86,7 @@ namespace Testing.Application.UnitTests.Tests.Queries
             
             var query = new GetProfileTestsQuery
             {
-                ProfileId = 1
+                ProfileEmail = "test@mail.com"
             };
 
             var existedProfile = Profile.Initialize("name", "test@mail.com").Value;
@@ -109,13 +110,13 @@ namespace Testing.Application.UnitTests.Tests.Queries
 
             profileRepositoryMock.Setup(x => x
                 .GetProfile(
-                    query.ProfileId,
+                    query.ProfileEmail,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(existedProfile);
 
             testRepositoryMock.Setup(x => x
                 .GetTestsByCriteria(
-                    It.IsAny<TestsByProfileIdSpecification>(), 
+                    It.IsAny<TestsByProfileIdWithPaginationSpecification>(), 
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync([existedTest]);
 

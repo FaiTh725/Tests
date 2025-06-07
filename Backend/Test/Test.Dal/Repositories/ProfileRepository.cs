@@ -104,15 +104,11 @@ namespace Test.Dal.Repositories
             BaseSpecification<Profile> specification, 
             CancellationToken cancellationToken = default)
         {
-            var filter = specification.Criteria is null ?
-                Builders<MongoProfile>.Filter.Empty :
-                new ExpressionConverter<Profile, MongoProfile>().Rewrite(specification.Criteria);
-
-            var profiles = await context.Profiles
-                .Find(filter)
-                .ToListAsync(cancellationToken);
-
-            return profiles.Select(x => x.ConvertToDomainEntity());
+            return await SpecificationEvaluator
+                .GetQueryAsync(
+                    context.Profiles,
+                    specification,
+                    cancellationToken);
         }
     }
 }

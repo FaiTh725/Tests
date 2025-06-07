@@ -11,6 +11,7 @@ using Test.Application.Commands.TestAccessEntity.GiveAccessTest;
 using Test.Application.Commands.TestAccessEntity.LimitTestAccess;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.Test.GetTestInfoById;
+using Test.Application.Queries.Test.GetTests;
 
 namespace Test.API.Controllers
 {
@@ -65,6 +66,17 @@ namespace Test.API.Controllers
             cancellationToken);
 
             return Ok(test);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetTestsPagination(
+            [FromQuery]GetTestsQuery request,
+            CancellationToken cancellationToken)
+        {
+            var tests = await mediator
+                .Send(request, cancellationToken);
+
+            return Ok(tests);
         }
 
         [HttpDelete("[action]")]

@@ -7,6 +7,7 @@
   background-color: var(--primary-black-color);
   padding: 20px;
   border-right: 2px solid var(--shadow-color);
+  position: fixed;
 }
 
 .sidebar-navigation__links-item {
@@ -41,6 +42,7 @@
 
 .sidebar-view {
   padding: 20px;
+  padding-left: 300px;
   background-color: var(--primary-black-color);
   flex: 1;
 }

@@ -3,7 +3,7 @@ using Test.Domain.Primitives;
 
 namespace Test.Application.Queries.ProfileGroupEntity.Specifications
 {
-    public class GroupsProfileJoinedSpecification :
+    public class GroupsProfileJoinedSpecification : 
         BaseSpecification<ProfileGroup>
     {
         public GroupsProfileJoinedSpecification(

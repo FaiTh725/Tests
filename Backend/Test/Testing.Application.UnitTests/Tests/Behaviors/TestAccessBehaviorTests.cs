@@ -123,7 +123,7 @@ namespace Testing.Application.UnitTests.Tests.Behaviors
 
             groupRepositoryMock.Setup(x => x
                 .GetProfileGroupsByCriteria(
-                    It.IsAny<GroupsByProfileIdSpecification>(),
+                    It.IsAny<GroupsByProfileIdPaginationSpecification>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync([existedGroup]);
 
@@ -166,7 +166,7 @@ namespace Testing.Application.UnitTests.Tests.Behaviors
 
             groupRepositoryMock.Setup(x => x
                 .GetProfileGroupsByCriteria(
-                    It.IsAny<GroupsByProfileIdSpecification>(),
+                    It.IsAny<GroupsByProfileIdPaginationSpecification>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync([existedGroup]);
 

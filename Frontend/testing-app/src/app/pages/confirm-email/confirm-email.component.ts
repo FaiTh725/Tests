@@ -61,6 +61,9 @@ export class ConfirmEmailComponent {
         if(error.status === 400) {
           this.formError.EmailError = "Invalid email or already registered";
         }
+        else if(error.status === 409) {
+          this.formError.EmailError = "Email already registered";
+        }
         else if(error.status === 429) {
           this.formError.EmailError = "Too many tries, prease wait";
           this.isTimeoutActive = true;

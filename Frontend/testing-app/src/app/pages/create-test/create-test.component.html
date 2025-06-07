@@ -1,0 +1,86 @@
+<div class="create-test-main">
+  <div class="create-test-wrapper">
+    <div class="create-test-img">
+      <img src="/images/cat_with_form.png" height="400" alt="cat with form">
+    </div>
+  <div class="create-test-form">
+    <div class="create-test-form__input-wrapper">
+      <app-primary-input [inputConfiguration]="{
+          Value: form.Name,
+          IsReadonly: false,
+          InputName: 'name',
+          PlaceHolder: 'Name',
+          ErrorMessage: formError.NameError}"
+          (onChange)="form.Name = $event"
+          (clearError)="handleClearError()">
+      </app-primary-input>
+    </div>
+    <div class="create-test-form__input-wrapper">
+      <app-large-input [inputConfiguration]="{
+        Value: form.Description,
+        IsReadonly: false,
+        InputName: 'description',
+        PlaceHolder: 'Description',
+        ErrorMessage: formError.DescriptionError}"
+        (onChange)="form.Description = $event"
+        (clearError)="handleClearError()">
+      </app-large-input>
+    </div>
+    <div class="create-test-form__input-wrapper">
+      <p class="create-test-form__header">
+        Is public test
+      </p>
+      <div class="create-test-form__checkbox">
+        <div>
+          <app-checkbox [checkboxConfiguration]="{
+            IsChecked: form.IsPublic,
+            BorderColor: 'var(--shadow-color)',
+            BorderActiveColor: 'var(--light-blue-color)',
+            BackgroundActiveColor: 'var(--light-blue-color)',
+            ToggleActiveColor: 'var(--primary-write-color)'
+            }"
+            (check)="form.IsPublic = !form.IsPublic">
+          </app-checkbox>
+        </div>
+      </div>
+    </div>
+    <div class="create-test-form__input-wrapper">
+      <p class="create-test-form__header">
+        Select test type
+      </p>
+      <div class="create-test-form__combobox">
+        <app-combobox 
+          [items]="testTypes" 
+          [selectedItemIndex]="form.TestType"
+          (chooseItem)="form.TestType = $event">
+        </app-combobox>
+      </div>
+    </div>
+    @if(form.TestType == 0) {
+      <div class="create-test-form__input-wrapper">
+        <app-primary-input [inputConfiguration]="{
+          Value: form.DurationInMinutes,
+          IsReadonly: false,
+          InputName: 'durationInMinutes',
+          PlaceHolder: 'Test Duration',
+          ErrorMessage: formError.DurationInMinutesError}"
+          (onChange)="form.DurationInMinutes = $event"
+          (clearError)="handleClearError()">
+        </app-primary-input>
+      </div>
+    }
+    <div class="create-test-btn-wrapper">
+      <app-primary-button [btnConfiguration]="{
+        Text: 'Create',
+        BackgroundColor: 'var(--light-green-color)',
+        BorderColor: 'var(--dark-green-color)',
+        BorderWith: 2,
+        FontSize: 18,
+        HoverBackgroundColor: '#71db23',
+        HoverColor: 'var(--primary-write-color)',
+        TextColor: 'var(--primary-write-color)'}"
+        (handleClick)="handleSendForm()">
+      </app-primary-button>
+    </div>
+  </div>
+</div>

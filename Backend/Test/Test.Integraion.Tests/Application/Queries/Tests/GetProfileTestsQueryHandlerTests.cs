@@ -49,7 +49,7 @@ namespace Test.Integration.Tests.Application.Queries.Tests
 
             var query = new GetProfileTestsQuery
             {
-                ProfileId = profile.Id
+                ProfileEmail = "test@mail.com"
             };
 
             var expectedResult = new List<TestInfo>

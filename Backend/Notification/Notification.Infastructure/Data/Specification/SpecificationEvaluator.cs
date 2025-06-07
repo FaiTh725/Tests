@@ -20,9 +20,27 @@ namespace Notification.Infrastructure.Data.Specification
 
             if(specification.IsEnablePagination)
             {
-                findResult
+                findResult = findResult
                     .Skip((specification.Page - 1) * specification.PageSize)
                     .Limit(specification.PageSize);
+            }
+
+            if (specification.OrderByExpression is not null)
+            {
+                var sort = Builders<TMongoEntity>.Sort.Ascending(
+                    new ExpressionConverter<TEntity, TMongoEntity>()
+                    .Rewrite(specification.OrderByExpression));
+
+                findResult = findResult.Sort(sort);
+            }
+
+            if (specification.OrderByDescendingExpression is not null)
+            {
+                var sort = Builders<TMongoEntity>.Sort.Descending(
+                    new ExpressionConverter<TEntity, TMongoEntity>()
+                    .Rewrite(specification.OrderByDescendingExpression));
+
+                findResult = findResult.Sort(sort);
             }
 
             return findResult

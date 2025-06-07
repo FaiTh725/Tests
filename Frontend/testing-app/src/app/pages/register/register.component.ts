@@ -73,15 +73,17 @@ export class RegisterComponent {
       password: this.form.Password,
       userName: this.form.Name
     }).subscribe({
+      // TODO
       next: (data: any) => {
         this.authService.Login({
           Email: data.email,
-          Name: data.name,
+          Name: data.userName,
           Role: data.role
         })
 
         this.router.navigate([""]);
       },
+      // TODO: enum
       error: (error) => {
         if(error.status === 400) {
           if(error.error.errors.Password != undefined){

@@ -1,0 +1,26 @@
+<div class="test-card-main">
+  <div class="test-card-wrapper">
+    <div class="test-card-main-info">
+      <div class="test-card-main-info__text">
+        <p class="test-card-main-info__value">{{test?.Name}}</p>
+        <p class="test-card-main-info__value">{{test?.CreatedTime | date: "dd.MM.yy"}}</p>
+      </div>
+      <div class="test-card-main-info__btn-wrapper">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Delete',
+          BackgroundColor: 'var(--error-color)',
+          BorderColor: 'var(--dark-error-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--error-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleDelete()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="test-card-edit">
+      
+    </div>
+  </div>
+</div>
