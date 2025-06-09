@@ -77,7 +77,7 @@ export class CreateTestComponent {
         null
     }).subscribe({
       next: data => {
-        console.log(data);
+        this.router.navigate(["/profile"]);
       },
       error: error => {
         console.log(error)

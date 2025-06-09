@@ -1,0 +1,169 @@
+<div class="add-question-main">
+  <div class="add-question-wrapper">
+    <div class="add-question-layout">
+      <div class="add-question-form">
+        <div class="add-question-from__input">
+          <app-primary-input [inputStyle]="{
+            PlaceHolderColor: 'var(--primary-write-color)',
+            TextColor: 'var(--primary-write-color)',
+            FontSize: 18,
+            BackgroundColor: 'transparent',
+            BorderColor: 'var(--dark-green-color)',
+            BorderActiveColor: 'var(--dark-green-color)'
+            }"
+            [inputConfiguration]="{
+              Value: addQuestionForm.QuestionText,
+              IsReadonly: false,
+              InputName: 'testQuestion',
+              PlaceHolder: 'Question?',
+              ErrorMessage: addQuestionErrorForm.QuestionTextError
+            }"
+            (clearError)="clearQuestionErrorForm()"
+            (onChange)="addQuestionForm.QuestionText=$event">
+          </app-primary-input>
+        </div>
+        <div class="add-question-from__input">
+          <app-primary-input [inputStyle]="{
+            PlaceHolderColor: 'var(--primary-write-color)',
+            TextColor: 'var(--primary-write-color)',
+            FontSize: 18,
+            BackgroundColor: 'transparent',
+            BorderColor: 'var(--dark-green-color)',
+            BorderActiveColor: 'var(--dark-green-color)'
+            }"
+            [inputConfiguration]="{
+              Value: addQuestionForm.QuestionWeight,
+              IsReadonly: false,
+              InputName: 'questionWeight',
+              PlaceHolder: 'Question weight',
+              ErrorMessage: addQuestionErrorForm.QuestionWeightError
+            }"
+            (clearError)="clearQuestionErrorForm()"
+            (onChange)="addQuestionForm.QuestionWeight=$event">
+          </app-primary-input>
+        </div>
+        <div class="add-question-from__input">
+          <h2 class="add-question-from__input-header">One onswer</h2>
+          <app-checkbox [checkboxConfiguration]="{
+            IsChecked: addQuestionForm.HasOneAnswer,
+            BorderColor: 'var(--dark-green-color)',
+            BorderActiveColor: 'var(--primary-write-color)',
+            BackgroundActiveColor: 'var(--primary-write-color)',
+            ToggleActiveColor: 'var(--light-green-color)',
+            IsReadonly: false
+            }"
+            (check)="addQuestionForm.HasOneAnswer != addQuestionForm.HasOneAnswer">
+          </app-checkbox>
+        </div>
+        <div class="add-question-from__input">
+          <h2 class="add-question-from__input-header">Upload images</h2>
+          <app-file-input
+            (fileChange)="addQuestionForm.QuestionImages=$event"></app-file-input>
+        </div>
+        <div class="add-question__common-error">
+          <p>{{addQuestionErrorForm.CommonErrorError}}</p>
+        </div>
+      </div>
+      <div class="add-question-img">
+        <img src="/images/thinking_cat.png" height="300" alt="thinking cat">
+      </div>
+    </div>
+    <div class="added-answers">
+      @for (answer of addQuestionForm.Answers; track $index) {
+        <div class="added-answers-answer">
+          <app-square-checkbox [checkboxConfiguration]="{
+            IsChecked: answer.IsCorrect,
+            BorderColor: 'var(--dark-green-color)',
+            BorderActiveColor: 'var(--primary-write-color)',
+            BackgroundActiveColor: 'var(--primary-write-color)',
+            ToggleActiveColor: 'var(--light-green-color)',
+            IsReadonly: false
+            }"
+            (check)="answer.IsCorrect = !answer.IsCorrect">
+          </app-square-checkbox>
+          <div class="added-answers-answer__input">
+            <app-primary-input [inputStyle]="{
+              PlaceHolderColor: 'var(--primary-write-color)',
+              TextColor: 'var(--primary-write-color)',
+              FontSize: 18,
+              BackgroundColor: 'transparent',
+              BorderColor: 'var(--dark-green-color)',
+              BorderActiveColor: 'var(--dark-green-color)'
+              }"
+              [inputConfiguration]="{
+                Value: answer.Answer,
+                IsReadonly: false,
+                InputName: 'answer',
+                PlaceHolder: 'Answer Text',
+                ErrorMessage: addAnswerErrorForm.AnswerError
+                }"
+              (clearError)="clearAnswerErrorForm()"
+              (onChange)="answer.Answer = $event">
+            </app-primary-input>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="add-question-answers">
+      <app-square-checkbox [checkboxConfiguration]="{
+        IsChecked: addAnswerForm.IsCorrect,
+        BorderColor: 'var(--dark-green-color)',
+        BorderActiveColor: 'var(--primary-write-color)',
+        BackgroundActiveColor: 'var(--primary-write-color)',
+        ToggleActiveColor: 'var(--light-green-color)',
+        IsReadonly: false
+        }"
+        (check)="addAnswerForm.IsCorrect=!addAnswerForm.IsCorrect">
+      </app-square-checkbox>
+      <div class="add-question-answers__input-wrapper">
+        <app-primary-input [inputStyle]="{
+          PlaceHolderColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)',
+          FontSize: 18,
+          BackgroundColor: 'transparent',
+          BorderColor: 'var(--dark-green-color)',
+          BorderActiveColor: 'var(--dark-green-color)'
+          }"
+          [inputConfiguration]="{
+            Value: addAnswerForm.Answer,
+            IsReadonly: false,
+            InputName: 'answer',
+            PlaceHolder: 'Answer Text',
+            ErrorMessage: addAnswerErrorForm.AnswerError
+            }"
+            (onChange)="addAnswerForm.Answer=$event">
+        </app-primary-input>
+      </div>
+      <app-file-input (fileChange)="addAnswerForm.AnswerImages=$event">
+      </app-file-input>
+      <div class="add-question-answers__btn-wrapper">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Done',
+          BackgroundColor: 'var(--light-green-color)',
+          BorderColor: 'var(--dark-green-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--light-green-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleAddAnswer()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="add-question__add-btn-wrapper">
+      <div>
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Add question',
+          BackgroundColor: 'var(--light-green-color)',
+          BorderColor: 'var(--dark-green-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--light-green-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleAddQuestion()">
+        </app-primary-button>
+      </div>
+    </div>
+  </div>
+</div>

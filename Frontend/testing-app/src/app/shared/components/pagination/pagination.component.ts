@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class PaginationComponent {
   @Output() next = new EventEmitter();
   @Output() prev = new EventEmitter();
+  @Output() moveToPage = new EventEmitter<number>();
   @Input() paginationConf?: Pagination;
   maxPage: number = 0;
 
@@ -25,6 +26,10 @@ export class PaginationComponent {
     ) {
       this.maxPage = Math.ceil(this.paginationConf.MaxSize / this.paginationConf.PageSize);
     }
+  }
+
+  handleMoveToPage(page:number) {
+    this.moveToPage.emit(page);
   }
 
   handleNext() {

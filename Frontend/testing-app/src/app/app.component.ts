@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from './core/services/Http.service';

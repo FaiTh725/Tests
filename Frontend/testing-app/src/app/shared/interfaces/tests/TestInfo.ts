@@ -1,4 +1,5 @@
 import { ProfileInfo } from "../Profile/ProfileInfo";
+import { QuestionInfo } from "../questions/QuestionInfo";
 import { TestType } from "./TestType";
 
 export interface TestInfo {
@@ -9,5 +10,6 @@ export interface TestInfo {
   IsPublic: boolean,
   TestType: TestType,
   DurationInMinutes: number | null,
-  Owner: ProfileInfo
+  Owner: ProfileInfo,
+  Questions: QuestionInfo[]
 }

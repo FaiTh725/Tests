@@ -24,9 +24,11 @@
       <div class="profile-tests-tests-list">
         @for (test of profileCreatedTests; track test.Id) {
           <div class="profile-tests-tests__list-item">
-            <app-test-editable-card 
+            <app-test-editable-card
               [test]="test"
-              (delete)="handleDeleteTest(test.Id)">
+              (addQuestion)="handleAddTestQuestion(test.Id, $event)"
+              (delete)="handleDeleteTest(test.Id)"
+              (testUpdated)="handleUpdateTest($event)">
             </app-test-editable-card>
           </div>
         }
@@ -37,6 +39,7 @@
         PageSize: createdTestsPagination.PageSize,
         MaxSize: createdTestsPagination.MaxSize
       }"
+      (moveToPage)="executePagination($event)"
       (next)="executeNextPagination()"
       (prev)="executePrevPagination()">
     </app-pagination>

@@ -7,6 +7,7 @@ import { HttpService } from '../../core/services/Http.service';
 import { Pagination } from '../../shared/interfaces/utils/Pagination';
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { TestEditableCardComponent } from "../../shared/components/test-editable-card/test-editable-card.component";
+import { AddQuestionForm } from '../../shared/components/add-question-form/add-question-form.component';
 
 @Component({
   selector: 'app-profile',
@@ -53,6 +54,62 @@ export class ProfileComponent {
     });
   }
 
+  handleUpdateTest(updatedTest: TestInfo) {
+    this.profileCreatedTests[updatedTest.Id] = {...updatedTest};
+  }
+
+  handleAddTestQuestion(testId: number, questionToAdd: AddQuestionForm) {
+    var formData = new FormData();
+    formData.append("TestId", String(testId));
+    formData.append("TestQuestion", questionToAdd.QuestionText);
+    formData.append("QuestionWeight", String(questionToAdd.QuestionWeight));
+    formData.append("QuestionType", String(questionToAdd.HasOneAnswer ? 0 : 1));
+    
+    for(const questionImage of questionToAdd.QuestionImages) {
+      formData.append("QuestionImages", questionImage);
+    }
+
+    for(const [index, answer] of questionToAdd.Answers.entries()) {
+      formData.append(`Answers[${index}].Answer`, answer.Answer);
+      formData.append(`Answers[${index}].IsCorrect`, String(answer.IsCorrect));
+      answer.AnswerImages.forEach(image => {
+        formData.append(`Answers[${index}].AnswerImages`, image);
+      });
+    }
+    
+    this.httpService.postFormDataRequest("testing/Question/AddQuestion", formData)
+      .subscribe(
+      {
+        next: (data: any) => {
+          console.log(this.profileCreatedTests[testId]);
+          this.profileCreatedTests[testId].Questions
+          .push({
+            Id: data.id,
+            TestQuestion: data.testQuestion,
+            QuestionWeight: data.questionWeight,
+            QuestionType: data.questionType,
+            QuestionImages: data.questionImages,
+            Answers: [...data.answers.map((answer:any) => ({
+              Id: answer.id,
+              IsCorrect: answer.isCorrect,
+              Answer: answer.answer,
+              QuestionId: answer.questionId,
+              questionAnswerImages: [...answer.questionAnswersImageUrls]
+            }))]
+          });
+        },
+        error: _ => {
+          console.log("unknow error");
+        }
+      });
+  }
+
+  executePagination(page: number) {
+    this.createdTestsPagination.Page = page;
+
+    this.getTests();
+  }
+
   executeNextPagination() {
     const maxPages = Math.ceil(this.createdTestsPagination.MaxSize / this.createdTestsPagination.PageSize)
     if(maxPages == this.createdTestsPagination.Page) {
@@ -90,6 +147,7 @@ export class ProfileComponent {
             IsPublic: test.isPublic,
             TestType: test.testType == "Timed" ? 0 : 1,
             DurationInMinutes: test.durationInMinutes, 
+            Questions: [],
             Owner: {
               Email: test.owner.email,
               Name: test.owner.name,

@@ -21,6 +21,13 @@ export class HttpService {
     }).pipe(catchError(error => this.processError(error, 'POST', address, data)))
   }
 
+  postFormDataRequest(address: string, formData: FormData) {
+    return this.httpClient.post(this.apiBaseUrl + address, 
+      formData, {
+      withCredentials: true,
+    }).pipe(catchError(error => this.processFormDataError(error, address, formData)))
+  }
+
   getRequest(address: string) {
     return this.httpClient.get(this.apiBaseUrl + address, {
       withCredentials: true
@@ -68,6 +75,30 @@ export class HttpService {
           default:
             return throwError(() => new Error("Unknow error"))
         }
+      }), catchError(_ => {
+        this.router.navigate(["/authorization/sign-in"]);
+        return throwError(() => new Error("Token is expired"));
+      }));
+    }
+
+    return throwError(() => error);
+  }
+
+  private processFormDataError(
+    error: any, 
+    url: string, data: FormData) {
+    
+    if(error.status === 401)
+    {
+      console.log("occured request that returned unauthorize error");
+      
+      return this.refreshToken().pipe(switchMap(() => {
+        console.log("sending request to refresh tokens");
+        return this.httpClient.post(
+          this.apiBaseUrl + url, data, 
+          {
+            withCredentials: true
+          });
       }), catchError(_ => {
         this.router.navigate(["/authorization/sign-in"]);
         return throwError(() => new Error("Token is expired"));

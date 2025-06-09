@@ -19,8 +19,33 @@
         </app-primary-button>
       </div>
     </div>
-    <div class="test-card-edit">
-      
+    <div class="test-card-edit"
+      (click)="handleOpenEditSection($event)"
+      [style.position]="isOpenToEdit ? 'relative' : 'absolute'"
+      [ngClass]="{'test-card-opened': isOpenToEdit}">
+      @if (isOpenToEdit) {
+        <div class="test-card-edit__existed-questions">
+          @for (question of test?.Questions; track question.Id) {
+            <app-test-question-card
+              [question]="question"
+              (delete)="handleDeleteQuestion($event)">
+            </app-test-question-card>
+          }
+        </div>
+        <div class="test-card-edit__form-wrapper"
+          (click)="$event.stopPropagation()">
+          <app-add-question-form
+            (addQuestion)="addQuestion.emit($event)">
+          </app-add-question-form>
+          <p class="test-card-edit__stop-edit"
+            (click)="isOpenToEdit=false; $event.stopPropagation()">
+            Stop edit
+          </p>
+        </div>
+      }
+      @else {
+        <p>Edit</p>
+      }
     </div>
   </div>
 </div>

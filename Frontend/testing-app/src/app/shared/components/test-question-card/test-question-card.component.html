@@ -1,0 +1,41 @@
+<div class="test-question-main">
+  <div class="test-question-wrapper">
+    <div class="test-question-info">
+      <p class="test-question-info__question">{{question?.TestQuestion}}</p>
+      <p class="test-question-info__weight">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fdf7e6"><path d="m352-293 128-76 129 76-34-144 111-95-147-13-59-137-59 137-147 13 112 95-34 144ZM243-144l63-266L96-589l276-24 108-251 108 252 276 23-210 179 63 266-237-141-237 141Zm237-333Z"/></svg>
+        {{question?.QuestionWeight}}
+      </p>
+      <p class="test-question-info__type">{{question!.QuestionType | appQuestionTypePipe}}</p>
+    </div>
+    <div class="test-question-answers">
+      @for (answer of question?.Answers; track answer.Id) {
+        <div class="test-question-answers__answer">
+          <app-square-checkbox [checkboxConfiguration]="{
+            IsChecked: answer.IsCorrect,
+            BorderColor: 'var(--dark-green-color)',
+            BorderActiveColor: 'var(--primary-write-color)',
+            BackgroundActiveColor: 'var(--primary-write-color)',
+            ToggleActiveColor: 'var(--light-green-color)',
+            IsReadonly: true
+            }">
+          </app-square-checkbox>
+          <p class="test-question-answers__answer-text">{{answer.Answer}}</p>
+        </div>
+      }
+    </div>
+    <div class="test-question-btn-wrapper">
+      <app-primary-button [btnConfiguration]="{
+        Text: '🗙',
+        BackgroundColor: 'var(--error-color)',
+        BorderColor: 'var(--dark-error-color)',
+        BorderWith: 2,
+        FontSize: 18,
+        HoverBackgroundColor: 'var(--error-color)',
+        HoverColor: 'var(--primary-write-color)',
+        TextColor: 'var(--primary-write-color)'}"
+        (handleClick)="handleDelete()">
+      </app-primary-button>
+    </div>
+  </div>
+</div>

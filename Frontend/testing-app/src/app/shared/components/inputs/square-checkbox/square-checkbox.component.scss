@@ -1,0 +1,20 @@
+.square-checkbox_main {
+  height: 50px;
+  width: 50px;
+  border-radius: 16px;
+  border: 4px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .4s;
+  padding: 5px;
+}
+
+.square-checkbox_active {
+  border: 4px solid var(--border-active-color);
+  background-color: var(--bg-active-color);
+}
+
+.square-checkbox_content svg {
+  fill: var(--toggle-active-color)
+}

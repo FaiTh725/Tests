@@ -9,6 +9,7 @@ using Test.Application.Commands.Question.UpdateQuestion;
 using Test.Application.Contracts.File;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.QuestionAnswerEntity;
+using Test.Application.Queries.QuestionEntity.GetQuestionsByTestId;
 using Test.Application.Queries.QuestionEntity.GetQuestionWithAnswers;
 
 namespace Test.API.Controllers
@@ -113,6 +114,20 @@ namespace Test.API.Controllers
             }, cancellationToken);
 
             return Ok(question);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetTaskQuestions(
+            long testId,
+            CancellationToken cancellationToken)
+        {
+            var testQuestions = await mediator.Send(new GetQuestionsByTestIdQuery
+            {
+                TestId = testId,
+            }, cancellationToken);
+
+            return Ok(testQuestions);
         }
     }
 }

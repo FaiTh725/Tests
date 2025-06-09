@@ -9,6 +9,10 @@
   padding-bottom: 25px;
 }
 
+.large-input-main:focus-within {
+  border: 2px solid var(--light-blue-color);
+}
+
 .large-input-wrapper {
   display: flex;
 }

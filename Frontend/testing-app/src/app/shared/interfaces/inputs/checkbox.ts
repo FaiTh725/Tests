@@ -3,5 +3,6 @@ export interface Checkbox {
   BorderColor: string,
   BorderActiveColor: string,
   BackgroundActiveColor: string,
-  ToggleActiveColor: string
+  ToggleActiveColor: string,
+  IsReadonly: boolean
 }

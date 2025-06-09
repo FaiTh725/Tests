@@ -3,6 +3,7 @@
     <div class="pagination-list">
       @for (page of createArray(maxPage); track $index) {
         <div class="pagination-page"
+          (click)="handleMoveToPage(page + 1)"
           [ngClass]="{'pagination-page__selected': paginationConf?.Page == $index + 1}">
           {{page + 1}}
         </div>

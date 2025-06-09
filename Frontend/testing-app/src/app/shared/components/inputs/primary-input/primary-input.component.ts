@@ -2,12 +2,19 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { InputConf } from '../../../interfaces/inputs/input';
 import { FormsModule } from '@angular/forms';
 import { timer } from 'rxjs';
+import { InputStyle } from '../../../interfaces/inputs/InputStyle';
 
 @Component({
   selector: 'app-primary-input',
   standalone: true,
   template: `
-    <div class="primary-input-main">
+    <div class="primary-input-main"
+      [style.--ph-color]="inputStyle.PlaceHolderColor"
+      [style.--text-color]="inputStyle.TextColor"
+      [style.--fs]="inputStyle.FontSize + 'px'"
+      [style.--bg-color]="inputStyle.BackgroundColor"
+      [style.--border-color]="inputStyle.BorderColor"
+      [style.--border-active-color]="inputStyle.BorderActiveColor">
       <div class="primary-input-wrapper">
         <input class="primary-input" type="text" 
           [placeholder]="inputConfiguration.PlaceHolder"
@@ -42,8 +49,18 @@ export class PrimaryInputComponent {
     PlaceHolder: "",
     ErrorMessage: ""
   };
+  @Input() inputStyle: InputStyle = {
+    PlaceHolderColor: "var(--primary-write-color)",
+    TextColor: "var(--primary-write-color)",
+    FontSize: 18,
+    BackgroundColor: "#233e4b",
+    BorderColor: "var(--shadow-color)",
+    BorderActiveColor: "var(--light-blue-color)"
+  };
+
   @Output() onChange = new EventEmitter<string>();
   @Output() clearError = new EventEmitter();
+
   timeToShowError: number = 9000;
 
   change(value: string) {
