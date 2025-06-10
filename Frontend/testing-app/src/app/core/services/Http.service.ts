@@ -40,6 +40,14 @@ export class HttpService {
       withCredentials: true
     }).pipe(catchError(error => this.processError(error, 'DELETE', address, data)));
   }
+
+  patchRequest(address: string, data?:any) {
+    return this.httpClient.patch(this.apiBaseUrl + address, 
+      data, {
+        withCredentials: true
+      }
+    ).pipe(catchError(error => this.processError(error, 'PATCH', address, data)));
+  }
   
   private processError(
     error: any, method: string, 

@@ -32,6 +32,10 @@ export const routes: Routes = [
       .CreateTestComponent
     },
     {
+      path: "groups", loadComponent: async () => (await import("./pages/groups/groups.component"))
+      .GroupsComponent
+    },
+    {
       path: "**", loadComponent: async () => (await import("./pages/home/home.component"))
       .HomeComponent
     }

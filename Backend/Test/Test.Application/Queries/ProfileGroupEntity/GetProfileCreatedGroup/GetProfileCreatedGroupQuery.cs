@@ -5,7 +5,7 @@ using Test.Application.Contracts.ProfileGroupEntity;
 namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
 {
     public class GetProfileCreatedGroupQuery : 
-        IRequest<PaginationResponse<GroupInfo>>
+        IRequest<PaginationResponse<GroupWithMembers>>
     {
         public string ProfileEmail { get; set; } = string.Empty;
 

@@ -55,7 +55,15 @@ export class ProfileComponent {
   }
 
   handleUpdateTest(updatedTest: TestInfo) {
-    this.profileCreatedTests[updatedTest.Id] = {...updatedTest};
+    const testIndex = this.profileCreatedTests
+    .findIndex(x => x.Id == updatedTest.Id);
+
+    if(testIndex !== -1) {
+      this.profileCreatedTests[testIndex] = {...updatedTest};
+    }
+    else {  
+      console.error("Profiles tests doesnt contain test for cur test id");
+    }
   }
 
   handleAddTestQuestion(testId: number, questionToAdd: AddQuestionForm) {

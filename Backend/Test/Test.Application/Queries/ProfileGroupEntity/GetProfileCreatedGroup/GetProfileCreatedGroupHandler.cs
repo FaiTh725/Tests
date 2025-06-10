@@ -1,14 +1,16 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using Test.Application.Contracts.Common;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.ProfileGroupEntity;
+using Test.Application.Queries.ProfileEntity.Specifications;
 using Test.Application.Queries.ProfileGroupEntity.Specifications;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
 {
     public class GetProfileCreatedGroupHandler :
-        IRequestHandler<GetProfileCreatedGroupQuery, PaginationResponse<GroupInfo>>
+        IRequestHandler<GetProfileCreatedGroupQuery, PaginationResponse<GroupWithMembers>>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
 
@@ -18,7 +20,7 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginationResponse<GroupInfo>> Handle(
+        public async Task<PaginationResponse<GroupWithMembers>> Handle(
             GetProfileCreatedGroupQuery request, 
             CancellationToken cancellationToken)
         {
@@ -44,15 +46,39 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
                         request.PageSize), 
                     cancellationToken);
 
-            var groupsInfo = groups.Select(groups => new GroupInfo
-                {
-                    Id = groups.Id,
-                    Name = groups.GroupName
-                });
+            var profilesId = groups
+                .SelectMany(x => x.MembersId)
+                .Distinct()
+                .ToList();
 
-            return new PaginationResponse<GroupInfo> 
+            var uniquesProfilesInGroups = await unitOfWork.ProfileRepository
+                .GetProfilesByCriteria(
+                    new GetProfilesByIdListSpecification(profilesId),
+                cancellationToken);
+
+            var profilesDictionary = uniquesProfilesInGroups
+                .ToDictionary(
+                    x => x.Id, 
+                    x => new ProfileResponse 
+                    { 
+                        Id = x.Id,
+                        Email = x.Email,
+                        Name = x.Name,   
+                    });
+
+
+            var createdGroups = groups.Select(group => new GroupWithMembers
+            {
+                Id = group.Id,
+                Name = group.GroupName,
+                Members = group.MembersId
+                    .Where(profilesDictionary.ContainsKey)
+                    .Select(id => profilesDictionary[id])
+            });
+
+            return new PaginationResponse<GroupWithMembers> 
             { 
-                Data = groupsInfo,
+                Data = createdGroups,
                 PageSize = request.PageSize,
                 Page = request.Page,
                 MaxSize = allGroups.Count()

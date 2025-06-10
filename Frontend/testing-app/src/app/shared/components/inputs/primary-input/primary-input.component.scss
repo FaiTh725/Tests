@@ -53,6 +53,8 @@
 }
 
 .primary-input-error__message {
-  color: var(--text-color);
   margin-left: 5px;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-weight: 600;
 }

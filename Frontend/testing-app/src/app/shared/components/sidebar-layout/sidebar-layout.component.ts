@@ -21,6 +21,11 @@ export class SidebarLayoutComponent {
       Icon: "/icons/AddTest.png",
       Url: "/create-test"
     },
+    {
+      Text: "Groups",
+      Icon: "/icons/group-cats.png",
+      Url: "/groups"
+    },
   ]
 
   selectedNavigate = "";

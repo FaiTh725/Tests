@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Test.Application.Queries.ProfileEntity.GetProfilesByEmail;
 using Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup;
 using Test.Application.Queries.ProfileGroupEntity.GetProfileJoinedGroup;
 using Test.Application.Queries.Test.GetProfileTests;
@@ -17,6 +18,21 @@ namespace Test.API.Controllers
             IMediator mediator)
         {
             this.mediator = mediator;
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetProfileByFistEmail(
+            string email, CancellationToken cancellation)
+        {
+            var profiles = await mediator.Send(
+                new GetProfilesByEmailQuery
+                {
+                    Email = email
+                },
+                cancellation);
+
+            return Ok(profiles);
         }
 
         [HttpGet("[action]")]

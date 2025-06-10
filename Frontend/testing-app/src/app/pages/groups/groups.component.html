@@ -1,0 +1,68 @@
+<div class="groups-main">
+  <div class="groups-wrapper">
+    <div class="groups-create">
+      <h2 class="groups-create__header-text">Create your own group</h2>
+      <div class="groups-create__inputs">
+        <div class="groups-create__input-wrapper">
+          <app-primary-input [inputConfiguration]="{
+            Value: form.Name,
+            IsReadonly: false,
+            InputName: 'name',
+            PlaceHolder: 'Group name',
+            ErrorMessage: errorForm.NameError}"
+            (onChange)="form.Name = $event"
+            (clearError)="handleClearErrorForm()">
+          </app-primary-input>
+        </div>
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Create',
+          BackgroundColor: 'var(--primary-black-color)',
+          BorderColor: 'var(--shadow-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--primary-black-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleSendForm()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="groups-toggle__btns">
+      <p class="groups-toggle__btn"
+        (click)="handleSwith('Created')"
+        [ngClass]="{'groups-toggle__btn-active': curSelectedGrops == 'Created'}">
+        Created
+      </p>
+      <p class="groups-toggle__btn"
+        (click)="handleSwith('Joined')"
+        [ngClass]="{'groups-toggle__btn-active': curSelectedGrops == 'Joined'}">
+        Joined
+      </p>
+    </div>
+    <div class="groups-toggle" #groupSwither>
+      <div class="groups-group groups-created-group">
+        <div class="groups-created-group__content">
+          @for (group of createdGroups; track group.Id) {
+            <div class="groups-created-group__content-wrapper">
+              <app-owned-group 
+                (groupUpdated)="handleUpdatedGroup($event)"
+                [group]="group"
+                (delete)="handleDeleteGroup($event)">
+              </app-owned-group>
+            </div>
+          }
+        </div>
+        <app-pagination [paginationConf]="paginationCreatedGroups"></app-pagination>
+      </div>  
+      <div class="groups-group groups-invited-group">
+        <div class="groups-created-group__content">
+          @for (group of joinedGroup; track group.Id) {
+            <app-readonly-group [group]="group">
+            </app-readonly-group>
+          }
+        </div>
+        <app-pagination [paginationConf]="paginationJoinedGroups"></app-pagination>
+      </div>
+    </div>
+  </div>
+</div>

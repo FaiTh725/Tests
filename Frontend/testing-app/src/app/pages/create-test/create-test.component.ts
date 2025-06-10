@@ -76,7 +76,7 @@ export class CreateTestComponent {
         Number(this.form.DurationInMinutes) : 
         null
     }).subscribe({
-      next: data => {
+      next: _ => {
         this.router.navigate(["/profile"]);
       },
       error: error => {

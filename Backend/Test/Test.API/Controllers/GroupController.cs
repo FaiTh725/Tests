@@ -9,6 +9,7 @@ using Test.Application.Commands.ProfileGroupEntity.DeleteGroup;
 using Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileGroupEntity.GetGroupById;
+using Test.Application.Queries.ProfileGroupEntity.GetGroupByIdWithMembers;
 
 namespace Test.API.Controllers
 {
@@ -105,6 +106,20 @@ namespace Test.API.Controllers
             cancellationToken);
 
             return NoContent();
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetGroupWithMembers(
+            long groupId, CancellationToken cancellationToken)
+        {
+            var group = await mediator.Send(new GetGroupByIdWithMembersQuery
+            {
+                GroupId = groupId,
+            }, 
+            cancellationToken);
+
+            return Ok(group);
         }
     }
 }
