@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Test;
+using Test.API.Filters;
 using Test.Application.Commands.Test.SendTestAnswer;
 using Test.Application.Commands.Test.StartTest;
 using Test.Application.Commands.Test.StopTest;
-using Test.Application.Common.Interfaces;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.Test.GetTestToPass;
 
 namespace Test.API.Controllers
@@ -15,29 +16,25 @@ namespace Test.API.Controllers
     public class TestSessionController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IProfileService profileService;
 
         public TestSessionController(
-            IMediator mediator,
-            IProfileService profileService)
+            IMediator mediator)
         {
             this.mediator = mediator;
-            this.profileService = profileService;
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> StartTest(
             StartTestRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profileFromToken = await profileService
-                .DecodeToken(token, cancellationToken);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var sessionId = await mediator.Send(new StartTestCommand
             {
                 TestId = request.TestId,
-                ProfileId = profileFromToken.Id
+                ProfileId = profile.Id
             },
             cancellationToken);
 
@@ -68,7 +65,7 @@ namespace Test.API.Controllers
         {
             await mediator.Send(request, cancellationToken);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

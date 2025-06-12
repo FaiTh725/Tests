@@ -1,6 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using Test.Application.Common.BehaviorsInterfaces;
+using Test.Application.Common.Constants;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.Behaviors
@@ -32,14 +33,14 @@ namespace Test.Application.Behaviors
 
             var test = await unitOfWork.TestRepository
                 .GetTest(question.TestId, cancellationToken);
-
+            
             if(test is null)
             {
                 throw new InternalServerErrorException("Invalid data in database");
             }
 
-            if (request.Role != "Admin" &&
-                request.OwnerId != test.ProfileId)
+            if (request.Role != UserRoles.Administrator &&
+                test.ProfileId != request.OwnerId)
             {
                 throw new ForbiddenAccessException("Only the owner or an admin have access to the test");
             }

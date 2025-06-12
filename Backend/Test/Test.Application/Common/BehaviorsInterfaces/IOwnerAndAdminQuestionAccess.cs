@@ -2,10 +2,10 @@
 {
     public interface IOwnerAndAdminQuestionAccess
     {
-        public long QuestionId { get; set; }
+        long QuestionId { get; set; }
 
-        public long OwnerId { get; set; }
+        long OwnerId { get; set; }
 
-        public string Role { get; set; }
+        string Role { get; set; }
     }
 }

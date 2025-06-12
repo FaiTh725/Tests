@@ -32,7 +32,7 @@
     <ProjectReference Include="..\Authorization.Application\Authorization.Application.csproj" />
     <ProjectReference Include="..\Authorization.Dal\Authorization.Dal.csproj" />
     <ProjectReference Include="..\Authorization.Domain\Authorization.Domain.csproj" />
-    <ProjectReference Include="..\Authorization.Infastructure\Authorization.Infastructure.csproj" />
+    <ProjectReference Include="..\Authorization.Infastructure\Authorization.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

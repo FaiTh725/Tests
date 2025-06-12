@@ -1,11 +1,14 @@
 ﻿using Application.Shared.Exceptions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Sinks.Network;
 using Test.API.Configurations;
+using Hangfire;
 using Test.API.Contracts.Question;
 using Test.API.Contracts.Test;
+using Test.API.Filters;
 using Test.API.Validators.QuestionValidators;
 using Test.API.Validators.TestValidators;
 
@@ -13,6 +16,18 @@ namespace Test.API.Extensions
 {
     public static class AppExtension
     {
+        public static IServiceCollection AddCustomizedSwagger(
+            this IServiceCollection services)
+        {
+            services.AddSwaggerGen(o =>
+            {
+                o.SwaggerDoc("v1", new OpenApiInfo { Title = "Testing Service API", Version = "v1" });
+                o.SchemaFilter<EnumSchemaFilter>();
+            });
+
+            return services;
+        }
+
         public static IServiceCollection ConfigureApiServices(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -22,7 +37,18 @@ namespace Test.API.Extensions
                 .AddGrpcProvider()
                 .AddFluentValidation();
 
+            services.AddScoped<VerifyProfileFilter>();
+
             return services;
+        }
+
+        public static void ConfigureHangfireDashBoard(
+            this WebApplication app)
+        {
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = [new HangfireAuthorizationFilter()]
+            });
         }
 
         private static IServiceCollection AddGrpcProvider(

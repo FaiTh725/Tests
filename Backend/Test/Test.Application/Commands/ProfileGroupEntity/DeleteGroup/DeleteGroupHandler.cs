@@ -28,7 +28,7 @@ namespace Test.Application.Commands.ProfileGroupEntity.DeleteGroup
             }
 
             await unitOfWork.ProfileGroupRepository
-                .DeleteGroup(request.GroupId, cancellationToken);
+                .DeleteGroup(request.GroupId, cancellationToken: cancellationToken);
         }
     }
 }

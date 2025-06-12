@@ -2,10 +2,10 @@
 {
     public interface IOwnerAndAdminGroupAccess
     {
-        public long OwnerId { get; set; }
+        long GroupId { get; set; }
 
-        public long GroupId { get; set; }
+        long OwnerId { get; set; }
 
-        public string Role {  get; set; }
+        string Role {  get; set; }
     }
 }

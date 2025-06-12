@@ -5,6 +5,8 @@ namespace Test.Application.Common.Interfaces
 {
     public interface IProfileService
     {
-        Task<ConfirmedProfile> DecodeToken(string? token, CancellationToken cancellationToken = default);
+        ProfileToken VerifyProfileFromToken(string? token);
+
+        Task<VerifiedProfile> DecodeProfileFromToken(string? token, CancellationToken cancellationToken = default);
     }
 }

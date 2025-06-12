@@ -45,7 +45,7 @@ namespace Test.Application.Commands.ProfileGroupEntity.AddGroupMember
             unitOfWork.TrackEntity(group);
             
             await unitOfWork.ProfileGroupRepository
-                .UpdateGroup(group.Id, group, cancellationToken);
+                .UpdateGroup(group.Id, group, cancellationToken: cancellationToken);
         }
     }
 }

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestRating.API.Contracts.FeedbackReport;
+using TestRating.API.Filters;
 using TestRating.Application.Commands.FeedbackReportEntity.ReviewReport;
 using TestRating.Application.Commands.FeedbackReportEntity.SendReport;
-using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Application.Queries.FeedbackReportEntity.GetReportWithReviewer;
 
@@ -15,25 +15,21 @@ namespace TestRating.API.Controllers
     public class ReportController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ITokenService<ProfileToken> tokenService;
 
         public ReportController(
-            IMediator mediator,
-            ITokenService<ProfileToken> tokenService)
+            IMediator mediator)
         {
             this.mediator = mediator;
-            this.tokenService = tokenService;
         }
 
         [HttpPost("[action]")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> SendReport(
             SendReportRequest request, 
             CancellationToken cancellationToken = default)
         {
-            var token = Request.Cookies["token"];
-            var profile = await tokenService
-                .VerifyToken(token, cancellationToken);
+            var profile = (DecodedProfile)HttpContext.Items["profile"]!;
 
             var reportId = await mediator.Send(new SendReportCommand 
             { 
@@ -53,7 +49,7 @@ namespace TestRating.API.Controllers
 
 
         [HttpPatch("[action]")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> ReviewReport(
             ReviewReportCommand request, CancellationToken cancellationToken)
         {

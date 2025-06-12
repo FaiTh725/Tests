@@ -53,22 +53,24 @@ namespace Test.Application.Consumers.TestConsumers
             imagesFolderToDelete.AddRange(questionAnswers
             .Select(x => x.ImageFolder));
 
-            await unitOfWork.BeginTransactionAsync(context.CancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(context.CancellationToken);
 
             try
             {
                 await unitOfWork.QuestionRepository
-                    .DeleteQuestions(testQuestionIdList, context.CancellationToken);
+                    .DeleteQuestions(testQuestionIdList, transaction, context.CancellationToken);
 
                 await unitOfWork.QuestionAnswerRepository
-                    .DeleteAnswers(questionAnswersIdList, context.CancellationToken);
+                    .DeleteAnswers(questionAnswersIdList, transaction, context.CancellationToken);
 
                 await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
                 {
                     PathFiles = imagesFolderToDelete
-                }, context.CancellationToken);
+                },
+                transaction,
+                context.CancellationToken);
 
-                await unitOfWork.CommitTransactionAsync(context.CancellationToken);
+                await unitOfWork.CommitTransactionAsync(transaction, context.CancellationToken);
 
                 logger.LogInformation("Delete Dependents Test Entities consumer executed");
             }
@@ -77,7 +79,7 @@ namespace Test.Application.Consumers.TestConsumers
                 logger.LogError("Error clear data after deleting test. " +
                     $"Error message: {ex.Message}");
 
-                await unitOfWork.RollBackTransactionAsync(context.CancellationToken);
+                await unitOfWork.RollBackTransactionAsync(transaction, context.CancellationToken);
             }
         }
     }

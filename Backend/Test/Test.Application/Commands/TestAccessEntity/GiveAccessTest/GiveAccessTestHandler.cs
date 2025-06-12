@@ -76,7 +76,7 @@ namespace Test.Application.Commands.TestAccessEntity.GiveAccessTest
             }
 
             var testAccess = await unitOfWork.AccessRepository
-                .AddTestAccess(testAccessEntity.Value, cancellationToken);
+                .AddTestAccess(testAccessEntity.Value, cancellationToken: cancellationToken);
 
             return testAccess.Id;
         }

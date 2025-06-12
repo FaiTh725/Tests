@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestRating.API.Contracts.FeedbackReply;
+using TestRating.API.Filters;
 using TestRating.Application.Commands.ReplyEntity.DeleteReply;
 using TestRating.Application.Commands.ReplyEntity.SendReply;
 using TestRating.Application.Commands.ReplyEntity.UpdateReply;
-using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
 using TestRating.Application.Queries.FeedbackReplyEntity.GetReplyWithOwnerById;
@@ -17,24 +17,20 @@ namespace TestRating.API.Controllers
     public class FeedbackReplyController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly ITokenService<ProfileToken> tokenService;
 
         public FeedbackReplyController(
-            IMediator mediator,
-            ITokenService<ProfileToken> tokenService)
+            IMediator mediator)
         {
             this.mediator = mediator;
-            this.tokenService = tokenService;
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> SendFeedbackReply(
             SendReplyRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = await tokenService
-                .VerifyToken(token, cancellationToken);
+            var profile = (DecodedProfile)HttpContext.Items["profile"]!;
 
             var replyId = await mediator.Send(new SendReplyCommand
             {
@@ -53,12 +49,11 @@ namespace TestRating.API.Controllers
 
         [HttpDelete("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> DeleteFeedbackReply(
             DeleteReplyRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = await tokenService
-                .VerifyToken(token, cancellationToken);
+            var profile = (DecodedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new DeleteReplyCommand
             {
@@ -72,12 +67,11 @@ namespace TestRating.API.Controllers
 
         [HttpPatch("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> ChangeReply(
             ChangeReplyRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = await tokenService
-                .VerifyToken(token, cancellationToken);
+            var profile = (DecodedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new UpdateReplyCommand
             {
