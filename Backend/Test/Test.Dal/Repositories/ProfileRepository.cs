@@ -53,6 +53,30 @@ namespace Test.Dal.Repositories
             return mongoProfile.ConvertToDomainEntity();
         }
 
+        public async Task DeleteProfile(
+            long id, 
+            IDatabaseSession? session = null,
+            CancellationToken cancellationToken = default)
+        {
+            var filter = Builders<MongoProfile>.Filter
+                .Eq(x => x.Id, id);
+
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
+            {
+                await context.Profiles.DeleteOneAsync(
+                filter,
+                cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await context.Profiles.DeleteOneAsync(
+                    mongoSession,
+                    filter,
+                    cancellationToken: cancellationToken);
+            }
+        }
+
         public async Task<Profile?> GetProfile(long id, CancellationToken cancellationToken = default)
         {
             var mongorProfile =  await context.Profiles

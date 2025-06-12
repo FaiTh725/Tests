@@ -3,8 +3,7 @@ using Test.Application.Common.Interfaces;
 
 namespace Test.API.Filters
 {
-    public class VerifyProfileFilter :
-        Attribute, IAsyncActionFilter
+    public class VerifyProfileFilter : IAsyncActionFilter
     {
         private readonly IProfileService profileService;
 
@@ -22,7 +21,9 @@ namespace Test.API.Filters
             var profile = await profileService
                 .DecodeProfileFromToken(token);
 
-            context.ActionArguments.Add("profile", profile);
+            context.HttpContext.Items.Add("profile", profile);
+
+            await next();
         }
     }
 }

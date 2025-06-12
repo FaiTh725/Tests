@@ -1,5 +1,4 @@
 ﻿using Application.Shared.Exceptions;
-using MassTransit;
 using MediatR;
 using Test.Application.Contracts.File;
 using Test.Domain.Interfaces;
@@ -10,14 +9,14 @@ namespace Test.Application.Commands.Question.DeleteQuestion
         IRequestHandler<DeleteQuestionCommand>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
-        private readonly IBus bus;
+        private readonly IOutboxService outboxService;
 
         public DeleteQuestionHandler(
             INoSQLUnitOfWork unitOfWork,
-            IBus bus)
+            IOutboxService outboxService)
         {
             this.unitOfWork = unitOfWork;
-            this.bus = bus;
+            this.outboxService = outboxService;
         }
 
         public async Task Handle(
@@ -32,17 +31,30 @@ namespace Test.Application.Commands.Question.DeleteQuestion
                 throw new NotFoundException("Question doesnt exist");
             }
 
-            await unitOfWork.QuestionRepository
-                .DeleteQuestion(request.QuestionId, cancellationToken: cancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            await bus.Publish(new DeleteFilesFromStorage
+            try
             {
-                PathFiles = [question.ImageFolder]
-            },
-            cancellationToken);
+                await unitOfWork.QuestionRepository
+                    .DeleteQuestion(request.QuestionId, transaction, cancellationToken);
 
-            question.Delete();
-            unitOfWork.TrackEntity(question);
+                await outboxService.AddOutboxMessage(new DeleteFilesFromStorage
+                {
+                    PathFiles = [question.ImageFolder]
+                },
+                transaction,
+                cancellationToken);
+
+                question.Delete();
+                unitOfWork.TrackEntity(question);
+
+                await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
+            }
+            catch
+            {
+                await unitOfWork.RollBackTransactionAsync(transaction, cancellationToken);
+                throw;
+            }
         }
     }
 }

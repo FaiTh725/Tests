@@ -3,6 +3,40 @@ version: "3.8"
 name: "Testing"
 
 services:
+  testing_feedback_api:
+    build:
+      context: .
+      dockerfile: Dockerfile.Feedback
+    container_name: testing_feedback_api
+    ports:
+      - "5401:5401"
+      - "5402:5402"
+    environment:
+      - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Feedback;Port=5432
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - RabbitMqSettings__User=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+      - RabbitMqSettings__Host=rabbitmq
+      - ExternalServices__TestingService=https://testing_testing_api:5302
+      - ASPNETCORE_URLS=https://+:5402;http://+:5401
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - testing_postgres_net
+      - application_net
+      - message_broker_net
+      - azurite_net
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres_db:
+        condition: service_healthy
+
   testing_testing_api:
     build:
       context: .
@@ -14,15 +48,14 @@ services:
     environment:
       - ConnectionStrings__RedisConnection=redis://:${REDIS_PASSWORD}@redis:6379
       - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://localhost:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
-      - JwtSettings__ExpirationTimeRefreshTokenInDays=${JWT_EXPIRATIONTIME_IN_DAYS}
-      - JwtSettings__ExpirationTimeInMinutes=${JWT_EXPIRATIONTIME_IN_MINUTES}
       - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
+      - MongoDbName=Testing
       - ASPNETCORE_URLS=https://+:5302;http://+:5301
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -33,6 +66,7 @@ services:
       - message_broker_net
       - redis_net
       - application_net
+      - azurite_net
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -54,13 +88,12 @@ services:
       - ConnectionStrings__NpgConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Authorize;Port=5432
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
       - JwtSettings__ExpirationTimeRefreshTokenInDays=${JWT_EXPIRATIONTIME_IN_DAYS}
       - JwtSettings__ExpirationTimeInMinutes=${JWT_EXPIRATIONTIME_IN_MINUTES}
-      - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMqSettings__User=${RABBITMQ_USER}
       - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
       - RabbitMqSettings__Host=rabbitmq
-      - GrpcServer=https://testing_testing_api:5302
       - ASPNETCORE_URLS=https://+:5202;http://+:5201
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -115,7 +148,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - testing_mongo_volume:/data/db
-      - ./conf/mongo-keyfile:/etc/mongo/mongo-keyfile
+      - ./conf/mongo/mongo-keyfile:/etc/mongo/mongo-keyfile
     networks:
       - testing_mongo_net
     entrypoint:
@@ -179,6 +212,8 @@ services:
       - "AZURITE_ACCOUNTS=${AZURITE_USER}:${AZURITE_PASSWORD}"
     volumes:
       - testing_blob_volume:/data
+    networks:
+      - azurite_net
 
   rabbitmq:
     image: rabbitmq:management
@@ -223,10 +258,16 @@ networks:
     driver: bridge
   redis_net:
     driver: bridge
+  azurite_net:
+    driver: bridge
   application_net:
+    driver: bridge
+  elastic_net:
     driver: bridge
 
 volumes:
+  testing_elastic_volume:
+    driver: local
   testing_postgres_volume:
     driver: local
   testing_mongo_volume:

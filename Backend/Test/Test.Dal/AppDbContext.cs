@@ -1,6 +1,4 @@
-﻿using Application.Shared.Exceptions;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using Test.Dal.Configurations;
 using Test.Dal.Persistences;
@@ -17,21 +15,19 @@ namespace Test.Dal
         public const string PROFILE_ANSWERS_COLLECTION_NAME = "profile_answers";
         public const string GROUPS_COLLECTION_NAME = "groups";
         public const string TEST_ACCESS_COLLECTION_NAME = "test_accesses";
+        public const string OUTBOX_MESSAGE_COLLECTION_NAME = "outbox_messages";
 
         private readonly IMongoClient client;
         private readonly IMongoDatabase database;
-        // Store last insert index for entities, using for generate next id entity
+        // Store last inserted index for entities, using for generate next id entity
         private readonly IMongoCollection<BsonDocument> counters;
 
         public AppDbContext(
-            IConfiguration configuration)
+            IMongoClient mongoClient,
+            IMongoDatabase mongoDatabase)
         {
-            var mongoConnection = configuration
-                .GetConnectionString("MongoDbConnection") ??
-                throw new AppConfigurationException("MongoDb Connection String");
-            
-            client = new MongoClient(mongoConnection);
-            database =  client.GetDatabase("Testing");
+            client = mongoClient;
+            database = mongoDatabase;
 
             counters = database.GetCollection<BsonDocument>("counters");
 
@@ -79,6 +75,11 @@ namespace Test.Dal
         public IMongoCollection<MongoTestAccess> Accesses
         {
             get => database.GetCollection<MongoTestAccess>(TEST_ACCESS_COLLECTION_NAME);
+        }
+
+        public IMongoCollection<MongoOutboxMessage> OutboxMessages
+        {
+            get => database.GetCollection<MongoOutboxMessage>(OUTBOX_MESSAGE_COLLECTION_NAME);
         }
 
         public long GetNextId(string entityName)

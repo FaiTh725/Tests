@@ -18,6 +18,7 @@ namespace Test.Dal.Services
         private readonly Lazy<IProfileGroupRepository> profileGroupRepository;
         private readonly Lazy<ITestSessionRepository> testSessionRepository;
         private readonly Lazy<ITestAccessRepository> testAccessRepository;
+        private readonly Lazy<IOutboxMessageRepository> outboxMessageRepository;
 
         private readonly List<DomainEventEntity> trackedEntities = new List<DomainEventEntity>();
 
@@ -34,6 +35,7 @@ namespace Test.Dal.Services
             profileGroupRepository = new Lazy<IProfileGroupRepository>(() => new ProfileGroupRepository(context));
             testSessionRepository = new Lazy<ITestSessionRepository>(() => new TestSessionRepository(context));
             testAccessRepository = new Lazy<ITestAccessRepository>(() => new TestAccessRepository(context));
+            outboxMessageRepository = new Lazy<IOutboxMessageRepository>(() => new OutboxMessageRepository(context));
         }
 
         public IProfileRepository ProfileRepository => profileRepository.Value;
@@ -51,6 +53,8 @@ namespace Test.Dal.Services
         public IProfileGroupRepository ProfileGroupRepository => profileGroupRepository.Value;
 
         public ITestAccessRepository AccessRepository => testAccessRepository.Value;
+
+        public IOutboxMessageRepository OutboxMessageRepository => outboxMessageRepository.Value;
 
         public IDatabaseSession BeginTransaction()
         {
@@ -115,14 +119,6 @@ namespace Test.Dal.Services
         {
         }
 
-        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
-        {
-            if(mongoSession?.Session.IsInTransaction != true)
-            {
-                throw new InvalidOperationException("Transaction is not started");
-            }
-        }
-
         public IReadOnlyCollection<DomainEventEntity> GetTrackedEntities()
         {
             return trackedEntities.AsReadOnly();
@@ -131,6 +127,14 @@ namespace Test.Dal.Services
         public void TrackEntity(DomainEventEntity entity)
         {
             trackedEntities.Add(entity);
+        }
+
+        private void AssuranceTransaction(MongoSessionAdapter? mongoSession)
+        {
+            if(mongoSession?.Session.IsInTransaction != true)
+            {
+                throw new InvalidOperationException("Transaction is not started");
+            }
         }
     }
 }

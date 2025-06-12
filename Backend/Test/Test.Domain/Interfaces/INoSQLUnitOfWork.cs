@@ -21,6 +21,8 @@ namespace Test.Domain.Interfaces
 
         ITestAccessRepository AccessRepository { get; }
 
+        IOutboxMessageRepository OutboxMessageRepository { get; }
+
         IReadOnlyCollection<DomainEventEntity> GetTrackedEntities();
 
         // it's used to add entities to the tracking

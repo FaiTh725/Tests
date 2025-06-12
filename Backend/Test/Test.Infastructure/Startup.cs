@@ -19,8 +19,10 @@ using Test.Application.Consumers.FileConsumers;
 using Redis.OM;
 using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
-using Test.Application.Consumers.QuestionConsumers;
+using Test.Application.Consumers.ProfileConsumers;
 using Test.Application.Consumers.TestConsumers;
+using Test.Domain.Interfaces;
+using Test.Application.Consumers.QuestionConsumers;
 
 namespace Test.Infrastructure
 {
@@ -38,6 +40,7 @@ namespace Test.Infrastructure
                 .AddRedisProvider(configuration);
 
             services.AddScoped<IBackgroundJobService, HangFireJobService>();
+            services.AddScoped<IMessagePublisher, RabbitMessagePublisher>();
             services.AddScoped<ITempDbService<TempTestSession>, RedisTempDbService>();
 
             services.AddSingleton<IBlobService, AzuriteStorageService> ();
@@ -45,11 +48,12 @@ namespace Test.Infrastructure
 
             services.AddHostedService<CreateRedisOmIndexes>();
             services.AddHostedService<ClearInactiveSessionsBackgroundService>();
+            services.AddHostedService<OutboxBackgroundService>();
 
             return services;
         }
 
-        public static IServiceCollection AddJwtAuthorization(
+        private static IServiceCollection AddJwtAuthorization(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -95,7 +99,7 @@ namespace Test.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddAzuriteProvider(
+        private static IServiceCollection AddAzuriteProvider(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -160,6 +164,10 @@ namespace Test.Infrastructure
                 conf.SetKebabCaseEndpointNameFormatter();
 
                 conf.AddConsumer<ClearStorageConsumer>();
+                conf.AddConsumer<CreateTestProfileConsumer>();
+                conf.AddConsumer<DeleteTestProfileConsumer>();
+                conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
                 conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
 

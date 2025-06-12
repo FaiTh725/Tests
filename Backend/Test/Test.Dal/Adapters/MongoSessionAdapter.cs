@@ -19,7 +19,6 @@ namespace Test.Dal.Adapters
 
             isClosed = false;
         }
-
         ~MongoSessionAdapter()
         {
             Dispose(false);

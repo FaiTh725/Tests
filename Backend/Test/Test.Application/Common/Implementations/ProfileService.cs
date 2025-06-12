@@ -20,15 +20,15 @@ namespace Test.Application.Common.Implementations
         }
 
         public async Task<VerifiedProfile> DecodeProfileFromToken(
-            string? token,
-            CancellationToken cancellationToken = default)
+                    string? token,
+                    CancellationToken cancellationToken = default)
         {
             var profileToken = VerifyProfileFromToken(token);
 
             var profile = await mediator.Send(new GetProfileByEmailQuery
             {
                 Email = profileToken.Email
-            }, 
+            },
             cancellationToken);
 
             return new VerifiedProfile

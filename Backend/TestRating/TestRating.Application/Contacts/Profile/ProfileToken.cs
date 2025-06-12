@@ -1,0 +1,11 @@
+﻿namespace TestRating.Application.Contacts.Profile
+{
+    public class ProfileToken
+    {
+        public string Email { get; set; } = string.Empty;
+
+        public string Name { get; set; } = string.Empty;
+
+        public string Role { get; set; } = string.Empty;
+    }
+}

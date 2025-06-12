@@ -6,6 +6,8 @@ namespace Test.Application.Common.Interfaces
     {
         string CreateFireAndForgetJob<T>(Expression<Action<T>> methodCall);
 
+        string CreateFireAndForgetJob<T>(Expression<Func<T, Task>> methodCall);
+
         string CreateDelayedJob<T>(Expression<Action<T>> methodCall, TimeSpan timeSpan);
 
         string CreateDelayedJob<T>(Expression<Func<T, Task>> methodCall, TimeSpan timeSpan);

@@ -12,12 +12,12 @@ namespace Test.Application.EventHandler.ProfileGroupEventHandler
     {
         private readonly INoSQLUnitOfWork unitOfWork;
         private readonly ILogger<NewMemberAddedEventHandler> logger;
-        private readonly IBus bus;
+        private readonly IPublishEndpoint bus;
 
         public NewMemberAddedEventHandler(
             INoSQLUnitOfWork unitOfWork,
             ILogger<NewMemberAddedEventHandler> logger,
-            IBus bus)
+            IPublishEndpoint bus)
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;

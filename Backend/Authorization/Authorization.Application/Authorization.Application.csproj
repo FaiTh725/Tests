@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
     <ProjectReference Include="..\Authorization.Domain\Authorization.Domain.csproj" />
   </ItemGroup>
 
@@ -27,6 +28,9 @@
     </Reference>
     <Reference Include="Test.Contracts">
       <HintPath>..\..\Test\Test.Contracts\bin\Debug\net8.0\Test.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="TestRating.Contracts">
+      <HintPath>..\..\TestRating\TestRating.Contracts\bin\Debug\net8.0\TestRating.Contracts.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -2,7 +2,7 @@
 using Test.Application.Behaviors;
 using Test.Application.Common.Implementations;
 using Test.Application.Common.Interfaces;
-using Test.Application.Common.Mediator;
+using Test.Application.Common.Wrappers;
 
 namespace Test.Application
 {

@@ -1,6 +1,8 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.Application.Common.Interfaces;
 using Authorization.Application.Contracts.User;
+using Authorization.Application.SagaOrchestrator;
+using Authorization.Application.SagaOrchestrator.States;
 using Authorization.Infastructure.Configurations;
 using MassTransit;
 using Authorization.Infrastructure.BackgroundServices;
@@ -62,6 +64,9 @@ namespace Authorization.Infrastructure
             services.AddMassTransit(conf =>
             {
                 conf.SetKebabCaseEndpointNameFormatter();
+
+                conf.AddSagaStateMachine<RegisterUserSaga, RegisterUserSagaState>()
+                    .InMemoryRepository();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

@@ -6,7 +6,9 @@ using Authorization.Domain.Interfaces;
 using Authorization.Domain.Validators;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using Test.Contracts.Profile;
+using MassTransit;
+using Authorization.Contracts.Events.User;
+
 
 namespace Authorization.Application.Commands.UserEntity.Register
 {
@@ -17,20 +19,20 @@ namespace Authorization.Application.Commands.UserEntity.Register
         private readonly IHashService hashService;
         private readonly IJwtService<UserTokenRequest, UserTokenResponse> tokenService;
         private readonly IConfiguration configuration;
-        private readonly IExternalService<ProfileRequest, ProfileResponse> externalService;
-
+        private readonly IBus bus;
+        
         public RegisterHandler(
             IUnitOfWork unitOfWork, 
             IHashService hashService,
             IJwtService<UserTokenRequest, UserTokenResponse> tokenService,
             IConfiguration configuration,
-            IExternalService<ProfileRequest, ProfileResponse> externalService)
+            IBus bus)
         {
             this.unitOfWork = unitOfWork;
             this.hashService = hashService;
             this.tokenService = tokenService;
             this.configuration = configuration;
-            this.externalService = externalService;
+            this.bus = bus;
         }
 
         public async Task<(long, string)> Handle(
@@ -65,24 +67,21 @@ namespace Authorization.Application.Commands.UserEntity.Register
                     userEntity.Error);
             }
 
+            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken: cancellationToken);
+
             try
             {
-                await unitOfWork.BeginTransactionAsync(cancellationToken);
 
                 var userDb = await unitOfWork.UserRepository
                     .AddUser(userEntity.Value, cancellationToken);
 
-                var profile = await externalService.GetData(new ProfileRequest 
-                { 
+                await bus.Publish<IUserCreated>(new
+                {
+                    CorrelationId = NewId.NextGuid(),
                     Email = request.Email,
                     Name = request.UserName
-                });
-
-                if(profile.IsFailure)
-                {
-                    await unitOfWork.RollBackTransactionAsync(cancellationToken);
-                    throw new InternalServerErrorException("Error with service communication");
-                }
+                }, 
+                cancellationToken);
 
                 var tokenLifeTime = configuration
                     .GetValue<int>("JwtSettings:ExpirationTimeRefreshTokenInDays");
@@ -93,7 +92,8 @@ namespace Authorization.Application.Commands.UserEntity.Register
 
                 if (refreshTokenEntity.IsFailure)
                 {
-                    await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                    await unitOfWork
+                        .RollBackTransactionAsync(transaction, cancellationToken);
                     throw new InternalServerErrorException("Error initialize refresh token");
                 }
 
@@ -101,13 +101,15 @@ namespace Authorization.Application.Commands.UserEntity.Register
                     .AddRefreshToken(refreshTokenEntity.Value, cancellationToken);
 
                 await unitOfWork.SaveChangesAsync(cancellationToken);
-                await unitOfWork.CommitTransactionAsync(cancellationToken);
-                
+                await unitOfWork.CommitTransactionAsync(
+                    transaction, cancellationToken);
+
                 return (userDb.Id, refreshToken);
             }
             catch
             {
-                await unitOfWork.RollBackTransactionAsync(cancellationToken);
+                await unitOfWork.RollBackTransactionAsync(
+                    transaction, cancellationToken);
                 throw new InternalServerErrorException("Critical Server Error");
             }
         }

@@ -18,6 +18,7 @@ namespace Test.Application.Consumers.FileConsumers
         {
             foreach(var filePath in context.Message.PathFiles)
             {
+                // TODO: Maybe its to much, only delete blob folder
                 backgroundJobService.CreateFireAndForgetJob<IBlobService>(x => 
                     x.DeleteBlobFolder(filePath, CancellationToken.None));
             }

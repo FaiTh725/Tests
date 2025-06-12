@@ -37,6 +37,11 @@ namespace Test.Infrastructure.Implementations
             return backgroundJobClient.Enqueue(methodCall);
         }
 
+        public string CreateFireAndForgetJob<T>(Expression<Func<T, Task>> methodCall)
+        {
+            return backgroundJobClient.Enqueue(methodCall);
+        }
+
         public void CreateSchedulingJob<T>(string jobId, Expression<Func<T, Task>> methodCall, string cronExpression)
         {
             recurringJobManager.AddOrUpdate(jobId, methodCall, cronExpression);

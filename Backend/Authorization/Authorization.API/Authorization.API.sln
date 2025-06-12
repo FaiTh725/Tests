@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Application",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Infrastructure", "..\Authorization.Infastructure\Authorization.Infrastructure.csproj", "{B401C760-754B-41E9-A0D8-9381CDD20572}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Contracts", "..\Authorization.Contracts\Authorization.Contracts.csproj", "{F7F16D78-195E-45AD-B962-09D42E616D0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B401C760-754B-41E9-A0D8-9381CDD20572}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B401C760-754B-41E9-A0D8-9381CDD20572}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B401C760-754B-41E9-A0D8-9381CDD20572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7F16D78-195E-45AD-B962-09D42E616D0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7F16D78-195E-45AD-B962-09D42E616D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7F16D78-195E-45AD-B962-09D42E616D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7F16D78-195E-45AD-B962-09D42E616D0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -46,7 +46,7 @@ namespace Test.Application.Commands.Question.CreateQuestion
                     "or at least one answer");
             }
 
-            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+            using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             try
             {

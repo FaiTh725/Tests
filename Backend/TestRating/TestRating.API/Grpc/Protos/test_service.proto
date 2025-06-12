@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "Test.API.Grpc";
+
+package test;
+
+service TestService
+{
+	rpc TestIsExists(TestIsExistsRequest) returns (TestIsExistsResponse);
+}
+
+message TestIsExistsRequest
+{
+	int64 testId = 1;
+}
+
+message TestIsExistsResponse
+{
+	bool isExists = 1;
+}
