@@ -1,4 +1,6 @@
 <div>
-  <app-tests-layout [tests]="tests"></app-tests-layout>
+  <app-tests-layout [tests]="tests" 
+    (clickOnTest)="handleClickOnTest($event)">
+  </app-tests-layout>
   
 </div>

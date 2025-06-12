@@ -1,0 +1,50 @@
+.feedback-card-wrapper {
+  font-family: var(--font-family);
+  font-size: 16px;
+  color: var(--shadow-color);
+  font-weight: 600;
+}
+
+.feedback-card-images {
+  flex: 1;
+  margin-right: 20px;
+  height: 200px;
+}
+
+.feedback-card-header {
+  display: flex;
+  align-items: center;
+}
+
+.feedback-card-rating {
+  display: flex;
+  align-items: center;
+}
+
+.feedback-card-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.feedback-card-owner {
+  font-size: 18px;
+  color: var(--light-blue-color);
+}
+
+.feedback-card-text {
+  margin: 20px 0;
+  text-align: justify;
+}
+
+.feedback-card-images__slider {
+  display: flex;
+  align-items: center;
+  overflow: auto;
+}
+
+.feedback-card-images__image {
+  height: 200px;
+  width: 200px;
+}

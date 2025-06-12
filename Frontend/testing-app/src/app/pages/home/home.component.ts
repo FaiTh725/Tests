@@ -3,6 +3,7 @@ import { Pagination } from '../../shared/interfaces/utils/Pagination';
 import { HttpService } from '../../core/services/Http.service';
 import { TestInfo } from '../../shared/interfaces/tests/TestInfo';
 import { TestsLayoutComponent } from "../../shared/components/tests-layout/tests-layout.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,8 @@ export class HomeComponent {
   tests: TestInfo[] = [];
 
   constructor(
-    private httpService: HttpService
+    private httpService: HttpService,
+    private router: Router
   ) {
     
   }
@@ -44,8 +46,6 @@ export class HomeComponent {
             Id: test.owner.id
           }
         }));
-        this.tests.push(...this.tests);
-        this.tests.push(...this.tests);
 
         this.pagination.MaxSize = data.maxSize;
       },
@@ -53,5 +53,11 @@ export class HomeComponent {
         console.error("Unknow error - " + error);
       }
     });
+  }
+
+  handleClickOnTest(testId: number) {
+    this.router.navigate(
+      ["test"], 
+      {queryParams: {id: testId}});
   }
 }

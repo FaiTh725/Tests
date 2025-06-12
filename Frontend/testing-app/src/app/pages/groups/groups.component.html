@@ -52,7 +52,9 @@
             </div>
           }
         </div>
-        <app-pagination [paginationConf]="paginationCreatedGroups"></app-pagination>
+        <app-pagination [paginationConf]="paginationCreatedGroups"
+          (paginationChanged)="executeCreatedPagination($event)">
+        </app-pagination>
       </div>  
       <div class="groups-group groups-invited-group">
         <div class="groups-created-group__content">
@@ -61,7 +63,9 @@
             </app-readonly-group>
           }
         </div>
-        <app-pagination [paginationConf]="paginationJoinedGroups"></app-pagination>
+        <app-pagination [paginationConf]="paginationJoinedGroups"
+          (paginationChanged)="executeJoinedPagination($event)">
+        </app-pagination>
       </div>
     </div>
   </div>

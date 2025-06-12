@@ -10,9 +10,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination.component.scss'
 })
 export class PaginationComponent {
-  @Output() next = new EventEmitter();
-  @Output() prev = new EventEmitter();
-  @Output() moveToPage = new EventEmitter<number>();
+  // @Output() next = new EventEmitter();
+  // @Output() prev = new EventEmitter();
+  // @Output() moveToPage = new EventEmitter<number>();
+  @Output() paginationChanged = new EventEmitter<Pagination>();
   @Input() paginationConf?: Pagination;
   maxPage: number = 0;
 
@@ -29,15 +30,19 @@ export class PaginationComponent {
   }
 
   handleMoveToPage(page:number) {
-    this.moveToPage.emit(page);
+    this.paginationConf!.Page = page;
+
+    this.paginationChanged.emit(this.paginationConf);
   }
 
   handleNext() {
     if(this.maxPage == this.paginationConf?.Page) {
       return;
     }
+
+    this.paginationConf!.Page = this.paginationConf!.Page + 1;
     
-    this.next.emit();
+    this.paginationChanged.emit(this.paginationConf);
   }
   
   handlePrev() {
@@ -45,6 +50,8 @@ export class PaginationComponent {
       return;
     }
 
-    this.prev.emit();
+    this.paginationConf!.Page = this.paginationConf!.Page - 1;
+
+    this.paginationChanged.emit(this.paginationConf);
   }
 }

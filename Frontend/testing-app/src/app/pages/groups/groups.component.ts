@@ -205,6 +205,18 @@ export class GroupsComponent {
       });
     }
   }
+
+  executeCreatedPagination(pagination: Pagination) {
+    this.paginationCreatedGroups = {...pagination};
+
+    this.getCreatedGroups()
+  }
+
+  executeJoinedPagination(pagination: Pagination) {
+    this.paginationJoinedGroups = {...pagination};
+
+    this.getJoinedGroups()
+  }
 }
 
 interface AddGroupForm {

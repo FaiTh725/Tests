@@ -39,9 +39,7 @@
         PageSize: createdTestsPagination.PageSize,
         MaxSize: createdTestsPagination.MaxSize
       }"
-      (moveToPage)="executePagination($event)"
-      (next)="executeNextPagination()"
-      (prev)="executePrevPagination()">
+      (paginationChanged)="executePagination($event)">
     </app-pagination>
   </div>
 </div>

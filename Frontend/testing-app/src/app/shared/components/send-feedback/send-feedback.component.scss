@@ -1,0 +1,40 @@
+.send-feedback-main {
+  padding: 20px;
+  background-color: var(--primary-black-color);
+  border: 2px solid var(--shadow-color);
+  border-radius: 16px;
+}
+
+.send-feedback-wrapper {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.send-feedback-header {
+  padding: 20px 0;
+  border-bottom: 2px solid var(--shadow-color);
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  height: 70px;
+}
+
+.send-feedback-form__input {
+  margin-top: 20px;
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--light-blue-color);
+  font-size: 18px;
+}
+
+.send-feedback-form__input p {
+  margin-left: 10px;
+}
+
+.send-feedbacl-form__btn-wrapper {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  height: 60px;
+}

@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../core/services/Auth.service';
 import { PrimaryButtonComponent } from "../../shared/components/buttons/primary-button/primary-button.component";
 import { Router } from '@angular/router';
-import { TestInfo } from '../../shared/interfaces/tests/TestInfo';
 import { HttpService } from '../../core/services/Http.service';
 import { Pagination } from '../../shared/interfaces/utils/Pagination';
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
 import { TestEditableCardComponent } from "../../shared/components/test-editable-card/test-editable-card.component";
 import { AddQuestionForm } from '../../shared/components/add-question-form/add-question-form.component';
+import { TestWithQuestions } from '../../shared/interfaces/tests/TestWithQuestions';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +17,7 @@ import { AddQuestionForm } from '../../shared/components/add-question-form/add-q
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
-  profileCreatedTests: TestInfo[] = []
+  profileCreatedTests: TestWithQuestions[] = []
   createdTestsPagination: Pagination = {
     MaxSize: 0,
     Page: 1,
@@ -41,8 +41,6 @@ export class ProfileComponent {
   }
 
   handleDeleteTest(testId: number) {
-    console.log(testId);
-    
     this.httpService.deleteRequest(`testing/Test/DeleteTest?testId=${testId}`)
     .subscribe({
       next: _ => {
@@ -54,9 +52,9 @@ export class ProfileComponent {
     });
   }
 
-  handleUpdateTest(updatedTest: TestInfo) {
+  handleUpdateTest(updatedTest: TestWithQuestions) {
     const testIndex = this.profileCreatedTests
-    .findIndex(x => x.Id == updatedTest.Id);
+      .findIndex(x => x.Id == updatedTest.Id);
 
     if(testIndex !== -1) {
       this.profileCreatedTests[testIndex] = {...updatedTest};
@@ -84,13 +82,15 @@ export class ProfileComponent {
         formData.append(`Answers[${index}].AnswerImages`, image);
       });
     }
+
+    const testIndex = this.profileCreatedTests
+      .findIndex(x => x.Id == testId);
     
     this.httpService.postFormDataRequest("testing/Question/AddQuestion", formData)
       .subscribe(
       {
         next: (data: any) => {
-          console.log(this.profileCreatedTests[testId]);
-          this.profileCreatedTests[testId].Questions
+          this.profileCreatedTests[testIndex].Questions
           .push({
             Id: data.id,
             TestQuestion: data.testQuestion,
@@ -112,29 +112,8 @@ export class ProfileComponent {
       });
   }
 
-  executePagination(page: number) {
-    this.createdTestsPagination.Page = page;
-
-    this.getTests();
-  }
-
-  executeNextPagination() {
-    const maxPages = Math.ceil(this.createdTestsPagination.MaxSize / this.createdTestsPagination.PageSize)
-    if(maxPages == this.createdTestsPagination.Page) {
-      return;
-    }
-
-    this.createdTestsPagination.Page += 1;
-
-    this.getTests();
-  }
-
-  executePrevPagination() {
-    if(this.createdTestsPagination.Page == 1) {
-      return;
-    }
-
-    this.createdTestsPagination.Page -= 1;
+  executePagination(pagination: Pagination) {
+    this.createdTestsPagination = {...pagination};
 
     this.getTests();
   }

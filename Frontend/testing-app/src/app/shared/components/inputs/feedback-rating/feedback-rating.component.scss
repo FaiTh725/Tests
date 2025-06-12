@@ -1,0 +1,24 @@
+.feedback-rating-main {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+} 
+
+.feedback-rating-scale {
+  padding: 5px;
+  border-radius: 16px;
+  border: 2px solid var(--shadow-color);
+  transition: all .3s;
+}
+
+.feedback-rating-scale__active {
+  background-color: var(--shadow-color);
+}
+
+.feedback-rating-scale:hover {
+  background-color: var(--shadow-color);
+}
+
+.feedback-rating-scale + .feedback-rating-scale {
+  margin-left: 5px;
+} 

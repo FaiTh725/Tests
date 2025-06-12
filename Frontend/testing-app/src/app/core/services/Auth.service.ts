@@ -22,6 +22,7 @@ export class AuthService {
 
   public Logout(): void {
     this.user = null;
+    localStorage.removeItem("user");
   }
 
   public get User() {

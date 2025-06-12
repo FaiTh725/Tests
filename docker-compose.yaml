@@ -307,6 +307,8 @@ services:
       - "AZURITE_ACCOUNTS=${AZURITE_USER}:${AZURITE_PASSWORD}"
     volumes:
       - testing_blob_volume:/data
+    #   - ./certs:/certs:ro
+    # entrypoint: azurite --oauth basic --cert /certs/aspnetapp.pfx --pwd ${SERTIFICATE_PASSWORD}
     networks:
       - azurite_net
 

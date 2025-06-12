@@ -1,4 +1,5 @@
 ﻿using Application.Shared.Exceptions;
+using Azure.Core.Pipeline;
 using Azure.Storage.Blobs;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,7 +49,19 @@ namespace TestRating.Infrastructure
                 .GetConnectionString("AzuriteBlobStorage") ??
                 throw new AppConfigurationException("Azurite connection string");
 
-            services.AddSingleton(new BlobServiceClient(azuriteConnection));
+            var httpClientHandler = new HttpClientHandler() 
+            { 
+                ServerCertificateCustomValidationCallback = 
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            var blobServiceClient = new BlobServiceClient(azuriteConnection, 
+                new BlobClientOptions
+                {
+                    Transport = new HttpClientTransport(httpClientHandler)
+                });
+
+            services.AddSingleton(blobServiceClient);
 
             return services;
         }

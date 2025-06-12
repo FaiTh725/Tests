@@ -1,0 +1,67 @@
+<div class="send-feedback-main">
+  <div class="send-feedback-wrapper">
+    <div class="send-feedback-header">
+      <div>
+        <app-primary-button [btnConfiguration]="{
+          Text: '🗙',
+          BackgroundColor: 'var(--error-color)',
+          BorderColor: 'var(--dark-error-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--error-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleCloseForm()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="send-feedback-form">
+      <section class="send-feedback-form__input">
+        <p>Describe your impressions after the test</p>
+        <app-large-input [inputConfiguration]="{
+            Value: form.Text,
+            IsReadonly: false,
+            InputName: 'text',
+            PlaceHolder: '',
+            ErrorMessage: errorForm.TextError
+          }"
+          (onChange)="form.Text=$event"
+          (clearError)="handleClearErrorForm()"
+          ></app-large-input>
+      </section>
+      <section class="send-feedback-form__input">
+        <p>Rating</p>
+        <app-feedback-rating 
+          [rating]="form.Rating"
+          (change)="form.Rating=$event"
+        ></app-feedback-rating>
+      </section>
+      <section class="send-feedback-form__input">
+        <p>Describe it in pictures</p>
+        <app-file-input [inputFileConf]="{
+          BackgroundColor: 'var(--primary-black-color)',
+          BackgroundFocusColor: 'var(--light-blue-color)',
+          BorderColor: 'var(--shadow-color)',
+          BorderFocusColor: 'var(--light-blue-color)',
+          TextColor: 'var(--shadow-color)',
+          TextFocusColor: 'var(--primary-black-color)'
+        }"
+        (fileChange)="form.Images=$event">
+        </app-file-input>
+      </section>
+      <div class="send-feedbacl-form__btn-wrapper">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Send',
+          BackgroundColor: 'var(--light-blue-color)',
+          BorderColor: '#2da0d6',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--light-blue-color)',
+          HoverColor: 'var(--primary-black-color)',
+          TextColor: 'var(--primary-black-color)'}"
+          (handleClick)="handleSendFeedback()">
+        </app-primary-button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -36,7 +36,7 @@ export class OwnedGroupComponent {
       membersId: membersIdToDelete
     }).subscribe({
       error: _ => {
-        console.error("unknow error");
+        console.error("unknown error");
       },
       complete: () => {
         this.groupUpdated.emit(this.group?.Id);

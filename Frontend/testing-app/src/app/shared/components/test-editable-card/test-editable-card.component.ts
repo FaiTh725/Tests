@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
-import { TestInfo } from '../../interfaces/tests/TestInfo';
+import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { PrimaryButtonComponent } from "../buttons/primary-button/primary-button.component";
 import { CommonModule, DatePipe } from '@angular/common';
 import { AddQuestionForm, AddQuestionFormComponent } from "../add-question-form/add-question-form.component";
 import { HttpService } from '../../../core/services/Http.service';
 import { TestQuestionCardComponent } from "../test-question-card/test-question-card.component";
+import { TestWithQuestions } from '../../interfaces/tests/TestWithQuestions';
 
 @Component({
   selector: 'app-test-editable-card',
@@ -14,11 +14,11 @@ import { TestQuestionCardComponent } from "../test-question-card/test-question-c
   styleUrl: './test-editable-card.component.scss'
 })
 export class TestEditableCardComponent {
-  @Input() test?: TestInfo;
+  @Input() test?: TestWithQuestions;
 
   @Output() addQuestion = new EventEmitter<AddQuestionForm>();
   @Output() delete = new EventEmitter<number>();
-  @Output() testUpdated = new EventEmitter<TestInfo>();
+  @Output() testUpdated = new EventEmitter<TestWithQuestions>();
 
   isOpenToEdit = false;
 
