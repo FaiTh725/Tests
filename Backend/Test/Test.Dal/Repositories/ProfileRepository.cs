@@ -55,12 +55,14 @@ namespace Test.Dal.Repositories
 
         public async Task DeleteProfile(
             long id, 
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var filter = Builders<MongoProfile>.Filter
                 .Eq(x => x.Id, id);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.Profiles.DeleteOneAsync(
                 filter,
@@ -69,7 +71,7 @@ namespace Test.Dal.Repositories
             else
             {
                 await context.Profiles.DeleteOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     cancellationToken: cancellationToken);
             }

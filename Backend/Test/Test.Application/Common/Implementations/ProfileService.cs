@@ -19,34 +19,42 @@ namespace Test.Application.Common.Implementations
             this.mediator = mediator;
         }
 
-        public async Task<ConfirmedProfile> DecodeToken(
-            string? token, 
-            CancellationToken cancellationToken = default)
+        public async Task<VerifiedProfile> DecodeProfileFromToken(
+                    string? token,
+                    CancellationToken cancellationToken = default)
         {
-            if(string.IsNullOrEmpty(token))
+            var profileToken = VerifyProfileFromToken(token);
+
+            var profile = await mediator.Send(new GetProfileByEmailQuery
+            {
+                Email = profileToken.Email
+            },
+            cancellationToken);
+
+            return new VerifiedProfile
+            {
+                Id = profile.Id,
+                Email = profile.Email,
+                Role = profileToken.Role
+            };
+        }
+
+        public ProfileToken VerifyProfileFromToken(
+            string? token)
+        {
+            if (string.IsNullOrEmpty(token))
             {
                 throw new UnauthorizedAccessException("User isnt authorized");
             }
 
-            var tokenPayload = tokenService.DecodeToken(token);
+            var profileToken = tokenService.DecodeToken(token);
 
-            if(tokenPayload.IsFailure)
+            if (profileToken.IsFailure)
             {
                 throw new InternalServerErrorException("Invalid token signature");
             }
 
-            var profile = await mediator.Send(new GetProfileByEmailQuery
-            { 
-                Email = tokenPayload.Value.Email
-            }, cancellationToken);
-
-            return new ConfirmedProfile
-            {
-                Id = profile.Id,
-                Email = profile.Email,
-                Name = profile.Name,
-                Role = tokenPayload.Value.Role
-            };
+            return profileToken.Value;
         }
     }
 }

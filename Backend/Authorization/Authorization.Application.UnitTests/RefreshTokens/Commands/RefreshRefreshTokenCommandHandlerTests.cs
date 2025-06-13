@@ -65,7 +65,11 @@ namespace Authorization.Application.UnitTests.RefreshTokens.Commands
         public async Task Handler_WhenRefreshTokenExist_ShouldUpdateRefreshToken()
         {
             // Arrange
-            var command = new RefreshRefreshTokenCommand { Id = 1, NewToken = "dfsaew1234tgf" };
+            var command = new RefreshRefreshTokenCommand 
+            { 
+                Id = 1, 
+                NewToken = "dfsaew1234tgf" 
+            };
             var user = User.Initialize("Faith", "sasha.zelenukho.2016@mail.ru", "fdffwe34", "User").Value;
             var existedRefreshToken = RefreshToken.Initialize("dfssdf325hgfd", user, DateTime.UtcNow.AddDays(15)).Value;
             

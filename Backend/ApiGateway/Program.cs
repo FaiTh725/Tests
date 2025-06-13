@@ -8,9 +8,9 @@ builder.Services
 var app = builder.Build();
 
 
-app.UseHttpsRedirection();
-
 app.UseCors("client");
+
+app.UseHttpsRedirection();
 
 app.MapReverseProxy();
 

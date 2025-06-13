@@ -20,8 +20,6 @@ namespace Authorization.Infrastructure.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await WaitDatabase(stoppingToken);
-
             using var scope = scopeFactory.CreateAsyncScope();
             var unitOfWork = scope.ServiceProvider
                 .GetRequiredService<IUnitOfWork>();
@@ -32,7 +30,7 @@ namespace Authorization.Infrastructure.BackgroundServices
             var existingRoles = await unitOfWork.RoleRepository
                 .GetRoles(stoppingToken);
 
-            await unitOfWork.BeginTransactionAsync(stoppingToken);
+            var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken: stoppingToken);
 
             var addRolesTasks = baseRoles.Select(async x =>
             {
@@ -52,7 +50,8 @@ namespace Authorization.Infrastructure.BackgroundServices
 
                 if(role.IsFailure)
                 {
-                    await innerUnitOfWork.RollBackTransactionAsync(stoppingToken);
+                    await innerUnitOfWork.RollBackTransactionAsync(
+                        transaction, stoppingToken);
                     logger.LogError("Error initialize role with name " + x);
                     throw new AppConfigurationException("Initialize roles");
                 }
@@ -62,26 +61,10 @@ namespace Authorization.Infrastructure.BackgroundServices
             }).ToList();
 
             await Task.WhenAll(addRolesTasks);
-            await unitOfWork.CommitTransactionAsync(stoppingToken);
+            await unitOfWork.CommitTransactionAsync(
+                transaction, stoppingToken);
+
             logger.LogInformation("Added the required roles");
-        }
-
-        private async Task WaitDatabase(CancellationToken cancellationToken)
-        {
-            using var scope = scopeFactory.CreateAsyncScope();
-            var unitOfWork = scope.ServiceProvider
-                .GetRequiredService<IUnitOfWork>();
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-
-                if (await unitOfWork.CanConnectAsync(cancellationToken))
-                {
-                    return;
-                }
-
-                await Task.Delay(3000, cancellationToken);
-            }
         }
     }
 }

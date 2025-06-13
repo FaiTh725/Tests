@@ -21,7 +21,7 @@ builder.Services
     .ConfigureApiServices(builder.Configuration)
     .ConfigureDalServices(builder.Configuration)
     .ConfigureAppServices()
-    .ConfigureInfastructureServices(builder.Configuration);
+    .ConfigureInfrastructureServices(builder.Configuration);
 
 
 var app = builder.Build();
@@ -34,6 +34,8 @@ app.UseHttpsRedirection();
 app.UseRateLimiter();
 
 app.MapControllers();
+
+app.ApplyMigrations();
 
 app.UseExceptionHandler();
 

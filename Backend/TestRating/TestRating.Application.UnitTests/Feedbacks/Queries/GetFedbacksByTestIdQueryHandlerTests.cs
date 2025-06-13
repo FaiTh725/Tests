@@ -10,6 +10,7 @@ using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
 using TestRating.Application.Queries.FeedbackEntity.Specifications;
 using TestRating.Domain.Entities;
 using TestRating.Domain.Interfaces;
+using TestRating.Domain.Primitives;
 using TestRating.Domain.Repositories;
 
 namespace TestRating.Application.UnitTests.Feedbacks.Queries
@@ -172,6 +173,7 @@ namespace TestRating.Application.UnitTests.Feedbacks.Queries
 
             unitOfWorkMock.Verify(x => x
                 .CommitTransactionAsync(
+                    It.IsAny<IDatabaseTransaction>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }

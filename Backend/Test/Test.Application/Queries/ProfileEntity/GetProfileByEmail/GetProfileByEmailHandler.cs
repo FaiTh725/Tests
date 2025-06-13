@@ -25,7 +25,7 @@ namespace Test.Application.Queries.ProfileEntity.GetProfileByEmail
 
             if (profile is null)
             {
-                throw new BadRequestException("Profile doesnt exist");
+                throw new NotFoundException("Profile doesnt exist");
             }
 
             return new ProfileResponse

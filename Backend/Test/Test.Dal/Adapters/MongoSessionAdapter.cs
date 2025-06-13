@@ -19,6 +19,10 @@ namespace Test.Dal.Adapters
 
             isClosed = false;
         }
+        ~MongoSessionAdapter()
+        {
+            Dispose(false);
+        }
 
         public void CloseSession()
         {
@@ -33,22 +37,30 @@ namespace Test.Dal.Adapters
 
         protected virtual void Dispose(bool disposing)
         {
-            if(!disposed)
+            if(disposed)
             {
-                if(disposing && !isClosed && Session.IsInTransaction)
+                return;
+            }
+
+            if (disposing)
+            {
+                try
                 {
-                    try
+                    if (!isClosed && Session.IsInTransaction)
                     {
                         Session.AbortTransaction();
                     }
-                    catch
-                    {
-
-                    }
-
+                }
+                catch
+                {
+                    
+                }
+                finally
+                {
                     Session.Dispose();
                 }
             }
+
             disposed = true;
         }
     }

@@ -53,6 +53,7 @@ namespace Test.Application.Consumers.QuestionConsumers
                     .Select(x => x.ImageFolder)
                     .ToList()
                 },
+                transaction,
                 context.CancellationToken);
 
                 await unitOfWork.CommitTransactionAsync(transaction, context.CancellationToken);

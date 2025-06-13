@@ -1,9 +1,9 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 using Test.Application.Contracts.File;
-using Test.Application.Contracts.Test;
 using Test.Application.Queries.QuestionAnswerEntity.Specifications;
 using Test.Application.Queries.QuestionEntity.Specifications;
+using Test.Contracts.TestEntity;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.Consumers.TestConsumers
@@ -67,6 +67,7 @@ namespace Test.Application.Consumers.TestConsumers
                 {
                     PathFiles = imagesFolderToDelete
                 },
+                transaction,
                 context.CancellationToken);
 
                 await unitOfWork.CommitTransactionAsync(transaction, context.CancellationToken);

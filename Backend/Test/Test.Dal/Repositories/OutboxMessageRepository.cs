@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
+using Test.Dal.Adapters;
 using Test.Dal.Persistences;
 using Test.Domain.Entities;
+using Test.Domain.Primitives;
 using Test.Domain.Repositories;
 
 namespace Test.Dal.Repositories
@@ -30,7 +32,8 @@ namespace Test.Dal.Repositories
 
         public async Task UpdateMessage(
             long id, 
-            OutboxMessage updatedMessage, 
+            OutboxMessage updatedMessage,
+            IDatabaseSession? session = null,
             CancellationToken cancellationToken = default)
         {
             var mongoOutboxMessage = new MongoOutboxMessage();
@@ -42,7 +45,8 @@ namespace Test.Dal.Repositories
             var update = Builders<MongoOutboxMessage>.Update
                 .Set(x => x.ProcessedOnUtc, mongoOutboxMessage.ProcessedOnUtc);
 
-            if (context.Session is null)
+            var mongoSession = (session as MongoSessionAdapter)?.Session;
+            if (mongoSession is null)
             {
                 await context.OutboxMessages
                     .UpdateOneAsync(
@@ -54,7 +58,7 @@ namespace Test.Dal.Repositories
             {
                 await context.OutboxMessages
                     .UpdateOneAsync(
-                    context.Session,
+                    mongoSession,
                     filter,
                     update,
                     cancellationToken: cancellationToken);

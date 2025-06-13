@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Test.API.Contracts.Question;
+using Test.API.Filters;
 using Test.Application.Commands.Question.CreateQuestion;
 using Test.Application.Commands.Question.DeleteQuestion;
 using Test.Application.Commands.Question.UpdateQuestion;
-using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.File;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.QuestionAnswerEntity;
 using Test.Application.Queries.QuestionEntity.GetQuestionWithAnswers;
 
@@ -17,24 +18,20 @@ namespace Test.API.Controllers
     public class QuestionController: ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IProfileService profileService;
 
         public QuestionController(
-            IMediator mediator,
-            IProfileService profileService)
+            IMediator mediator)
         {
             this.mediator = mediator;
-            this.profileService = profileService;
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> AddQuestion(
             [FromForm]CreateQuestionRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = await profileService
-                .DecodeToken(token, cancellationToken);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var createQuestionCommand = new CreateQuestionCommand
             {
@@ -75,12 +72,11 @@ namespace Test.API.Controllers
 
         [HttpDelete("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> DeleteQuestion(
             long questionId, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = await profileService
-                .DecodeToken(token, cancellationToken);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             await mediator.Send(new DeleteQuestionCommand 
             { 
@@ -95,12 +91,11 @@ namespace Test.API.Controllers
 
         [HttpPatch("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> UpdateQuestion(
             UpdateQuestionRequest request, CancellationToken cancellationToken)
         {
-            var token = Request.Cookies["token"];
-            var profile = await profileService
-                .DecodeToken(token, cancellationToken);
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
 
             var questionId = await mediator.Send(new UpdateQuestionCommand
             {

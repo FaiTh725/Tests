@@ -9,6 +9,7 @@ using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
 using TestRating.Application.Queries.FeedbackReplyEntity.Specifications;
 using TestRating.Domain.Entities;
 using TestRating.Domain.Interfaces;
+using TestRating.Domain.Primitives;
 using TestRating.Domain.Repositories;
 
 namespace TestRating.Application.UnitTests.FeedbackReplies.Queries
@@ -155,10 +156,12 @@ namespace TestRating.Application.UnitTests.FeedbackReplies.Queries
                 Times.Once);
 
             unitOfWorkMock.Verify(x => x.CommitTransactionAsync(
+                It.IsAny<IDatabaseTransaction>(),
                 It.IsAny<CancellationToken>()),
                 Times.Once);
 
             unitOfWorkMock.Verify(x => x.RollBackTransactionAsync(
+                It.IsAny<IDatabaseTransaction>(),
                 It.IsAny<CancellationToken>()),
                 Times.Never);
         }

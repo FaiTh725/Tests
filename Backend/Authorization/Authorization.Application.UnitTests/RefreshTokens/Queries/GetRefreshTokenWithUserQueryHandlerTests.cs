@@ -56,6 +56,7 @@ namespace Authorization.Application.UnitTests.RefreshTokens.Queries
             var refreshToken = RefreshToken.Initialize(
                     "efew21rtgsd", user, 
                     DateTime.UtcNow.AddDays(1)).Value;
+
             // set refresh token id instead db
             var type = typeof(RefreshToken);
             var property = type.GetProperty("Id");

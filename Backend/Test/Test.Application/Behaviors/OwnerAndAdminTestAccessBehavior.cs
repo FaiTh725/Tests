@@ -1,6 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
 using Test.Application.Common.BehaviorsInterfaces;
+using Test.Application.Common.Constants;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.Behaviors
@@ -30,7 +31,7 @@ namespace Test.Application.Behaviors
                 throw new BadRequestException("Test doesnt exist");
             }
 
-            if (request.Role != "Admin" &&
+            if (request.Role != UserRoles.Administrator &&
                 test.ProfileId != request.OwnerId)
             {
                 throw new ForbiddenAccessException("Only the owner or an admin have access to the test");

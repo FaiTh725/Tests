@@ -15,7 +15,7 @@ namespace Authorization.Infrastructure
 {
     public static class Startup
     {
-        public static IServiceCollection ConfigureInfastructureServices(
+        public static IServiceCollection ConfigureInfrastructureServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -26,7 +26,6 @@ namespace Authorization.Infrastructure
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<IJwtService<UserTokenRequest, UserTokenResponse>, JwtUserService>();
 
-            services.AddHostedService<ApplyMigrationsBackgroundService>();
             services.AddHostedService<InitializeRolesBackgroundService>();
 
             return services;
@@ -65,7 +64,6 @@ namespace Authorization.Infrastructure
             {
                 conf.SetKebabCaseEndpointNameFormatter();
 
-                // TODO configure saga in ef core
                 conf.AddSagaStateMachine<RegisterUserSaga, RegisterUserSagaState>()
                     .InMemoryRepository();
 

@@ -1,4 +1,5 @@
 ﻿using Test.Domain.Entities;
+using Test.Domain.Primitives;
 
 namespace Test.Domain.Repositories
 {
@@ -6,6 +7,6 @@ namespace Test.Domain.Repositories
     {
         Task<IEnumerable<OutboxMessage>> GetPendingMessages(CancellationToken cancellation = default);
 
-        Task UpdateMessage(long id, OutboxMessage updatedMessage, CancellationToken cancellationToken = default);
+        Task UpdateMessage(long id, OutboxMessage updatedMessage, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
     }
 }

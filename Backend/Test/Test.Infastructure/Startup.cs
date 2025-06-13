@@ -14,15 +14,15 @@ using Redis.OM;
 using System.Text;
 using Test.Application.Common.Interfaces;
 using Test.Application.Consumers.FileConsumers;
-using Test.Application.Consumers.ProfileConsumers;
-using Test.Application.Consumers.QuestionConsumers;
-using Test.Application.Consumers.TestConsumers;
-using Test.Application.Contracts.ProfileEntity;
-using Test.Application.Contracts.TestSession;
-using Test.Domain.Interfaces;
 using Test.Infrastructure.BackgroundServices;
-using Test.Infrastructure.Configurations;
+using Test.Application.Contracts.TestSession;
+using Test.Application.Consumers.ProfileConsumers;
+using Test.Application.Consumers.TestConsumers;
+using Test.Domain.Interfaces;
+using Test.Application.Consumers.QuestionConsumers;
 using Test.Infrastructure.Implementations;
+using Test.Infrastructure.Configurations;
+using Test.Application.Contracts.ProfileEntity;
 
 namespace Test.Infrastructure
 {
@@ -168,6 +168,8 @@ namespace Test.Infrastructure
                 conf.AddConsumer<DeleteTestProfileConsumer>();
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                 conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
+                conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

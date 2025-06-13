@@ -1,4 +1,6 @@
-﻿using Authorization.Domain.Repositories;
+﻿using Authorization.Domain.Primitives;
+using Authorization.Domain.Repositories;
+using System.Data;
 
 namespace Authorization.Domain.Interfaces
 {
@@ -14,20 +16,16 @@ namespace Authorization.Domain.Interfaces
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
-        void BeginTransaction();
+        IDatabaseTransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
 
-        Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+        Task<IDatabaseTransaction> BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
 
-        void CommitTransaction();
+        void CommitTransaction(IDatabaseTransaction transaction);
 
-        Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+        Task CommitTransactionAsync(IDatabaseTransaction transaction, CancellationToken cancellationToken = default);
 
-        void RollBackTransaction();
+        void RollBackTransaction(IDatabaseTransaction transaction);
 
-        Task RollBackTransactionAsync(CancellationToken cancellationToken = default);
-
-        bool CanConnect();
-
-        Task<bool> CanConnectAsync(CancellationToken cancellationToken = default);
+        Task RollBackTransactionAsync(IDatabaseTransaction transaction, CancellationToken cancellationToken = default);
     }
 }

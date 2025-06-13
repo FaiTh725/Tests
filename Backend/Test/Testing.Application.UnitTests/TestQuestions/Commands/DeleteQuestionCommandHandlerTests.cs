@@ -105,6 +105,7 @@ namespace Testing.Application.UnitTests.TestQuestions.Commands
             outboxServiceMock.Verify(x => x
                 .AddOutboxMessage(
                     It.IsAny<DeleteFilesFromStorage>(), 
+                    It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
         }
