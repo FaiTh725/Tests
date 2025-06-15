@@ -23,8 +23,17 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetTestStatisticsByFeedb
             using var transaction = await unitOfWork
                 .BeginTransactionAsync(IsolationLevel.RepeatableRead, cancellationToken);
 
-            var averageRating = await unitOfWork.FeedbackRepository
-                .GetAverageRating(request.TestId, cancellationToken);
+            var averageRating = 0d;
+
+            try 
+            {
+                averageRating = await unitOfWork.FeedbackRepository
+                    .GetAverageRating(request.TestId, cancellationToken);
+            }
+            catch (InvalidOperationException)
+            {
+                averageRating = 0;
+            }
 
             var ratingDistribution = await unitOfWork.FeedbackRepository
                 .GetRatingDistribution(request.TestId, cancellationToken);
@@ -35,7 +44,7 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetTestStatisticsByFeedb
             {
                 TestId = request.TestId,
                 RatingDistribution = ratingDistribution,
-                AverageRating = averageRating
+                AverageRating = Math.Round(averageRating, 1)
             };
         }
     }

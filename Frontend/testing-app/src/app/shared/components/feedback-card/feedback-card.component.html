@@ -2,7 +2,7 @@
   <div class="feedback-card-wrapper">
     <div class="feedback-card-header">
       <div class="feedback-card-images">
-        @if (feedback?.Images) {
+        @if (feedback?.Images?.length !== 0) {
           <div class="feedback-card-images__slider"
             #imageSlider>
             @for (image of feedback?.Images; track $index) {

@@ -8,6 +8,7 @@
   padding: 20px;
   border-right: 2px solid var(--shadow-color);
   position: fixed;
+  z-index: 999;
 }
 
 .sidebar-navigation__links-item {
@@ -49,4 +50,8 @@
 
 .sidebar-navigation__links {
   margin-top: 20px;
+}
+
+.sidebar-notifications {
+  margin-top: 10px;
 }

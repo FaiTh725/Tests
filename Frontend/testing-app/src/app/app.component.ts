@@ -4,12 +4,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from './core/services/Http.service';
 import { UserCredentialsValidatorService } from './core/services/UserCredentialsValidator.service';
 import { CommonModule } from '@angular/common';
+import { SignalRService } from './core/services/SignalRService.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, HttpClientModule],
-  providers: [HttpService, UserCredentialsValidatorService],
+  providers: [HttpService, UserCredentialsValidatorService, SignalRService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -230,6 +230,7 @@ services:
       - ./certs:/https:ro
     networks:
       - message_broker_net
+      - application_net
       - loging_net
       - testing_mongo_net
     depends_on:

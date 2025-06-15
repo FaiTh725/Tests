@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { SignalRService } from '../../../core/services/SignalRService.service';
+import { NotificationsComponent } from "../notifications/notifications.component";
 
 @Component({
   selector: 'app-sidebar-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule],
+  imports: [RouterOutlet, RouterLink, CommonModule, NotificationsComponent],
   templateUrl: './sidebar-layout.component.html',
   styleUrl: './sidebar-layout.component.scss'
 })
@@ -30,8 +32,8 @@ export class SidebarLayoutComponent {
 
   selectedNavigate = "";
 
-  constructor(private router: Router) {
-
+  constructor(
+    private router: Router) {
   }
 
   handleSelectNavigate(url: string) {

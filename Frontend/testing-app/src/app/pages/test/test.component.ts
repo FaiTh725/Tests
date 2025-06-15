@@ -142,6 +142,7 @@ export class TestComponent {
   handleOpenSendFeedbackForm() {
     const dialogRef = this.dialog.open(SendFeedbackComponent, {
       width: "1200px",
+      
       data: {
         testId: this.test?.Id
       }
