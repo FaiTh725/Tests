@@ -3,14 +3,15 @@ using TestRating.Domain.Primitives;
 
 namespace TestRating.Application.Queries.FeedbackEntity.Specifications
 {
-    public class FeedbackByIdWithOwnerSpecification : 
+    public class FeedbackByIdWithOwnerAndReviewsSpecification : 
         Specification<Feedback>
     {
-        public FeedbackByIdWithOwnerSpecification(
+        public FeedbackByIdWithOwnerAndReviewsSpecification(
             long feedbackId)
         {
             AddCriteria(feedback => feedback.Id == feedbackId);
             AddInclude(feedback => feedback.Owner);
+            AddInclude(feedback => feedback.Reviews);
         }
     }
 }

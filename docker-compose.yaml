@@ -90,7 +90,9 @@ services:
       - "5402:5402"
     environment:
       - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Feedback;Port=5432
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - AzuriteSetting__Url=https://azurite_storage:10000/${AZURITE_USER}
+      - AzuriteSetting__Password=${AZURITE_PASSWORD}
+      - AzuriteSetting__AccountName=${AZURITE_USER}
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
       - JwtSettings__Audience=${JWT_AUDIENCE}
@@ -128,7 +130,9 @@ services:
     environment:
       - ConnectionStrings__RedisConnection=redis://:${REDIS_PASSWORD}@redis:6379
       - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - AzuriteSetting__Url=https://azurite_storage:10000/${AZURITE_USER}
+      - AzuriteSetting__Password=${AZURITE_PASSWORD}
+      - AzuriteSetting__AccountName=${AZURITE_USER}
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
       - JwtSettings__Audience=${JWT_AUDIENCE}
@@ -307,8 +311,8 @@ services:
       - "AZURITE_ACCOUNTS=${AZURITE_USER}:${AZURITE_PASSWORD}"
     volumes:
       - testing_blob_volume:/data
-    #   - ./certs:/certs:ro
-    # entrypoint: azurite --oauth basic --cert /certs/aspnetapp.pfx --pwd ${SERTIFICATE_PASSWORD}
+      - ./certs:/certs:ro
+    command: azurite --oauth basic --cert /certs/aspnetapp.pfx --pwd ${SERTIFICATE_PASSWORD} --blobHost 0.0.0.0
     networks:
       - azurite_net
 

@@ -32,8 +32,7 @@ namespace TestRating.Application.UnitTests.Feedbacks.Queries
             blobServiceMock = new();
 
             handler = new GetFeedbacksByTestIdHandler(
-                unitOfWorkMock.Object, 
-                externalServiceMock.Object, 
+                unitOfWorkMock.Object,
                 blobServiceMock.Object);
 
             unitOfWorkMock.Setup(x => x.FeedbackRepository)

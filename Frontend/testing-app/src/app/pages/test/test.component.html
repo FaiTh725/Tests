@@ -40,20 +40,42 @@
       </div>
     </div>
     <div class="test-feedbacks">
-      <h2>Feedbacks</h2>
-      <div>
+      <h2 class="test-feedbacks-header">Feedbacks</h2>
+      <div class="test-feedbacks-content">
         <div class="test-feedbacks-filter">
-          filters here
+          @if (testRating) {
+            <div class="test-feedbacks-filter__star-filter">
+              @for (rating of getRecordKeys(); track $index) {
+                <app-test-ratings 
+                  [rating]="rating" 
+                  [maxCount]="countFeedbacks"
+                  [isSelected]="rating.Rating === selectedRatingFilter"
+                  (handleClick)="handleFilterByRating($event)">
+                </app-test-ratings>
+              }
+            </div>
+          }
+          <div class="test-feedbacks-filter__overall-rating">
+            Overall rating
+            <p class="test-feedbacks-filter__overall-rating-average">
+              {{testRating?.AverageRating}}
+            </p>
+            <p class="test-feedbacks-filter__overall-rating-count-feedbacks">
+              {{countFeedbacks}} Feedbacks
+            </p>
+          </div>
         </div>
         <div class="test-feedbacks-send">
+          Provide a feedback for this test
           <app-feedback-rating 
             (change)="handleOpenSendFeedbackForm()">
           </app-feedback-rating>
         </div>
       </div>
-      <div class="test-feedbacks-content">
+      <div class="test-feedbacks-list">
         @for (feedback of testFeedbacks; track feedback.Id) {
           <app-feedback-card [feedback]="feedback"
+            (changed)="getFeedback($event)"
             (delete)="handleDeleteFeedback($event)">
           </app-feedback-card>
         }

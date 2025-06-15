@@ -7,16 +7,17 @@ using TestRating.Application.Contacts.Pagination;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Application.Queries.FeedbackEntity.Specifications;
 using TestRating.Domain.Interfaces;
+using TestRating.Domain.Validators;
 
-namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
+namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestIdAndRating
 {
-    public class GetFeedbacksByTestIdHandler :
-        IRequestHandler<GetFeedbacksByTestIdQuery, BasePaginationResponse<FeedbackWithReviewsResponse>>
+    public class GetFeedbacksByTestIdAndRatingHandler :
+        IRequestHandler<GetFeedbacksByTestIdAndRatingQuery, BasePaginationResponse<FeedbackWithReviewsResponse>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBlobService blobService;
 
-        public GetFeedbacksByTestIdHandler(
+        public GetFeedbacksByTestIdAndRatingHandler(
             IUnitOfWork unitOfWork,
             IBlobService blobService)
         {
@@ -25,25 +26,29 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
         }
 
         public async Task<BasePaginationResponse<FeedbackWithReviewsResponse>> Handle(
-            GetFeedbacksByTestIdQuery request, 
+            GetFeedbacksByTestIdAndRatingQuery request, 
             CancellationToken cancellationToken)
         {
-            var transaction = await unitOfWork.BeginTransactionAsync(
-                IsolationLevel.RepeatableRead, 
-                cancellationToken);
+            if(request.Rating < FeedbackValidator.MIN_FEEDBACK_RATING ||
+                request.Rating > FeedbackValidator.MAX_FEEDBACK_RATING)
+            {
+                throw new BadRequestException("Rating should be in range " +
+                    $"{FeedbackValidator.MIN_FEEDBACK_RATING} - {FeedbackValidator.MAX_FEEDBACK_RATING}");
+            }
 
-            var testFeedbacks = await unitOfWork.FeedbackRepository
-                    .GetFeedbacksByCriteria(
-                    new FeedbacksPaginationByTestIdWithOwnerAndReviewsSpecification(
-                        request.TestId,
-                        request.Page,
-                        request.PageSize),
-                    cancellationToken);
+            using var transaction = await unitOfWork
+                .BeginTransactionAsync(IsolationLevel.RepeatableRead, cancellationToken);
 
             var allFeedbacks = await unitOfWork.FeedbackRepository
                 .GetFeedbacksByCriteria(
-                new FeedbacksByTestIdWithOwnerAndReviewsSpecification(
-                    request.TestId),
+                new FeedbacksByTestIdAndRatingWithOwnerSpecification(
+                        request.TestId, request.Rating), 
+                cancellationToken);
+
+            var testFeedbacks = await unitOfWork.FeedbackRepository.GetFeedbacksByCriteria(
+                new FeedbacksPaginationByTestIdAndRatingWithOwnerSpecification(
+                        request.TestId, request.Rating,
+                        request.Page, request.PageSize),
                 cancellationToken);
 
             var getFeedbacksImagesTasks = testFeedbacks
@@ -70,9 +75,8 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
                 .ToList();
 
             var feedbacksResponse = await Task.WhenAll(getFeedbacksImagesTasks);
-
-            await unitOfWork.CommitTransactionAsync(
-                transaction, cancellationToken);
+            
+            await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
 
             return new BasePaginationResponse<FeedbackWithReviewsResponse>
             {

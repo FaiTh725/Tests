@@ -1,0 +1,48 @@
+.test-rating-main {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+}
+
+.test-rating-main-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all .3s;
+  border-radius: 16px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.test-rating-selected {
+  background-color: #fdf7e681;
+}
+
+.test-rating-main-wrapper:hover {
+  background-color: #fdf7e681;
+} 
+
+.test-rating-main-wrapper p {
+  margin: 0;
+}
+
+.test-rating-main-scale {
+  min-width: 100px;
+  height: 20px;
+  background-color: var(--shadow-color);
+  margin: 0 10px;
+  border-radius: 16px;
+}
+
+.test-rating-main-scale-progress {
+  position: absolute;
+  height: 20px;
+  border-radius: 16px;
+  background-color: var(--light-blue-color);
+  left: 80px;
+}
+
+.test-rating-main-rating {
+  width: 60px;
+}

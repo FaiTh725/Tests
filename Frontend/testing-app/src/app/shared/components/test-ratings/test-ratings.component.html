@@ -1,0 +1,11 @@
+<div class="test-rating-main">
+  <div class="test-rating-main-wrapper"
+    [ngClass]="{'test-rating-selected': isSelected}"
+    (click)="handleClick.emit(rating?.Rating)">
+    <p class="test-rating-main-rating">{{rating?.Rating}} stars</p>
+    <div class="test-rating-main-scale"></div>
+    <div class="test-rating-main-scale-progress" 
+      [ngStyle]="{'width': getProgressWidth() + 'px'}"></div>
+    <p class="test-rating-main-count">{{rating?.Count}}</p>
+  </div>
+</div>

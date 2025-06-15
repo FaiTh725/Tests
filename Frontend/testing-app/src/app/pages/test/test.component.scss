@@ -34,7 +34,7 @@
   font-size: 35px;
 }
 
-.test-info-main__test :first-child {
+.test-info-main__test > :first-child {
   color: var(--light-blue-color);
 }
 
@@ -55,4 +55,42 @@
   color: var(--shadow-color);
   padding-bottom: 30px;
   border-bottom: 2px solid var(--shadow-color);
+}
+
+.test-feedbacks {
+  margin: 40px 0;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--shadow-color);
+}
+
+.test-feedbacks-header {
+  font-size: 30px;
+  color: var(--light-blue-color);
+}
+
+.test-feedbacks-content {
+  margin-bottom: 20px;
+  padding: 20px 0;
+  border-bottom: 2px solid var(--shadow-color);
+}
+
+.test-feedbacks-filter {
+  display: flex;
+}
+
+.test-feedbacks-filter__overall-rating {
+  margin: 20px 40px;
+  text-align: center;
+  color: var(--light-blue-color);
+}
+
+.test-feedbacks-filter__overall-rating-average {
+  font-size: 30px;
+  margin: 10px 0;
+}
+
+.test-feedbacks-send {
+  margin-top: 20px;
 }

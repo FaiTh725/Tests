@@ -3,17 +3,20 @@
     <div class="feedback-card-header">
       <div class="feedback-card-images">
         @if (feedback?.Images) {
-          <div class="feedback-card-images__slider">
+          <div class="feedback-card-images__slider"
+            #imageSlider>
             @for (image of feedback?.Images; track $index) {
               <div class="feedback-card-images__image"
                 [ngStyle]="{'background-image': changeImageHost(image)}">
               </div>
             }
           </div>
-          <div class="feedback-card-images__btn feedback-card-images__btn-left">
+          <div class="feedback-card-images__btn feedback-card-images__btn-left"
+            (click)="handleScroll('left')">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fdf7e6"><path d="M560-280 360-480l200-200v400Z"/></svg>
           </div>
-          <div class="feedback-card-images__btn feedback-card-images__btn-right">
+          <div class="feedback-card-images__btn feedback-card-images__btn-right"
+            (click)="handleScroll('right')">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fdf7e6"><path d="M400-280v-400l200 200-200 200Z"/></svg>
           </div>
         }
@@ -34,7 +37,7 @@
         </div>
       }
     </div>
-    <div class="feedback-card-info">
+    <div class="feedback-card-rating-wrapper">
       <div class="feedback-card-rating">
         @for (star of createArray(feedback!.Rating); track $index) {
           <p>
@@ -42,22 +45,71 @@
           </p>
         }
       </div>
+    </div>
+    <div class="feedback-card-info">
       <div class="feedback-card-owner">
         <p>{{feedback?.Owner?.Email}}</p>
         <p>{{feedback?.Owner?.Name}}</p>
       </div>
+      <div class="feedback-card-info__content">
+        <div class="feedback-card-update">
+          {{feedback?.UpdateTime | date: 'dd.MM.yy'}}
+        </div>
+        <p class="feedback-card-text">
+          {{feedback?.Text}}
+        </p>
+        <div class="feedback-card-replies">
+          <div class="feedback-card-replies__send">
+            <div class="feedback-card-replies__send-input-wrapper">
+              <app-large-input [inputConfiguration]="{
+                Value: sendReplyText,
+                IsReadonly: false,
+                InputName: 'sendReplyText',
+                PlaceHolder: 'You can add a comment here',
+                ErrorMessage: sendReplyErrorText}"
+                (onChange)="sendReplyText=$event"
+                (clearError)="sendReplyErrorText=''">
+              </app-large-input>
+            </div>
+            <app-primary-button [btnConfiguration]="{
+              Text: 'Send',
+              BackgroundColor: 'var(--light-blue-color)',
+              BorderColor: '#2da0d6',
+              BorderWith: 2,
+              FontSize: 18,
+              HoverBackgroundColor: 'var(--light-blue-color)',
+              HoverColor: 'var(--primary-black-color)',
+              TextColor: 'var(--primary-black-color)'}"
+              (handleClick)="handleSendReply()">
+          </app-primary-button>
+          </div>
+          @for (reply of replies; track reply.Id) {
+            <app-reply-card 
+              [reply]="reply"
+              (delete)="handleDeleteReply($event)">
+            </app-reply-card>
+          }
+          <div class="feedback-card-load-replies">
+            <p class="feedback-card-load-replies__action"
+              (click)="handleUploadReplies()">
+              Load next
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="feedback-card-update">
-      {{feedback?.UpdateTime | date: 'dd.MM.yy'}}
-    </div>
-    <p class="feedback-card-text">
-      {{feedback?.Text}}
-    </p>
-    <div class="feedback-card-review">
-      TODO
-    </div>
-    <div class="feedback-card-replies">
-      TODO
+    <div class="feedback-card-reviews">
+      <p class="feedback-card-reviews__text">Helpful ?</p>
+      <div class="feedback-card-reviews__count"
+        (click)="handleSendReview(true)">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#49c0f8"><path d="M720-120H320v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h218q32 0 56 24t24 56v80q0 7-1.5 15t-4.5 15L794-168q-9 20-30 34t-44 14ZM240-640v520H80v-520h160Z"/></svg>
+        ({{feedback?.CountPositiveReviews}})
+      </div>
+      <div class="feedback-card-reviews__count"
+        (click)="handleSendReview(false)">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#49c0f8"><path d="M240-840h400v520L360-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 1.5-15t4.5-15l120-282q9-20 30-34t44-14Zm480 520v-520h160v520H720Z"/></svg>
+        ({{feedback?.CountNegativeReviews}})
+      </div>
     </div>
   </div>
 </div>

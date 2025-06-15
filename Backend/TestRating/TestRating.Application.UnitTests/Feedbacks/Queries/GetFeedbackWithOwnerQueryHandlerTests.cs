@@ -45,7 +45,7 @@ namespace TestRating.Application.UnitTests.Feedbacks.Queries
 
             feedbackRepositoryMock.Setup(x => x
                 .GetFeedbackByCriteria(
-                    It.IsAny<FeedbackByIdWithOwnerSpecification>(), 
+                    It.IsAny<FeedbackByIdWithOwnerAndReviewsSpecification>(), 
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(null as Feedback);
 
@@ -113,7 +113,7 @@ namespace TestRating.Application.UnitTests.Feedbacks.Queries
 
             feedbackRepositoryMock.Setup(x => x
                 .GetFeedbackByCriteria(
-                    It.IsAny<FeedbackByIdWithOwnerSpecification>(),
+                    It.IsAny<FeedbackByIdWithOwnerAndReviewsSpecification>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(existedFeedback);
 

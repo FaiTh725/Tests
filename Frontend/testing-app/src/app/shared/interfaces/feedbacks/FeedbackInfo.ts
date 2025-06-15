@@ -8,5 +8,7 @@ export interface FeedbackInfo {
   Rating: number,
   SendTime: Date,
   UpdateTime: Date,
-  Owner: ProfileInfo
+  Owner: ProfileInfo,
+  CountPositiveReviews: number,
+  CountNegativeReviews: number
 }

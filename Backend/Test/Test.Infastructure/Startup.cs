@@ -1,4 +1,6 @@
 ﻿using Application.Shared.Exceptions;
+using Azure.Core.Pipeline;
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Hangfire;
 using Hangfire.Mongo;
@@ -103,11 +105,32 @@ namespace Test.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var azuriteConnection = configuration
-                .GetConnectionString("AzuriteBlobStorage") ??
+            var azuriteConf = configuration
+                .GetSection("AzuriteSetting")
+                .Get<AzuriteConf>() ??
                 throw new AppConfigurationException("Azurite connection string");
 
-            services.AddSingleton(new BlobServiceClient(azuriteConnection));
+            var httpClientHandler = new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            var blobOptions = new BlobClientOptions
+            {
+                Transport = new HttpClientTransport(httpClientHandler)
+            };
+
+            var blobCredentials = new StorageSharedKeyCredential(
+                azuriteConf.AccountName,
+                azuriteConf.Password);
+
+            var blobServiceClient = new BlobServiceClient(
+                new Uri(azuriteConf.Url),
+                blobCredentials,
+                blobOptions);
+
+            services.AddSingleton(blobServiceClient);
 
             return services;
         }

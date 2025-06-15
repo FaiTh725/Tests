@@ -11,17 +11,34 @@ import { FeedbackRatingComponent } from "../../shared/components/inputs/feedback
 import { SendFeedbackComponent } from '../../shared/components/send-feedback/send-feedback.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PaginationComponent } from "../../shared/components/pagination/pagination.component";
+import { TestRating } from '../../shared/interfaces/tests/TestRating';
+import { Rating, TestRatingsComponent } from "../../shared/components/test-ratings/test-ratings.component";
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-test',
   standalone: true,
-  imports: [DatePipe, PrimaryButtonComponent, FeedbackCardComponent, FeedbackRatingComponent, PaginationComponent],
+  imports: [DatePipe, PrimaryButtonComponent, FeedbackCardComponent, FeedbackRatingComponent, PaginationComponent, TestRatingsComponent],
   templateUrl: './test.component.html',
   styleUrl: './test.component.scss'
 })
 export class TestComponent {
   test?: TestInfo;
+  testRating?: TestRating;
   testFeedbacks: FeedbackInfo[] = [];
+
+  selectedRatingFilter: number | null = null;
+  countFeedbacks = 0;
+
+  get executingGetFeedbacks() {
+    if(!this.test) {
+      return ;
+    }
+    
+    return this.selectedRatingFilter ? 
+    this.executeGetTestFeedbacksByRating(this.test.Id, this.selectedRatingFilter) :
+    this.executeGetTestFeedbacks(this.test.Id);
+  }
 
   feedbacksPagination: Pagination = {
     MaxSize: 0,
@@ -52,39 +69,74 @@ export class TestComponent {
       return;
     }
 
-    this.executeGetTest(testId);
-    this.executeGetTestFeedbacks(testId, this.feedbacksPagination.Page, this.feedbacksPagination.PageSize);
+    this.executeGetTest(testId).subscribe(() => {
+      this.executingGetFeedbacks;
+      this.executeGetTestRating();
+    });
   }
 
-  executeGetTest(testId: number) {
-    const requestUrl = `testing/Test/GetTestInfo?testId=${testId}`;
+  handleFilterByRating(rating: number) {
+    this.selectedRatingFilter = this.selectedRatingFilter === rating ?
+      null : rating;
+
+    this.executingGetFeedbacks;
+  }
+
+  executeGetTestRating() {
+    const requestUrl = `feedback/Feedback/GetTestStatistics?testId=${this.test?.Id}`;
     this.httpService.getRequest(requestUrl)
     .subscribe({
-      next: (data:any) => {
-        this.test = {
-          Id: data.id,
-          Name: data.name,
-          Description: data.description,
-          CreatedTime: data.createdTime,
-          IsPublic: data.isPublic,
-          TestType: data.testType == "Timed" ? 0 : 1,
-          DurationInMinutes: data.durationInMinutes,
-          Owner: {
-            Id: data.owner.id,
-            Name: data.owner.name,
-            Email: data.owner.email
+      next: (data: any) => {
+        this.testRating = {
+          Id: this.test!.Id,
+          AverageRating: data.averageRating,
+          Ratings: {
+            1: data.ratingDistribution[1] ?? 0,
+            2: data.ratingDistribution[2] ?? 0,
+            3: data.ratingDistribution[3] ?? 0,
+            4: data.ratingDistribution[4] ?? 0,
+            5: data.ratingDistribution[5] ?? 0,
+            6: data.ratingDistribution[6] ?? 0,
+            7: data.ratingDistribution[7] ?? 0,
+            8: data.ratingDistribution[8] ?? 0,
+            9: data.ratingDistribution[9] ?? 0,
+            10: data.ratingDistribution[10] ?? 0,
           }
-        }
+        };
       },
-      error: error => {
-        if(error.status === 404) {
-          this.router.navigate(["/not-found"]);
-        }
-        else {
-          console.error("unknown error");
-        }
+      error: _ => {
+        console.error("unknown error");
       }
     });
+  }
+
+  executeGetTest(testId: number): Observable<any> {
+    const requestUrl = `testing/Test/GetTestInfo?testId=${testId}`;
+    return this.httpService.getRequest(requestUrl).pipe(
+    tap((data: any) => {
+      this.test = {
+        Id: data.id,
+        Name: data.name,
+        Description: data.description,
+        CreatedTime: data.createdTime,
+        IsPublic: data.isPublic,
+        TestType: data.testType == "Timed" ? 0 : 1,
+        DurationInMinutes: data.durationInMinutes,
+        Owner: {
+          Id: data.owner.id,
+          Name: data.owner.name,
+          Email: data.owner.email
+        }
+      };
+    }),
+    catchError(error => {
+      if (error.status === 404) {
+        this.router.navigate(["/not-found"]);
+      } else {
+        console.error("unknown error");
+      }
+      return throwError(() => error);
+    }));
   }
 
   handleOpenSendFeedbackForm() {
@@ -97,24 +149,34 @@ export class TestComponent {
 
     dialogRef.afterClosed().subscribe(data => {
       if(data?.isSuccess) {
-        this.executeGetTestFeedbacks(
-        this.test!.Id, 
-        this.feedbacksPagination.Page, 
-        this.feedbacksPagination.PageSize);
-        }
+        this.executingGetFeedbacks;
+        this.executeGetTestRating();
+      }
     });
+  }
+
+  getRecordKeys(): Rating[] {
+    if(this.testRating) {
+      return Object.keys(this.testRating.Ratings)
+      .map(x => (
+        {
+          Rating: Number(x), 
+          Count: this.testRating!.Ratings[Number(x)]
+        }))
+      .sort(x => x.Rating);
+    }
+
+    return [];
   }
 
   executePagination(pagination: Pagination) {
     this.feedbacksPagination = {...pagination};
 
-    this.executeGetTestFeedbacks(this.test!.Id, 
-      this.feedbacksPagination.Page, 
-      this.feedbacksPagination.PageSize);
+    this.executingGetFeedbacks;
   }
 
-  executeGetTestFeedbacks(testId: number, page:number, pageSize: number) {
-    const getFeedbacksRequestUrl = `feedback/Feedback/GetTestFeedbacks?TestId=${testId}&Page=${page}&PageSize=${pageSize}`;
+  executeGetTestFeedbacks(testId: number) {
+    const getFeedbacksRequestUrl = `feedback/Feedback/GetTestFeedbacks?TestId=${testId}&Page=${this.feedbacksPagination.Page}&PageSize=${this.feedbacksPagination.PageSize}`;
     this.httpService.getRequest(getFeedbacksRequestUrl)
     .subscribe({
       next: (data: any) => {
@@ -126,6 +188,50 @@ export class TestComponent {
           Rating: feedback.rating,
           SendTime: feedback.sendTime,
           UpdateTime: feedback.updateTime,
+          CountPositiveReviews: feedback.countPositiveReviews,
+          CountNegativeReviews: feedback.countNegativeReviews,
+          Owner: {
+            Id: feedback.profile.id,
+            Name: feedback.profile.name,
+            Email: feedback.profile.email
+          }
+        }))]
+
+        this.feedbacksPagination = {
+          MaxSize: data.maxCount,
+          Page: data.page,
+          PageSize: data.pageCount
+        };
+
+        this.countFeedbacks = this.feedbacksPagination.MaxSize;
+      },
+      error: error => {
+        if(error.status === 404) {
+          console.error("internal server critical error");
+        }
+        else {
+          console.error("unknown error");
+        }
+      }
+    });
+  }
+
+  executeGetTestFeedbacksByRating(testId: number, rating: number) { 
+    const requestUrl = `feedback/Feedback/GetFeebacksByFilter?` + 
+    `TestId=${testId}&Rating=${rating}&Page=${this.feedbacksPagination.Page}&PageSize=${this.feedbacksPagination.PageSize}`;
+    this.httpService.getRequest(requestUrl)
+    .subscribe({
+      next: (data: any) => {
+        this.testFeedbacks = [... data.items.map((feedback:any) => ({
+          Id: feedback.id,
+          Images: [...feedback.feedbackImages],
+          Text: feedback.text,
+          TestId: feedback.testId,
+          Rating: feedback.rating,
+          SendTime: feedback.sendTime,
+          UpdateTime: feedback.updateTime,
+          CountPositiveReviews: feedback.countPositiveReviews,
+          CountNegativeReviews: feedback.countNegativeReviews,
           Owner: {
             Id: feedback.profile.id,
             Name: feedback.profile.name,
@@ -139,13 +245,8 @@ export class TestComponent {
           PageSize: data.pageCount
         }
       },
-      error: error => {
-        if(error.status === 404) {
-          console.error("internal server critical error");
-        }
-        else {
-          console.error("unknown error");
-        }
+      error: _ => {
+        console.error("unknown error");
       }
     });
   }
@@ -160,10 +261,40 @@ export class TestComponent {
         console.error("unknow error");
       },
       complete: () => {
-        this.executeGetTestFeedbacks(this.test!.Id, 
-        this.feedbacksPagination.Page, 
-        this.feedbacksPagination.PageSize);
-        }
+        this.executingGetFeedbacks;
+        this.executeGetTestRating();
+      }
+    });
+  }
+
+  getFeedback(feedbackId: number) {
+    const requestUrl = `feedback/Feedback/GetFeedback?feedbackId=${feedbackId}`;
+    this.httpService.getRequest(requestUrl)
+    .subscribe({
+      next: (data: any) => {
+        const feedbackIndex = this.testFeedbacks
+          .findIndex(x => x.Id == feedbackId);
+      
+        this.testFeedbacks[feedbackIndex] = {
+          Id: data.id,
+          Images: [...data.feedbackImages],
+          Text: data.text,
+          TestId: data.testId,
+          Rating: data.rating,
+          SendTime: data.sendTime,
+          UpdateTime: data.updateTime,
+          CountPositiveReviews: data.countPositiveReviews,
+          CountNegativeReviews: data.countNegativeReviews,
+          Owner: {
+            Id: data.profile.id,
+            Name: data.profile.name,
+            Email: data.profile.email
+          }
+        }; 
+      },
+      error: _ => {
+        console.error("unknown error");
+      }
     });
   }
 }

@@ -10,9 +10,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination.component.scss'
 })
 export class PaginationComponent {
-  // @Output() next = new EventEmitter();
-  // @Output() prev = new EventEmitter();
-  // @Output() moveToPage = new EventEmitter<number>();
   @Output() paginationChanged = new EventEmitter<Pagination>();
   @Input() paginationConf?: Pagination;
   maxPage: number = 0;
