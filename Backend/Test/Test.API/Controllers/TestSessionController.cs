@@ -8,6 +8,9 @@ using Test.Application.Commands.Test.StartTest;
 using Test.Application.Commands.Test.StopTest;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.Test.GetTestToPass;
+using Test.Application.Queries.TestSessions.GetFinishedSessionById;
+using Test.Application.Queries.TestSessions.GetProfileSessionResult;
+using Test.Application.Queries.TestSessions.GetProfileSessionsResults;
 
 namespace Test.API.Controllers
 {
@@ -21,6 +24,54 @@ namespace Test.API.Controllers
             IMediator mediator)
         {
             this.mediator = mediator;
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetSession(
+            long sessionId, CancellationToken cancellationToken = default)
+        {
+            var session = await mediator.Send(new GetFinishedSessionByIdQuery
+            {
+                Id = sessionId,
+            }, 
+            cancellationToken);
+
+            return Ok(session);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetSessionResult(
+            long sessionId, CancellationToken cancellationToken = default)
+        {
+            var session = await mediator.Send(new GetProfileSessionResultQuery
+            {
+                Id = sessionId,
+            },
+            cancellationToken);
+
+            return Ok(session);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
+        public async Task<IActionResult> GetProfileSessions(
+            int page, int pageSize, 
+            CancellationToken cancellationToken)
+        {
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
+
+            var sessions = await mediator.Send(new GetProfileSessionsResultsQuery
+            {
+                ProfileId = profile.Id,
+                Page = page,
+                PageSize = pageSize,
+            }, 
+            cancellationToken);
+
+            return Ok(sessions);
         }
 
         [HttpPost("[action]")]
@@ -50,20 +101,39 @@ namespace Test.API.Controllers
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(SessionRequiredFilter))]
         public async Task<IActionResult> StopTest(
-            StopTestCommand request, CancellationToken cancellationToken)
+            CancellationToken cancellationToken)
         {
-            var testSession = await mediator.Send(request, cancellationToken);
+            var sessionId = new Guid(HttpContext.Items["SessionId"]!.ToString()!);
+
+            var testSession = await mediator.Send(new StopTestCommand 
+            {
+                SessionId = sessionId 
+            }, 
+            cancellationToken);
+
+            Response.Cookies.Delete("test_session");
 
             return Ok(testSession);
         }
 
         [HttpPost("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(SessionRequiredFilter))]
         public async Task<IActionResult> SendTestAnswer(
-            SendTestAnswerCommand request, CancellationToken cancellationToken)
+            SendTestAnswerRequest request, CancellationToken cancellationToken)
         {
-            await mediator.Send(request, cancellationToken);
+            var sessionId = new Guid(HttpContext.Items["SessionId"]!.ToString()!);
+
+            await mediator.Send(new SendTestAnswerCommand 
+            { 
+                SessionId = sessionId,
+                QuestionAnswersId = request.QuestionAnswersId,
+                QuestionId = request.QuestionId
+            }, 
+            cancellationToken);
+
 
             return NoContent();
         }

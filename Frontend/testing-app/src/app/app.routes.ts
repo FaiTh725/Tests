@@ -40,6 +40,14 @@ export const routes: Routes = [
       .TestComponent
     },
     {
+      path: "test-passing", loadComponent: async () => (await import("./pages/test-passing/test-passing.component"))
+      .TestPassingComponent
+    },
+    {
+      path: "error", loadComponent: async () => (await import("./pages/error/error.component"))
+      .ErrorComponent
+    },
+    {
       path: "not-found", loadComponent: async () => (await import("./pages/not-found/not-found.component"))
       .NotFoundComponent
     },

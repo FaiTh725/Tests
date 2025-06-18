@@ -86,7 +86,7 @@ namespace Testing.Application.UnitTests.Tests.Commands
                 TestId = 1,
                 JobId = string.Empty
             };
-            var addedTestSession = TestSession.Initialize(1, 1).Value;
+            var addedTestSession = TestSession.Initialize(1, 1, new DateTime(2025, 5, 5, 0, 0, 0, DateTimeKind.Utc)).Value;
             // set Id
             var type = typeof(TestSession);
             var property = type.GetProperty("Id");

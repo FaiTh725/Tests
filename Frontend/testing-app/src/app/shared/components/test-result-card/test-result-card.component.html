@@ -1,0 +1,31 @@
+<div class="test-result-main">
+  <div class="test-result-wrapper">
+    <div class="test-result-result">
+      <p class="test-result-result__test-name">
+        Test {{result?.TestName}}
+      </p>
+      <p class="test-result-result__test-date">
+        {{result?.EndTime | date: "dd.MM.YY hh:mm"}} - {{result?.StartTime | date: "hh:mm"}}
+      </p>
+      <p class="test-result-result__percent">
+        Your result is {{result?.Percent}}%
+      </p>
+    </div>
+    <div class="test-result-show-details">
+      <div>
+        <app-primary-button [btnConfiguration]="{
+            Text: 'Details',
+            BackgroundColor: 'var(--light-blue-color)',
+            BorderColor: '#19a0e0',
+            BorderWith: 2,
+            FontSize: 14,
+            HoverBackgroundColor: '#61c9fa',
+            HoverColor: 'var(--primary-write-color)',
+            TextColor: 'var(--primary-write-color)'
+          }"
+          (handleClick)="handleOpenDetails()">
+        </app-primary-button>
+      </div>
+    </div>
+  </div>
+</div>

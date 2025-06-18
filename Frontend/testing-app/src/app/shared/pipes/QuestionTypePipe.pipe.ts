@@ -1,5 +1,4 @@
 import { Pipe, type PipeTransform } from '@angular/core';
-import { QuestionType } from '../interfaces/questions/QuestionType';
 
 @Pipe({
   name: 'appQuestionTypePipe',

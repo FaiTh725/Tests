@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../../core/services/Auth.service';
 import { PrimaryButtonComponent } from "../../shared/components/buttons/primary-button/primary-button.component";
 import { Router } from '@angular/router';
@@ -8,11 +8,14 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
 import { TestEditableCardComponent } from "../../shared/components/test-editable-card/test-editable-card.component";
 import { AddQuestionForm } from '../../shared/components/add-question-form/add-question-form.component';
 import { TestWithQuestions } from '../../shared/interfaces/tests/TestWithQuestions';
+import { CommonModule } from '@angular/common';
+import { TestResult } from '../../shared/interfaces/results/TestResult';
+import { TestResultCardComponent } from "../../shared/components/test-result-card/test-result-card.component";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [PrimaryButtonComponent, PaginationComponent, TestEditableCardComponent],
+  imports: [PrimaryButtonComponent, PaginationComponent, TestEditableCardComponent, CommonModule, TestResultCardComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -24,20 +27,34 @@ export class ProfileComponent {
     PageSize: 5
   }
 
+  profileResults: TestResult[] = [];
+  resultPagination: Pagination = {
+    MaxSize: 0,
+    Page: 1,
+    PageSize: 5
+  };
+
+  currentTab: string = "Tests";
+  @ViewChild('profileTabs', {static: true, read: ElementRef}) profileTabs!: ElementRef;
+
   constructor(
     public userService: AuthService,
     private router: Router,
     private httpService: HttpService
   ) {
-  }
 
+  }
+  
   handleExit() {
     this.userService.Logout();
     this.router.navigate(["/authorization/sign-in"]);
   }
-
+  
   ngOnInit() {
+    this.getResult();
     this.getTests();
+
+    this.profileTabs.nativeElement.scrollTo(0, 0);
   }
 
   handleDeleteTest(testId: number) {
@@ -112,10 +129,16 @@ export class ProfileComponent {
       });
   }
 
-  executePagination(pagination: Pagination) {
+  executeTestsPagination(pagination: Pagination) {
     this.createdTestsPagination = {...pagination};
 
     this.getTests();
+  }
+
+  executeResultsPagination(pagination: Pagination) {
+    this.resultPagination = {...pagination};
+
+    this.getResult();
   }
 
   getTests() {
@@ -151,6 +174,47 @@ export class ProfileComponent {
       error: _ => {
         console.error("unknown error");
       }
+    });
+  }
+
+  getResult() {
+    const requestUrl = `testing/TestSession/GetProfileSessions?page=${this.resultPagination.Page}&pageSize=${this.resultPagination.PageSize}`;
+    this.httpService.getRequest(requestUrl)
+    .subscribe({
+      next: (data: any) => {
+        this.profileResults = data.data.map((result: any) => ({
+          Id: result.id,
+          TestId: result.testId,
+          TestName: result.testName,
+          ProfileId: result.profileId,
+          StartTime: result.startTime,
+          EndTime: result.endTime,
+          Percent: result.percent
+        }));
+
+        this.resultPagination = {
+          Page: data.page,
+          PageSize: data.pageSize,
+          MaxSize: data.maxSize
+        }
+      },
+      error: _ => {
+        console.error("unknown error");
+      }
+    });
+  }
+
+  handleSwitchTab(tabName: string) {
+    this.currentTab = tabName;
+
+    const scrollTo = this.currentTab === "Tests" ?
+      0:
+      this.profileTabs.nativeElement.scrollWidth;
+
+    this.profileTabs.nativeElement.scrollTo({
+      top: 0,
+      left: scrollTo,
+      behavior: "smooth",
     });
   }
 }

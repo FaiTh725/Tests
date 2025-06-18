@@ -6,14 +6,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Sinks.Network;
 using Test.API.Configurations;
-using Test.API.Contracts.Question;
-using Test.API.Contracts.Test;
 using Test.API.Filters;
-using Test.API.Validators.Common;
-using Test.API.Validators.QuestionValidators;
-using Test.API.Validators.TestValidators;
-using Test.Application.Contracts.Common;
-using Test.Application.Queries.Test.GetTests;
 
 namespace Test.API.Extensions
 {
@@ -41,6 +34,7 @@ namespace Test.API.Extensions
                 .AddFluentValidation();
 
             services.AddScoped<VerifyProfileFilter>();
+            services.AddScoped<SessionRequiredFilter>();
 
             return services;
         }

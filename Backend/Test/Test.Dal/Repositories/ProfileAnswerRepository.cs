@@ -1,5 +1,6 @@
 ﻿using Test.Dal.Adapters;
 using Test.Dal.Persistences;
+using Test.Dal.Specifications;
 using Test.Domain.Entities;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -47,6 +48,17 @@ namespace Test.Dal.Repositories
             }
 
             return mongoProfileAnswers.Select(x => x.ConvertToDomainEntity());
+        }
+
+        public async Task<IEnumerable<ProfileAnswer>> GetProfileAnswersByCriteria(
+            BaseSpecification<ProfileAnswer> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator
+                .GetQueryAsync(
+                    context.ProfileAnswers, 
+                    specification, 
+                    cancellationToken);
         }
     }
 }

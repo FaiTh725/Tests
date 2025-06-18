@@ -89,7 +89,7 @@ namespace Test.Dal.Repositories
 
         public async Task<TestEntity?> GetTestByCriteria(
             BaseSpecification<TestEntity> specification, 
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             var tests = await SpecificationEvaluator
                     .GetQueryAsync(

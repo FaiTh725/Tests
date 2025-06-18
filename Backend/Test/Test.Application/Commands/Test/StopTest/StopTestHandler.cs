@@ -40,7 +40,7 @@ namespace Test.Application.Commands.Test.StopTest
             }
 
             var testSession = TestSession.Initialize(
-                session.TestId, session.ProfileId);
+                session.TestId, session.ProfileId, session.StartTime);
 
             if(testSession.IsFailure)
             {

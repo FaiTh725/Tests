@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
 import { HttpService } from '../../core/services/Http.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TestInfo } from '../../shared/interfaces/tests/TestInfo';
@@ -14,6 +14,8 @@ import { PaginationComponent } from "../../shared/components/pagination/paginati
 import { TestRating } from '../../shared/interfaces/tests/TestRating';
 import { Rating, TestRatingsComponent } from "../../shared/components/test-ratings/test-ratings.component";
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { ModalService } from '../../core/services/Modal.service';
+import { WarningBeforeTestComponent } from '../../shared/components/modals/warning-before-test/warning-before-test.component';
 
 @Component({
   selector: 'app-test',
@@ -50,7 +52,9 @@ export class TestComponent {
     private httpService: HttpService,
     private router: Router,
     private activedRoute: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private modalService: ModalService,
+    private viewContainerRef: ViewContainerRef
   ) {
     
   }
@@ -72,6 +76,30 @@ export class TestComponent {
     this.executeGetTest(testId).subscribe(() => {
       this.executingGetFeedbacks;
       this.executeGetTestRating();
+    });
+  }
+
+  handleStartTest() {
+    this.modalService.openModa(
+      this.viewContainerRef, WarningBeforeTestComponent)
+    .subscribe(result => {
+      if(result !== "confirm") {
+        return;
+      }
+
+      const requestUrl = "testing/TestSession/StartTest";
+      this.httpService.postRequest(requestUrl, {
+        testId: this.test?.Id
+      }).subscribe({
+        next: (data: any) => {
+          this.router.navigate(["/test-passing"], {
+            state: { "test-to-pass": data}
+          });
+        },
+        error: _ => {
+          console.error("unknown error");
+        }
+      });
     });
   }
 

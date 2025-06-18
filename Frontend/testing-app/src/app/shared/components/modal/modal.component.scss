@@ -1,0 +1,13 @@
+.modal-main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1530448e;
+  backdrop-filter: blur(10px);
+}

@@ -6,5 +6,7 @@ namespace Test.Domain.Repositories
     public interface IProfileAnswerRepository
     {
         Task<IEnumerable<ProfileAnswer>> AddProfileAnswers(List<ProfileAnswer> profileAnswers, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<ProfileAnswer>> GetProfileAnswersByCriteria(BaseSpecification<ProfileAnswer> specification, CancellationToken cancellationToken = default);
     }
 }

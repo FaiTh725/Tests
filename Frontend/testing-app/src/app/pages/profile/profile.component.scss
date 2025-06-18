@@ -27,10 +27,6 @@
   font-size: 18px;
 }
 
-.profile-tests {
-  margin: 40px 0;
-}
-
 .profile-tests-header {
   font-family: var(--font-family);
   font-size: 20px;
@@ -43,3 +39,49 @@
 .profile-tests-tests__list-item + .profile-tests-tests__list-item {
   margin-top: 60px;
 } 
+
+.profile-tabs {
+  margin-top: 30px;
+}
+
+.profile-tabs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 24px;
+  transition: all .3s;
+  margin-bottom: 20px;
+  color: var(--shadow-color);
+}
+
+.profile-tabs-header__tab {
+  padding: 10px;
+  transition: all .3s;
+  cursor: pointer;
+}
+
+.profile-tabs-header__tab-selected {
+  color: var(--light-blue-color);
+  text-decoration: underline;
+}
+
+.profile-tabs-header__tab:hover {
+  color: var(--light-blue-color);
+}
+
+.profile-tabs-content {
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.profile-tabs-tab {
+  min-width: 100%;
+  height: 100%;
+}
+
+.profile-results-item {
+  margin-top: 20px;
+}

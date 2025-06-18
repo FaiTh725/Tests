@@ -50,7 +50,6 @@ export class FeedbackCardComponent {
       this.sendReplyErrorText = "This field is required";
       return;
     }
-    // TODO: add check api response
     this.httpService.postRequest("feedback/FeedbackReply/SendFeedbackReply", {
       feedbackId: this.feedback?.Id,
       text: this.sendReplyText
@@ -167,8 +166,6 @@ export class FeedbackCardComponent {
         left: -scrollUnit,
         behavior: "smooth",
       });
-      console.log("left");
-      
     }
     else if(direction === "right") {
       this.imageSlider.nativeElement.scrollBy({
@@ -176,7 +173,6 @@ export class FeedbackCardComponent {
         left: scrollUnit,
         behavior: "smooth",
       });
-      console.log("right");
     }
   }
 }

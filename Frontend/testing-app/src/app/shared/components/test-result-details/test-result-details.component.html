@@ -1,0 +1,35 @@
+<div class="test-result-details-main">
+  <div class="test-result-details-wrapper">
+    <div class="test-result-details-header">
+      <div class="test-result-details-header__info">
+        <p>{{testResultDetails?.TestName}}</p>
+        <p>{{testResultDetails?.StartTime | date: "dd.MM.yy hh:mm"}} - {{testResultDetails?.EndTime | date: "hh:mm"}}</p>
+      </div>
+      <div class="test-result-details-header__result">
+        {{testResultDetails?.Percent}}%
+      </div>
+      <div class="test-result-details-header__close-btn">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Close',
+          BackgroundColor: 'var(--light-green-color)',
+          BorderColor: 'var(--dark-green-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: '#71db23',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleClose()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="test-result-details-questions">
+      @for (questionResult of testResultDetails?.QuestionsResults; track questionResult.Id) {
+        <div class="test-result-details-questions__item">
+          <app-question-result-view 
+            [questionResult]="questionResult">
+          </app-question-result-view>
+        </div>
+      }
+    </div>
+  </div>
+</div>

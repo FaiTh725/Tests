@@ -9,6 +9,10 @@ namespace Test.Domain.Repositories
 
         Task<TestSession?> GetTestSession(long testSessionId, CancellationToken cancellationToken = default);
 
+        Task<TestSession?> GetFinishedTest(long testSessionId, CancellationToken cancellationToken = default);
+
         Task UpdateTestSession(long id, TestSession updatedSession, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<TestSession>> GetSessionsByCriteria(BaseSpecification<TestSession> specification, CancellationToken cancellationToken = default);
     }
 }

@@ -1,0 +1,37 @@
+<div class="warning-main">
+  <div class="warning-wrapper">
+    <p class="warning-text">
+      If during the test you switch to another url or close the tab, 
+      the test will automatically end!!!
+      Are you sure you want to start the test?
+    </p>
+    <div class="warning-actions">
+      <div class="warning-actions__btn">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Start',
+          BackgroundColor: 'var(--light-green-color)',
+          BorderColor: 'var(--dark-green-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: '#71db23',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleConfirm()">
+        </app-primary-button>
+      </div>
+      <div class="warning-actions__btn">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Cancel',
+          BackgroundColor: 'var(--error-color)',
+          BorderColor: 'var(--dark-error-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--error-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleCancel()">
+        </app-primary-button>
+      </div>
+    </div>
+  </div>
+</div>
