@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestRating.API\TestRating.API.csproj" />
+    <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

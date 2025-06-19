@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpService {
-  private apiBaseUrl = "https://localhost:5502/";
+  private apiBaseUrl = environment.API_BASE_URL;
   private refreshTokenUrl = this.apiBaseUrl + "auth/Auth/Refresh";
 
   constructor (

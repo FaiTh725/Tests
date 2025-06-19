@@ -12,7 +12,6 @@ COPY ["Backend/Test/Test.Contracts/", "Test/Test.Contracts/"]
 
 RUN dotnet restore 'TestRating/TestRating.API/TestRating.API.csproj'
 
-COPY . .
 
 WORKDIR /src/TestRating/TestRating.API
 RUN dotnet build "TestRating.API.csproj" -c Release -o /app/build

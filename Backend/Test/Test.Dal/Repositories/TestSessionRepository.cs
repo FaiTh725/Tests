@@ -61,7 +61,7 @@ namespace Test.Dal.Repositories
                 .Find(x => x.Id == testSessionId && x.IsEnded)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            return mongoTestSession.ConvertToDomainEntity();
+            return mongoTestSession?.ConvertToDomainEntity();
         }
 
         public async Task<IEnumerable<TestSession>> GetSessionsByCriteria(

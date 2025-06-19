@@ -9,7 +9,6 @@ COPY ["Backend/Application.Shared/", "Application.Shared/"]
 
 RUN dotnet restore 'Notification/Notification.API/Notification.API.csproj'
 
-COPY . .
 
 WORKDIR /src/Notification/Notification.API
 RUN dotnet build "Notification.API.csproj" -c Release -o /app/build

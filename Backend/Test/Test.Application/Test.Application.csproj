@@ -13,18 +13,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Test.Contracts\Test.Contracts.csproj" />
     <ProjectReference Include="..\Test.Domain\Test.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Application.Shared">
-      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="Authorization.Contracts">
-      <HintPath>..\..\Authorization\Authorization.Contracts\bin\Debug\net8.0\Authorization.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="Notification.Contracts">
-      <HintPath>..\..\Notification\Notification.Contracts\bin\Debug\net8.0\Notification.Contracts.dll</HintPath>
-    </Reference>
+	  
+    <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
+    <ProjectReference Include="..\..\Notification\Notification.Contracts\Notification.Contracts.csproj" />
+    <ProjectReference Include="..\..\Authorization\Authorization.Contracts\Authorization.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

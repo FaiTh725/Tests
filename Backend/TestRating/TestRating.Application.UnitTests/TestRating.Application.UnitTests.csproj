@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestRating.Application\TestRating.Application.csproj" />
+    <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
