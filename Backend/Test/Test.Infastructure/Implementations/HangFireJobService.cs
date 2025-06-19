@@ -46,5 +46,18 @@ namespace Test.Infrastructure.Implementations
         {
             recurringJobManager.AddOrUpdate(jobId, methodCall, cronExpression);
         }
+
+        public bool JobIsComplete(string jobId)
+        {
+            using var connection = JobStorage.Current.GetConnection();
+            var jobData = connection.GetJobData(jobId);
+
+            if (jobData is not null)
+            {
+                return jobData.State == "Succeeded";
+            }
+
+            return false;
+        }
     }
 }

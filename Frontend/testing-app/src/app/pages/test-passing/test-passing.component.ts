@@ -10,6 +10,9 @@ import { Subscription } from 'rxjs';
 import { ModalService } from '../../core/services/Modal.service';
 import { TestResultComponent } from '../../shared/components/modals/test-result/test-result.component';
 import { UrlService } from '../../core/services/UrlService.service';
+import { SignalRService } from '../../core/services/SignalRService.service';
+
+export let browserRefresh = false;
 
 @Component({
   selector: 'app-test-passing',
@@ -41,7 +44,8 @@ export class TestPassingComponent {
       private httpService: HttpService,
       private modalService: ModalService,
       private viewContainerRef: ViewContainerRef,
-      protected urlService: UrlService
+      protected urlService: UrlService,
+      private signalRService: SignalRService
     ) {
     const navigation = router.getCurrentNavigation();    
     const testToPass = navigation?.extras.state?.["test-to-pass"];
@@ -81,11 +85,33 @@ export class TestPassingComponent {
     }
   }
 
+  ngOnInit() {
+    if(this.test?.DurationInMinutes != null) {
+      this.signalRService.HubSessionConnection.connect();
+  
+      this.signalRService.HubSessionConnection.connection
+      .on("TestStoped", (data: any) => {
+        this.modalService.openModa(this.viewContainerRef, TestResultComponent, {
+            sessionId: data
+          }).subscribe({
+            complete: () => {
+              this.routeSubscribe.unsubscribe();
+              this.router.navigate(["/profile"]);
+            }
+          });
+      });
+    }
+  }
+
   handleStopTest() {
     const requestUrl = "testing/TestSession/StopTest";
     this.httpService.postRequest(requestUrl, {})
     .subscribe({
       next: (data: any) => {
+        if(this.test?.DurationInMinutes != null) {
+          this.signalRService.HubSessionConnection.disconnect();
+        }
+
         this.modalService.openModa(this.viewContainerRef, TestResultComponent, {
           sessionId: data
         }).subscribe({

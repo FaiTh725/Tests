@@ -123,8 +123,8 @@ export class ProfileComponent {
             }))]
           });
         },
-        error: _ => {
-          console.log("unknow error");
+        error: error => {
+          console.log(error);
         }
       });
   }

@@ -25,9 +25,9 @@ export class NotificationsComponent {
   }
   
   ngOnInit() {
-    this.signlaRService.connection();
+    this.signlaRService.HubNotificationConnection.connect();
 
-    this.signlaRService.HubConnection
+    this.signlaRService.HubNotificationConnection.connection
     .on("SendListNotifications", (data: any) => {
       this.notifications = data.map((notification: any) => ({
         Id: notification.id,
@@ -39,7 +39,7 @@ export class NotificationsComponent {
       }));
     });
     
-    this.signlaRService.HubConnection
+    this.signlaRService.HubNotificationConnection.connection
     .on("Send", (data: any) => {
       console.log("get data from signalr");
       

@@ -7,12 +7,15 @@ using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Redis.OM;
+using StackExchange.Redis;
 using System.Text;
 using Test.Application.Common.Interfaces;
 using Test.Application.Consumers.FileConsumers;
@@ -39,7 +42,8 @@ namespace Test.Infrastructure
                 .AddJwtAuthorization(configuration)
                 .AddHangfireProvider(configuration)
                 .AddMasstransitProvider(configuration)
-                .AddRedisProvider(configuration);
+                .AddRedisProvider(configuration)
+                .AddRedisCache(configuration);
 
             services.AddScoped<IBackgroundJobService, HangFireJobService>();
             services.AddScoped<IMessagePublisher, RabbitMessagePublisher>();
@@ -47,6 +51,7 @@ namespace Test.Infrastructure
 
             services.AddSingleton<IBlobService, AzuriteStorageService> ();
             services.AddSingleton<ITokenService<ProfileToken>, ProfileTokenService> ();
+            services.AddSingleton<ICacheService, RedisCacheService>();
 
             services.AddHostedService<CreateRedisOmIndexes>();
             services.AddHostedService<ClearInactiveSessionsBackgroundService>();
@@ -218,6 +223,23 @@ namespace Test.Infrastructure
                 throw new AppConfigurationException("Connection string to redis");
 
             services.AddSingleton(new RedisConnectionProvider(redisConnection));
+
+            return services;
+        }
+
+        private static IServiceCollection AddRedisCache(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var redisCacheConnection = configuration
+                .GetConnectionString("RedisCacheConnection") ?? 
+                throw new AppConfigurationException("Redis cache connection string");
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisCacheConnection;
+                options.InstanceName = "Testing";
+            });
 
             return services;
         }

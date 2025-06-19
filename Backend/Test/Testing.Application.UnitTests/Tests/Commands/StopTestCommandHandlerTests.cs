@@ -1,6 +1,8 @@
 ﻿using Application.Shared.Exceptions;
+using Castle.Core.Logging;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Xml.Linq;
 using Test.Application.Commands.Test.StopTest;
@@ -23,6 +25,8 @@ namespace Testing.Application.UnitTests.Tests.Commands
         private readonly Mock<ITestEvaluatorService> testEvaluatorServiceMock;
         private readonly Mock<ITempDbService<TempTestSession>> tempDbServiceMock;
         private readonly Mock<IBackgroundJobService> backgroundJobServiceMock;
+        private readonly Mock<ITestNotificationService> testNotificationMock;
+        private readonly Mock<ILogger<StopTestHandler>> loggerMock;
 
         private readonly StopTestHandler handler;
 
@@ -34,10 +38,13 @@ namespace Testing.Application.UnitTests.Tests.Commands
             testEvaluatorServiceMock = new();
             tempDbServiceMock = new();
             backgroundJobServiceMock = new();
+            testNotificationMock = new();
+            loggerMock = new();
 
             handler = new StopTestHandler(
                 unitOfWorkMock.Object, tempDbServiceMock.Object, 
-                testEvaluatorServiceMock.Object, backgroundJobServiceMock.Object);
+                testEvaluatorServiceMock.Object, backgroundJobServiceMock.Object,
+                testNotificationMock.Object, loggerMock.Object);
 
             unitOfWorkMock.Setup(x => x.SessionRepository)
                 .Returns(sessionRepositoryMock.Object);

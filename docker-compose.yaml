@@ -129,6 +129,7 @@ services:
       - "5302:5302"
     environment:
       - ConnectionStrings__RedisConnection=redis://:${REDIS_PASSWORD}@redis:6379
+      - ConnectionStrings__RedisCacheConnection=redis:6379,password=${REDIS_PASSWORD}
       - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
       - AzuriteSetting__Url=https://azurite_storage:10000/${AZURITE_USER}
       - AzuriteSetting__Password=${AZURITE_PASSWORD}

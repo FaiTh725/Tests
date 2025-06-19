@@ -1,7 +1,7 @@
 using Serilog;
-using System.Text.Json.Serialization;
 using Test.API.Extensions;
 using Test.API.Grpc.Services;
+using Test.API.Hubs.Instance;
 using Test.API.Middlewares;
 using Test.Application;
 using Test.Dal;
@@ -37,6 +37,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<TestSessionHub>("/hub/test-session");
 
 app.ConfigureHangfireDashBoard();
 

@@ -1,34 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { IHubConnection } from '../../shared/interfaces/utils/IHubConnection';
+import { NotificationConnection } from '../classes/signalr-connections/NotificationConnection';
+import { TestSessionConnection } from '../classes/signalr-connections/TestSessionConnection';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
-  hubUrl = "wss://localhost:5502/notification/hub";
-  private hubConnection: HubConnection;
+  private notificationConnection!: IHubConnection;
+  private testSessionConnection!: IHubConnection;
 
   constructor() {
-    this.hubConnection = new HubConnectionBuilder()
-    .withUrl(this.hubUrl, {
-      skipNegotiation: true,
-      transport: HttpTransportType.WebSockets
-    })
-    .withAutomaticReconnect()
-    .build();
+    this.notificationConnection = new NotificationConnection();
+    this.testSessionConnection = new TestSessionConnection();
   }
 
-  public get HubConnection() {
-    return this.hubConnection;
-  }
+  public get HubNotificationConnection(): IHubConnection {
+    return this.notificationConnection;
+  };
 
-  async connection(): Promise<void> {
-    try {
-      this.hubConnection.start();
-      console.log("connected to hub");
-    }
-    catch (error) {
-      console.log(error);
-    }
+  public get HubSessionConnection(): IHubConnection {
+    return this.testSessionConnection;
   }
 }

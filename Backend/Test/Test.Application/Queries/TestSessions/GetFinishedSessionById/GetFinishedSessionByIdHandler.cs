@@ -105,7 +105,7 @@ namespace Test.Application.Queries.TestSessions.GetFinishedSessionById
                     {
                         Id = y.Id,
                         Answer = y.Answer,
-                        QuestionAnswerImages = answerImages[x.Id].Result.ToList()
+                        QuestionAnswerImages = answerImages[y.Id].Result.ToList()
                     }).ToList(),
                     ProfileAnswers = profileAnswers.Select(y => new ProfileQuestionAnswers
                     {
