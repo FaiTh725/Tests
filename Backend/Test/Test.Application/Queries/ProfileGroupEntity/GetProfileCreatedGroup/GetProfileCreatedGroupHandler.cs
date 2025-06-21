@@ -32,21 +32,15 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
                 throw new BadRequestException("Profile doesnt exist");
             }
 
-            var allGroups = await unitOfWork.ProfileGroupRepository
-                .GetProfileGroupsByCriteria(
-                    new GroupsByProfileIdSpecification(
-                        profile.Id),
-                    cancellationToken);
-
             var groups = await unitOfWork.ProfileGroupRepository
-                .GetProfileGroupsByCriteria(
+                .GetPaginatedProfileGroupsByCriteria(
                     new GroupsByProfileIdPaginationSpecification(
                         profile.Id,
                         request.Page,
                         request.PageSize), 
                     cancellationToken);
 
-            var profilesId = groups
+            var profilesId = groups.Items
                 .SelectMany(x => x.MembersId)
                 .Distinct()
                 .ToList();
@@ -66,22 +60,19 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
                         Name = x.Name,   
                     });
 
-
-            var createdGroups = groups.Select(group => new GroupWithMembers
-            {
-                Id = group.Id,
-                Name = group.GroupName,
-                Members = group.MembersId
-                    .Where(profilesDictionary.ContainsKey)
-                    .Select(id => profilesDictionary[id])
-            });
-
             return new PaginationResponse<GroupWithMembers> 
             { 
-                Data = createdGroups,
+                Data = groups.Items.Select(group => new GroupWithMembers
+                {
+                    Id = group.Id,
+                    Name = group.GroupName,
+                    Members = group.MembersId
+                    .Where(profilesDictionary.ContainsKey)
+                    .Select(id => profilesDictionary[id])
+                }),
                 PageSize = request.PageSize,
                 Page = request.Page,
-                MaxSize = allGroups.Count()
+                MaxSize = groups.TotalCount
             };
 
         }

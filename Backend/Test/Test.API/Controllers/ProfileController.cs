@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Test.API.Contracts.Common;
+using Test.API.Filters;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileEntity.GetProfilesByEmail;
 using Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup;
 using Test.Application.Queries.ProfileGroupEntity.GetProfileJoinedGroup;
@@ -22,7 +25,7 @@ namespace Test.API.Controllers
 
         [HttpGet("[action]")]
         [Authorize]
-        public async Task<IActionResult> GetProfileByFistEmail(
+        public async Task<IActionResult> GetProfileByEmail(
             string email, CancellationToken cancellation)
         {
             var profiles = await mediator.Send(
@@ -37,33 +40,63 @@ namespace Test.API.Controllers
 
         [HttpGet("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> GetProfileTests(
-            [FromQuery]GetProfileTestsQuery request, CancellationToken cancellationToken)
+            [FromQuery]GetPaginatedDataRequest request, CancellationToken cancellationToken)
         {
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
+
+            var query = new GetProfileTestsQuery
+            {
+                ProfileEmail = profile.Email,
+                Page = request.Page,
+                PageCount = request.PageSize
+            };
+
             var tests = await mediator
-                .Send(request, cancellationToken);
+                .Send(query, cancellationToken);
 
             return Ok(tests);
         }
 
         [HttpGet("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> GetProfileCreatedGroups(
-            [FromQuery]GetProfileCreatedGroupQuery request, CancellationToken cancellationToken)
+            [FromQuery]GetPaginatedDataRequest request, CancellationToken cancellationToken)
         {
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
+
+            var query = new GetProfileCreatedGroupQuery
+            {
+                ProfileEmail = profile.Email,
+                PageSize = request.PageSize,
+                Page = request.Page
+            };
+
             var groups = await mediator
-                .Send(request, cancellationToken);
+                .Send(query, cancellationToken);
 
             return Ok(groups);
         }
 
         [HttpGet("[action]")]
         [Authorize]
+        [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> GetProfileJoinedGroups(
-            [FromQuery]GetProfileJoinedGroupQuery request, CancellationToken cancellationToken)
+            [FromQuery]GetPaginatedDataRequest request, CancellationToken cancellationToken)
         {
+            var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
+
+            var query = new GetProfileJoinedGroupQuery 
+            { 
+                Page = request.Page,
+                PageSize = request.PageSize,
+                ProfileEmail = profile.Email
+            };
+
             var groups = await mediator
-                .Send(request, cancellationToken);
+                .Send(query, cancellationToken);
 
             return Ok(groups);
         }

@@ -30,30 +30,22 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileJoinedGroup
                 throw new BadRequestException("Profile doesnt exist");
             }
 
-            var allGroup = await unitOfWork.ProfileGroupRepository
-                .GetProfileGroupsByCriteria(
-                    new GroupsProfileJoinedSpecification(
-                        profile.Id),
-                    cancellationToken);
-
             var groups = await unitOfWork.ProfileGroupRepository
-                .GetProfileGroupsByCriteria(
+                .GetPaginatedProfileGroupsByCriteria(
                     new GroupsProfileJoinedPaginationSpecification(
                         profile.Id, 
                         request.Page,
                         request.PageSize), 
                     cancellationToken);
 
-            var groupInfo = groups.Select(x => new GroupInfo
+            return new PaginationResponse<GroupInfo> 
+            { 
+                Data = groups.Items.Select(x => new GroupInfo
                 {
                     Id = x.Id,
                     Name = x.GroupName
-                });
-
-            return new PaginationResponse<GroupInfo> 
-            { 
-                Data = groupInfo,
-                MaxSize = allGroup.Count(),
+                }),
+                MaxSize = groups.TotalCount,
                 Page = request.Page,
                 PageSize = request.PageSize
             };

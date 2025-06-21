@@ -91,5 +91,32 @@ namespace Test.Dal.Specifications
             return resultList
                 .Select(x => x.ConvertToDomainEntity());
         }
+
+        public static async Task<PaginatedList<TEntity>> GetPaginatedQueryAsync<TEntity, TMongoEntity>(
+            IMongoCollection<TMongoEntity> collection,
+            BaseSpecification<TEntity> specification,
+            CancellationToken cancellationToken = default)
+            where TEntity : class
+            where TMongoEntity : IMongoPersistence<TEntity, TMongoEntity>
+        {
+            if(!specification.IsEnablePagination)
+            {
+                throw new InvalidOperationException("Passed specification must be include pagination");
+            }
+
+            var filter = specification.Criteria is null ?
+                Builders<TMongoEntity>.Filter.Empty :
+                new ExpressionConverter<TEntity, TMongoEntity>().Rewrite(specification.Criteria);
+
+            var totalCount = await collection.Find(filter).CountDocumentsAsync(cancellationToken);
+
+            var items = await GetQueryAsync(collection, specification, cancellationToken);
+
+            return new PaginatedList<TEntity>(
+                items.ToList(), 
+                specification.Page!.Value, 
+                specification.PageSize!.Value, 
+                totalCount);
+        }
     }
 }

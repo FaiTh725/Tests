@@ -64,6 +64,16 @@ namespace Test.Dal.Repositories
             return mongoTestSession?.ConvertToDomainEntity();
         }
 
+        public async Task<PaginatedList<TestSession>> GetPaginatedSessionsByCriteria(
+            BaseSpecification<TestSession> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetPaginatedQueryAsync(
+                context.Sessions, 
+                specification, 
+                cancellationToken);
+        }
+
         public async Task<IEnumerable<TestSession>> GetSessionsByCriteria(
             BaseSpecification<TestSession> specification, 
             CancellationToken cancellationToken = default)

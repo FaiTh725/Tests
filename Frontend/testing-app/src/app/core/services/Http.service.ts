@@ -117,7 +117,7 @@ export class HttpService {
     return throwError(() => error);
   }
 
-  private refreshToken() {
+  public refreshToken() {
     return this.httpClient.post(this.refreshTokenUrl, {}, {
       withCredentials: true
     });

@@ -32,31 +32,20 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
                 throw new NotFoundException("Feedback doesnt exist");
             }
 
-            var transaction = await unitOfWork.BeginTransactionAsync(
-                IsolationLevel.RepeatableRead, 
-                cancellationToken);
-
-            var allReplies = await unitOfWork.ReplyRepository
-                    .GetRepliesByCriteria(new RepliesByFeedbackIdWithOwnerSpecification(
-                        request.FeedbackId),
-                        cancellationToken);
-
-            var feedbackReplies = await unitOfWork.ReplyRepository
-                .GetRepliesByCriteria(new RepliesPaginationByFeedbackIdWithOwnerSpecification(
+            var paginatedFeedbackReplies = await unitOfWork.ReplyRepository
+                .GetPaginatedRepliesByCriteria(new RepliesPaginationByFeedbackIdWithOwnerSpecification(
                     request.FeedbackId,
                     request.Page,
                     request.PageSize),
                 cancellationToken);
 
-            await unitOfWork.CommitTransactionAsync(
-                transaction, cancellationToken);
-
             return new BasePaginationResponse<FeedbackReplyWithOwner>
             {
                 Page = request.Page,
                 PageCount = request.PageSize,
-                MaxCount = allReplies.Count(),
-                Items = feedbackReplies.Select(x => new FeedbackReplyWithOwner
+                MaxCount = paginatedFeedbackReplies.TotalCount,
+                Items = paginatedFeedbackReplies.Items.Select(x => 
+                new FeedbackReplyWithOwner
                 {
                     Id = x.Id,
                     FeedbackId = x.FeedbackId,

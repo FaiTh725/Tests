@@ -87,6 +87,16 @@ namespace Test.Dal.Repositories
             return mongoGroups.Select(x => x.ConvertToDomainEntity());
         }
 
+        public async Task<PaginatedList<ProfileGroup>> GetPaginatedProfileGroupsByCriteria(
+            BaseSpecification<ProfileGroup> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetPaginatedQueryAsync(
+                context.Groups, 
+                specification, 
+                cancellationToken);
+        }
+
         public async Task<ProfileGroup?> GetProfileGroup(
             long id, 
             CancellationToken cancellationToken = default)

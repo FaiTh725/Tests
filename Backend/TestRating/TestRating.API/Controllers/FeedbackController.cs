@@ -30,7 +30,7 @@ namespace TestRating.API.Controllers
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTestFeedbacks(
-            [FromQuery]GetFeedbacksByTestIdQuery request, CancellationToken cancellationToken)
+            [FromQuery] GetFeedbacksByTestIdQuery request, CancellationToken cancellationToken)
         {
             var feedbacks = await mediator
                 .Send(request, cancellationToken);
@@ -68,9 +68,9 @@ namespace TestRating.API.Controllers
         [HttpGet("[action]")]
         [Authorize]
         public async Task<IActionResult> GetFeebacksByFilter(
-            [FromQuery]GetFeedbacksByTestIdAndRatingQuery query, CancellationToken cancellationToken)
+            [FromQuery]GetFeedbacksByTestIdAndRatingQuery request, CancellationToken cancellationToken)
         {
-            var feedbacks = await mediator.Send(query, cancellationToken);
+            var feedbacks = await mediator.Send(request, cancellationToken);
 
             return Ok(feedbacks);
         }

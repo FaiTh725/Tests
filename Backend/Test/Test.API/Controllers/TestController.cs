@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Test.API.Contracts.Common;
 using Test.API.Contracts.Test;
 using Test.API.Contracts.TestAccess;
 using Test.API.Filters;
@@ -70,11 +71,17 @@ namespace Test.API.Controllers
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTestsPagination(
-            [FromQuery]GetTestsQuery request,
+            [FromQuery]GetPaginatedDataRequest request,
             CancellationToken cancellationToken)
         {
+            var query = new GetTestsQuery
+            {
+                Page = request.Page,
+                PageSize = request.PageSize,
+            };
+
             var tests = await mediator
-                .Send(request, cancellationToken);
+                .Send(query, cancellationToken);
 
             return Ok(tests);
         }

@@ -27,12 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Application.Shared">
-      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

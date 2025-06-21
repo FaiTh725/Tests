@@ -26,18 +26,14 @@ namespace TestRating.Dal.Repositories
             return replyEntity.Entity;
         }
 
-        public async Task<IEnumerable<FeedbackReply>> GetRepliesByCriteria(
+        public async Task<PaginatedList<FeedbackReply>> GetPaginatedRepliesByCriteria(
             Specification<FeedbackReply> specification, 
-            int page, 
-            int pageSize, 
             CancellationToken cancellationToken = default)
         {
-            return await SpecificationEvaluator.GetQuery(
-                context.Replies,
-                specification)
-                .Skip( (page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync(cancellationToken);
+            return await SpecificationEvaluator.GetPaginatedQuery(
+                context.Replies, 
+                specification, 
+                cancellationToken);
         }
 
         public async Task<IEnumerable<FeedbackReply>> GetRepliesByCriteria(

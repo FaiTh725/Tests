@@ -17,6 +17,8 @@ namespace Test.Domain.Repositories
 
         Task<TestEntity?> GetTestByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken = default);
 
+        Task<PaginatedList<TestEntity>> GetPaginatedTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken = default);
+
         Task<IEnumerable<TestEntity>> GetTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken = default);
     }
 }

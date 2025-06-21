@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Test.API.Contracts.Common;
 using Test.API.Contracts.Test;
 using Test.API.Filters;
 using Test.Application.Commands.Test.SendTestAnswer;
@@ -58,7 +59,7 @@ namespace Test.API.Controllers
         [Authorize]
         [ServiceFilter(typeof(VerifyProfileFilter))]
         public async Task<IActionResult> GetProfileSessions(
-            int page, int pageSize, 
+            [FromQuery]GetPaginatedDataRequest request, 
             CancellationToken cancellationToken)
         {
             var profile = (VerifiedProfile)HttpContext.Items["profile"]!;
@@ -66,8 +67,8 @@ namespace Test.API.Controllers
             var sessions = await mediator.Send(new GetProfileSessionsResultsQuery
             {
                 ProfileId = profile.Id,
-                Page = page,
-                PageSize = pageSize,
+                Page = request.Page,
+                PageSize = request.PageSize,
             }, 
             cancellationToken);
 

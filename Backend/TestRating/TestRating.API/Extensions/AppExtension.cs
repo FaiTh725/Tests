@@ -5,18 +5,10 @@ using Serilog;
 using Serilog.Sinks.Network;
 using Test.API.Grpc;
 using TestRating.API.Configurations;
-using TestRating.API.Contracts.Feedback;
-using TestRating.API.Contracts.FeedbackReply;
-using TestRating.API.Contracts.FeedbackReport;
 using TestRating.API.Filters;
 using TestRating.API.Grpc.Services;
-using TestRating.API.Validators.FeedbackValidators;
-using TestRating.API.Validators.ReplyValidators;
-using TestRating.API.Validators.ReportFeedbackValidators;
 using TestRating.Application.Common.Constants;
 using TestRating.Application.Common.Interfaces;
-using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
-using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
 
 namespace TestRating.API.Extensions
 {
@@ -82,15 +74,7 @@ namespace TestRating.API.Extensions
         {
             services.AddFluentValidationAutoValidation();
 
-            services.AddScoped<IValidator<CreateFeedbackRequest>, CreateFeedbackValidator>();
-            services.AddScoped<IValidator<ChangeFeedbackRequest>, ChangeFeedbackValidator>();
-            services.AddScoped<IValidator<GetFeedbacksByTestIdQuery>, GetTestFeedbacksValidator>();
-
-            services.AddScoped<IValidator<SendReplyRequest>, SendReplyValidator>();
-            services.AddScoped<IValidator<ChangeReplyRequest>, ChangeReplyValidator>();
-            services.AddScoped<IValidator<GetFeedbackRepliesQuery>, GetFeedbackRepliesValidator>();
-
-            services.AddScoped<IValidator<SendReportRequest>, SendReportValidator>();
+            services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
             return services;
         }

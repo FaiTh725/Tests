@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
-using Test.Application.Contracts.Common;
+using Test.API.Contracts.Common;
 
 namespace Test.API.Validators.Common
 {
-    public class PaginationValidator<T> : 
-        AbstractValidator<T>
-        where T : PaginationResponse<T>
+    public class PaginationValidator : 
+        AbstractValidator<GetPaginatedDataRequest>
     {
         public PaginationValidator()
         {

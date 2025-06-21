@@ -15,6 +15,8 @@ namespace TestRating.Domain.Repositories
 
         Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
         
+        Task<PaginatedList<Feedback>> GetPaginatedFeedbacksByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
+        
         Task<IEnumerable<Feedback>> GetFeedbacksExcludeFiltersByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Feedback>> GetFeedbacks(CancellationToken cancellationToken = default);

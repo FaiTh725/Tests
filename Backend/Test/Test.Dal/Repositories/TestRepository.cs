@@ -77,6 +77,17 @@ namespace Test.Dal.Repositories
             }
         }
 
+        public async Task<PaginatedList<TestEntity>> GetPaginatedTestsByCriteria(
+            BaseSpecification<TestEntity> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator
+                .GetPaginatedQueryAsync(
+                    context.Tests,
+                    specification,
+                    cancellationToken);
+        }
+
         public async Task<TestEntity?> GetTest(
             long id, CancellationToken cancellationToken = default)
         {

@@ -30,17 +30,17 @@ namespace Test.Application.Queries.Test.GetProfileTests
                 throw new NotFoundException("Profile doesnt exist");
             }
 
-            var allTests = await unitOfWork.TestRepository
-                .GetTestsByCriteria(
-                new TestsByProfileIdWithSpecification(profile.Id),
+            var paginatedProfileTests = await unitOfWork.TestRepository
+                .GetPaginatedTestsByCriteria(
+                new TestsByProfileIdWithPaginationSpecification(
+                    profile.Id, 
+                    request.Page, 
+                    request.PageCount),
                 cancellationToken);
 
-            var profileTests = await unitOfWork.TestRepository
-                .GetTestsByCriteria(
-                new TestsByProfileIdWithPaginationSpecification(profile.Id, request.Page, request.PageCount),
-                cancellationToken);
-
-            var tests = profileTests.Select(x => new TestInfo
+            return new PaginationResponse<TestInfo>
+            {
+                Data = paginatedProfileTests.Items.Select(x => new TestInfo
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -55,12 +55,8 @@ namespace Test.Application.Queries.Test.GetProfileTests
                         Email = profile.Email,
                         Name = profile.Name
                     }
-                });
-
-            return new PaginationResponse<TestInfo>
-            {
-                Data = tests,
-                MaxSize = allTests.Count(),
+                }),
+                MaxSize = paginatedProfileTests.TotalCount,
                 Page = request.Page,
                 PageSize = request.PageCount
             };

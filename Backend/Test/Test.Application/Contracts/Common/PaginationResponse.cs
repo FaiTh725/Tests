@@ -10,6 +10,6 @@ namespace Test.Application.Contracts.Common
 
         public int PageSize { get; set; }
 
-        public int MaxSize { get; set; }
+        public long MaxSize { get; set; }
     }
 }

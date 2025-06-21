@@ -1,9 +1,13 @@
 import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionState } from "@microsoft/signalr";
 import { IHubConnection } from "../../../shared/interfaces/utils/IHubConnection";
+import { inject } from "@angular/core";
+import { HttpService } from "../../services/Http.service";
 
 export class TestSessionConnection implements IHubConnection {
   private connectionUrl = "wss://localhost:5502/testing/hub";
   private hubConnection!: HubConnection;
+
+  private httpService = inject(HttpService);
 
   constructor() {
     this.hubConnection = new HubConnectionBuilder()
@@ -22,7 +26,16 @@ export class TestSessionConnection implements IHubConnection {
       console.log("connect to notification hub");
     }
     catch {
-      console.error("connection to the hub with error");
+      this.httpService.refreshToken()
+      .subscribe({
+        complete: async () => {
+          await this.hubConnection.start();
+          console.log("reconnect to hub");
+        },
+        error: _ => {
+          console.error("token is realy expired");
+        }
+      });
     }
   }
 

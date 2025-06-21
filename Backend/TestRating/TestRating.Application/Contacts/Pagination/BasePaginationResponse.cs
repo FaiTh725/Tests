@@ -8,6 +8,6 @@
 
         public int PageCount { get; set; }
 
-        public int MaxCount { get; set; }
+        public long MaxCount { get; set; }
     }
 }

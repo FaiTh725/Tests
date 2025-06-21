@@ -23,8 +23,6 @@ namespace ApiGateway.Extensions
                 .GetValue<string>("AllowedUrl") ??
                 throw new AppConfigurationException("Allowed client url isnt configured");
 
-            Console.WriteLine(corsAllowUrl);
-
             services.AddCors(conf =>
             {
                 conf.AddPolicy("client", policy => 

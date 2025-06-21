@@ -50,5 +50,28 @@ namespace TestRating.Dal.Specification
 
             return query;
         }
+
+        public static async Task<PaginatedList<T>> GetPaginatedQuery<T>(
+            IQueryable<T> inputQuery,
+            Specification<T> specification,
+            CancellationToken cancellationToken = default)
+            where T : class
+        {
+            if (!specification.IsEnablePagination)
+            {
+                throw new InvalidOperationException("Passed specification must be include pagination");
+            }
+
+            var query = GetQuery(inputQuery, specification);
+
+            var countElements = inputQuery.Count(specification.Criteria ?? (_ => true));
+
+            return new PaginatedList<T>(
+                await query.ToListAsync(cancellationToken), 
+                specification.Page!.Value, 
+                specification.PageSize!.Value, 
+                countElements);
+
+        }
     }
 }

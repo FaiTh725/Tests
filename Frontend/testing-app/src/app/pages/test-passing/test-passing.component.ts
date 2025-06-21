@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { TestType } from '../../shared/interfaces/tests/TestType';
 import { QuestionType } from '../../shared/interfaces/questions/QuestionType';
@@ -11,13 +11,14 @@ import { ModalService } from '../../core/services/Modal.service';
 import { TestResultComponent } from '../../shared/components/modals/test-result/test-result.component';
 import { UrlService } from '../../core/services/UrlService.service';
 import { SignalRService } from '../../core/services/SignalRService.service';
+import { TimerComponent } from "../../shared/components/timer/timer.component";
 
 export let browserRefresh = false;
 
 @Component({
   selector: 'app-test-passing',
   standalone: true,
-  imports: [ImageSliderComponent, CommonModule, PrimaryButtonComponent],
+  imports: [ImageSliderComponent, CommonModule, PrimaryButtonComponent, TimerComponent],
   templateUrl: './test-passing.component.html',
   styleUrl: './test-passing.component.scss'
 })
@@ -30,6 +31,8 @@ export class TestPassingComponent {
   answersMemory: Record<number, number[]> = {};
 
   private routeSubscribe!: Subscription;
+
+  @ViewChild('timer') timerRef!: TimerComponent;
 
   get currentQuestion (): CloseQuestion | null {
     if (this.currentQuestionIndex !== null) {
@@ -100,6 +103,13 @@ export class TestPassingComponent {
             }
           });
       });
+    }
+  }
+
+  ngAfterViewInit() {
+    if(this.test?.TestType == TestType.Timed) {
+      this.timerRef.timerDurationInMinutes = this.test!.DurationInMinutes!;
+      this.timerRef.startTimer();
     }
   }
 

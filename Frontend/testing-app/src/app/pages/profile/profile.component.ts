@@ -11,6 +11,7 @@ import { TestWithQuestions } from '../../shared/interfaces/tests/TestWithQuestio
 import { CommonModule } from '@angular/common';
 import { TestResult } from '../../shared/interfaces/results/TestResult';
 import { TestResultCardComponent } from "../../shared/components/test-result-card/test-result-card.component";
+import { TimerComponent } from "../../shared/components/timer/timer.component";
 
 @Component({
   selector: 'app-profile',
@@ -42,7 +43,6 @@ export class ProfileComponent {
     private router: Router,
     private httpService: HttpService
   ) {
-
   }
   
   handleExit() {

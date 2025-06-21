@@ -15,5 +15,7 @@ namespace Test.Domain.Repositories
         Task DeleteTestAccess(long testAccess, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<TestAccess>> GetAccessesByCriteria(BaseSpecification<TestAccess> specification, CancellationToken cancellationToken = default);
+        
+        Task<PaginatedList<TestAccess>> GetPaginatedAccessesByCriteria(BaseSpecification<TestAccess> specification, CancellationToken cancellationToken = default);
     }
 }

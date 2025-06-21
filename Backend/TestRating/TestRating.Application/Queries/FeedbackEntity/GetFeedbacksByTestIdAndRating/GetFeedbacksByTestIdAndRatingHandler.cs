@@ -36,22 +36,14 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestIdAndR
                     $"{FeedbackValidator.MIN_FEEDBACK_RATING} - {FeedbackValidator.MAX_FEEDBACK_RATING}");
             }
 
-            using var transaction = await unitOfWork
-                .BeginTransactionAsync(IsolationLevel.RepeatableRead, cancellationToken);
-
-            var allFeedbacks = await unitOfWork.FeedbackRepository
-                .GetFeedbacksByCriteria(
-                new FeedbacksByTestIdAndRatingWithOwnerSpecification(
-                        request.TestId, request.Rating), 
-                cancellationToken);
-
-            var testFeedbacks = await unitOfWork.FeedbackRepository.GetFeedbacksByCriteria(
+            var testPaginatedFeedbacks = await unitOfWork.FeedbackRepository
+                .GetPaginatedFeedbacksByCriteria(
                 new FeedbacksPaginationByTestIdAndRatingWithOwnerSpecification(
                         request.TestId, request.Rating,
                         request.Page, request.PageSize),
                 cancellationToken);
 
-            var getFeedbacksImagesTasks = testFeedbacks
+            var getFeedbacksImagesTasks = testPaginatedFeedbacks.Items
                 .Select(async x => new FeedbackWithReviewsResponse
                 {
                     Id = x.Id,
@@ -76,14 +68,12 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestIdAndR
 
             var feedbacksResponse = await Task.WhenAll(getFeedbacksImagesTasks);
             
-            await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
-
             return new BasePaginationResponse<FeedbackWithReviewsResponse>
             {
                 Items = feedbacksResponse,
                 Page = request.Page,
                 PageCount = request.PageSize,
-                MaxCount = allFeedbacks.Count()
+                MaxCount = testPaginatedFeedbacks.TotalCount
             };
         }
     }

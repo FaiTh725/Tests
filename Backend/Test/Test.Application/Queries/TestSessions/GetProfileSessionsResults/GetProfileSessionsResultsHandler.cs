@@ -22,17 +22,12 @@ namespace Test.Application.Queries.TestSessions.GetProfileSessionsResults
             GetProfileSessionsResultsQuery request, 
             CancellationToken cancellationToken)
         {
-            var allProfileSessions = await unitOfWork.SessionRepository
-                .GetSessionsByCriteria(new GetProfileSessionsSpecifications(
-                    request.ProfileId), 
-                    cancellationToken);
-        
-            var profileSessions = await unitOfWork.SessionRepository
-                .GetSessionsByCriteria(new GetProfilePaginationSessionsSpecifications(
+            var profilePaginatedSessions = await unitOfWork.SessionRepository
+                .GetPaginatedSessionsByCriteria(new GetProfilePaginationSessionsSpecifications(
                     request.ProfileId, request.Page, request.PageSize),
                     cancellationToken);
 
-            var testFinishedIdList = profileSessions
+            var testFinishedIdList = profilePaginatedSessions.Items
                 .Select(x => x.TestId)
                 .Distinct()
                 .ToList();
@@ -49,7 +44,7 @@ namespace Test.Application.Queries.TestSessions.GetProfileSessionsResults
 
             return new PaginationResponse<SessionResult>
             {
-                Data = profileSessions.Select(x => new SessionResult
+                Data = profilePaginatedSessions.Items.Select(x => new SessionResult
                 { 
                     Id = x.Id,
                     Percent = x.Percent,
@@ -61,7 +56,7 @@ namespace Test.Application.Queries.TestSessions.GetProfileSessionsResults
                 }),
                 PageSize = request.PageSize,
                 Page = request.Page,
-                MaxSize = allProfileSessions.Count()
+                MaxSize = profilePaginatedSessions.TotalCount
             };
         }
     }

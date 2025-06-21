@@ -28,6 +28,7 @@ namespace Test.Application
             {
                 cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
 
+                cfg.AddOpenBehavior(typeof(GetCachedDataBehavior<,>));
                 cfg.AddOpenBehavior(typeof(DomainEventsDispatcherBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminTestAccessBehavior<,>));
                 cfg.AddOpenBehavior(typeof(OwnerAndAdminQuestionAccessBehavior<,>));

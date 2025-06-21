@@ -23,14 +23,14 @@ namespace Test.Application.Queries.Test.GetTests
             GetTestsQuery request, 
             CancellationToken cancellationToken)
         {
-            var tests = await unitOfWork.TestRepository
-                .GetTestsByCriteria(
+            var paginatedTests = await unitOfWork.TestRepository
+                .GetPaginatedTestsByCriteria(
                 new GetTestsPaginationSpecification(
                     request.Page, 
                     request.PageSize), 
                 cancellationToken);
 
-            var ownerId = tests
+            var ownerId = paginatedTests.Items
                 .Select(x => x.ProfileId)
                 .Distinct()
                 .ToList();
@@ -49,25 +49,20 @@ namespace Test.Application.Queries.Test.GetTests
                     Name = x.Name
                 });
 
-            var testsInfo = tests.Select(x => new TestInfo 
-            { 
-                Id = x.Id,
-                Name = x.Name,
-                CreatedTime = x.CreatedTime,
-                Description = x.Description,
-                DurationInMinutes = x.DurationInMinutes,
-                IsPublic = x.IsPublic,
-                TestType = x.TestType.ToString(),
-                Owner = ownersDictinary[x.ProfileId],
-            });
-
-            var allTests = await unitOfWork.TestRepository
-                .GetTests(cancellationToken);
-
             return new PaginationResponse<TestInfo> 
             {
-                Data = testsInfo,
-                MaxSize = allTests.Count(),
+                Data = paginatedTests.Items.Select(x => new TestInfo
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CreatedTime = x.CreatedTime,
+                    Description = x.Description,
+                    DurationInMinutes = x.DurationInMinutes,
+                    IsPublic = x.IsPublic,
+                    TestType = x.TestType.ToString(),
+                    Owner = ownersDictinary[x.ProfileId],
+                }),
+                MaxSize = paginatedTests.TotalCount,
                 Page = request.Page,
                 PageSize = request.PageSize,
             };

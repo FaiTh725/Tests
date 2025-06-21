@@ -161,5 +161,15 @@ namespace TestRating.Dal.Repositories
                 .AverageAsync(x => x.Rating, 
                 cancellationToken);
         }
+
+        public async Task<PaginatedList<Feedback>> GetPaginatedFeedbacksByCriteria(
+            Specification<Feedback> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetPaginatedQuery(
+                context.Feedbacks, 
+                specification, 
+                cancellationToken);
+        }
     }
 }

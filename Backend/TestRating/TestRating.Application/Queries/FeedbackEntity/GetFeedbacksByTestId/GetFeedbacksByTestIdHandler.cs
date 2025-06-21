@@ -1,5 +1,4 @@
-﻿using Application.Shared.Exceptions;
-using MediatR;
+﻿using MediatR;
 using System.Data;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Contacts.Feedback;
@@ -28,25 +27,15 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
             GetFeedbacksByTestIdQuery request, 
             CancellationToken cancellationToken)
         {
-            var transaction = await unitOfWork.BeginTransactionAsync(
-                IsolationLevel.RepeatableRead, 
-                cancellationToken);
-
-            var testFeedbacks = await unitOfWork.FeedbackRepository
-                    .GetFeedbacksByCriteria(
+            var testPaginatedFeedbacks = await unitOfWork.FeedbackRepository
+                    .GetPaginatedFeedbacksByCriteria(
                     new FeedbacksPaginationByTestIdWithOwnerAndReviewsSpecification(
                         request.TestId,
                         request.Page,
                         request.PageSize),
                     cancellationToken);
 
-            var allFeedbacks = await unitOfWork.FeedbackRepository
-                .GetFeedbacksByCriteria(
-                new FeedbacksByTestIdWithOwnerAndReviewsSpecification(
-                    request.TestId),
-                cancellationToken);
-
-            var getFeedbacksImagesTasks = testFeedbacks
+            var getFeedbacksImagesTasks = testPaginatedFeedbacks.Items
                 .Select(async x => new FeedbackWithReviewsResponse
                 {
                     Id = x.Id,
@@ -71,15 +60,12 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
 
             var feedbacksResponse = await Task.WhenAll(getFeedbacksImagesTasks);
 
-            await unitOfWork.CommitTransactionAsync(
-                transaction, cancellationToken);
-
             return new BasePaginationResponse<FeedbackWithReviewsResponse>
             {
                 Items = feedbacksResponse,
                 Page = request.Page,
                 PageCount = request.PageSize,
-                MaxCount = allFeedbacks.Count()
+                MaxCount = testPaginatedFeedbacks.TotalCount
             };
         }
     }

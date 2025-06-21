@@ -14,5 +14,7 @@ namespace Test.Domain.Repositories
         Task UpdateTestSession(long id, TestSession updatedSession, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<TestSession>> GetSessionsByCriteria(BaseSpecification<TestSession> specification, CancellationToken cancellationToken = default);
+        
+        Task<PaginatedList<TestSession>> GetPaginatedSessionsByCriteria(BaseSpecification<TestSession> specification, CancellationToken cancellationToken = default);
     }
 }
