@@ -1,6 +1,5 @@
 ﻿using Application.Shared.Exceptions;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
 using TestRating.Application.Contacts.Feedback;
 using TestRating.Application.Contacts.Pagination;

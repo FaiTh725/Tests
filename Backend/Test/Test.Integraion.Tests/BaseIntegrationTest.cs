@@ -9,7 +9,6 @@ using MongoDB.Driver;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.TestSession;
 using Test.Dal;
-using Test.Domain.Interfaces;
 
 namespace Test.Integration.Tests
 {
@@ -20,7 +19,6 @@ namespace Test.Integration.Tests
         protected IServiceProvider serviceProvider;
         protected ISender sender;
         protected HttpClient client;
-        protected INoSQLUnitOfWork unitOfWork;
         protected ITestHarness massTransitHarness;
         protected BlobServiceClient blobStorage;
         protected AppDbContext context;
@@ -59,7 +57,6 @@ namespace Test.Integration.Tests
             mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
 
             sender = scope.ServiceProvider.GetRequiredService<ISender>();
-            unitOfWork = scope.ServiceProvider.GetRequiredService<INoSQLUnitOfWork>();
             blobStorage = scope.ServiceProvider.GetRequiredService<BlobServiceClient>();
             context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             tempDbService = scope.ServiceProvider.GetRequiredService<ITempDbService<TempTestSession>>();

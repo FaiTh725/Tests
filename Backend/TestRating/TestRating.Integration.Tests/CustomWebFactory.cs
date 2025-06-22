@@ -1,9 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using DotNet.Testcontainers.Builders;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -20,7 +16,7 @@ using TestRating.Application.Consumers.Blobs;
 using TestRating.Application.Consumers.ProfileConsumers;
 using TestRating.Application.Consumers.TestConsumers;
 using TestRating.Dal;
-using TestRating.Integration.Tests.JwtAuthenticationMock;
+using TestRating.Integration.Tests.Extensions;
 
 namespace TestRating.Integration.Tests
 {
@@ -82,50 +78,17 @@ namespace TestRating.Integration.Tests
             Environment.SetEnvironmentVariable("RabbitMqSettings:Host", new Uri(rabbitMqContainer.GetConnectionString()).ToString());
             Environment.SetEnvironmentVariable("RabbitMqSettings:Password", "guest");
             Environment.SetEnvironmentVariable("RabbitMqSettings:User", "guest");
-
-            await RunMigrations();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureTestServices(services =>
             {
-                var dbDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(DbContextOptions<AppDbContext>));
-                var dbConnectionDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(DbConnection));
-                var massTransitDescriptors = services
-                    .Where(x => x.ServiceType.Namespace?.StartsWith("MassTransit") == true)
-                    .ToList();
-                var azuriteDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(BlobServiceClient));
-                var testExternalServiceDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(ITestExternalService));
-
-                if(testExternalServiceDescriptor is not null)
-                {
-                    services.Remove(testExternalServiceDescriptor);
-                }
-
-                if (dbDescriptor is not null)
-                {
-                    services.Remove(dbDescriptor);
-                }
-
-                if (dbConnectionDescriptor is not null)
-                {
-                    services.Remove(dbConnectionDescriptor);
-                }
-
-                if (azuriteDescriptor is not null)
-                {
-                    services.Remove(azuriteDescriptor);
-                }
-                
-                foreach (var massTransitDescriptor in massTransitDescriptors)
-                {
-                    services.Remove(massTransitDescriptor);
-                }
+                services.RemoveService(typeof(DbContextOptions<AppDbContext>));
+                services.RemoveService(typeof(DbConnection));
+                services.RemoveService(typeof(BlobServiceClient));
+                services.RemoveService(typeof(ITestExternalService));
+                services.RemoveServicesByNamespace("MassTransit");
 
                 services.AddDbContext<AppDbContext>(options =>
                 {
@@ -136,7 +99,7 @@ namespace TestRating.Integration.Tests
 
                 services.AddScoped(_ => TestExternalServiceMock.Object);
 
-                ConfigureTestAuthPolicy(services);
+                services.ConfigureTestAuthPolicy();
 
                 services.AddMassTransitTestHarness(conf =>
                 {
@@ -181,37 +144,6 @@ namespace TestRating.Integration.Tests
             };
 
             await Task.WhenAll(stopTasks);
-        }
-
-        private async Task RunMigrations()
-        {
-            using var scope = Services.CreateScope();
-
-            using var context = scope.ServiceProvider
-                .GetRequiredService<AppDbContext>();
-            await context.Database.MigrateAsync();
-        }
-
-        private void ConfigureTestAuthPolicy(IServiceCollection services)
-        {
-            services.AddTransient<IPolicyEvaluator>(serviceProvider => 
-                new TestPolicyEvaluator(ActivatorUtilities
-                    .CreateInstance<PolicyEvaluator>(serviceProvider)));
-
-            services
-             .AddAuthentication(opts =>
-             {
-                 opts.DefaultAuthenticateScheme = "Test";
-             })
-             .AddScheme<JwtBearerOptions, JwtAuthHandler>("Test", opts => { });
-            
-            services.AddAuthorization(opts =>
-            {
-                opts.DefaultPolicy = new AuthorizationPolicyBuilder()
-                 .AddAuthenticationSchemes("Test")
-                 .RequireAuthenticatedUser()
-                 .Build();
-            });
         }
     }
 }

@@ -1,4 +1,3 @@
-﻿using MongoDB.Driver;
 using Test.Dal.Adapters;
 using Test.Dal.Repositories;
 using Test.Domain.Interfaces;

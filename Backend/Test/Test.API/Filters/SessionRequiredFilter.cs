@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.TestSession;
-using Test.Domain.Entities;
 
 namespace Test.API.Filters
 {

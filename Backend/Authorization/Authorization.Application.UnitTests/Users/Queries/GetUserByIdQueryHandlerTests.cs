@@ -1,5 +1,4 @@
 ﻿using Application.Shared.Exceptions;
-using Authorization.Application.Contracts.User;
 using Authorization.Application.Queries.UserEntity.GetUserById;
 using Authorization.Domain.Entities;
 using Authorization.Domain.Interfaces;

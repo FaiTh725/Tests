@@ -13,16 +13,14 @@ namespace Authorization.Dal.Implementations
             this.context = context; 
         }
 
-        public async Task ApplyPendingMigrations(
-            CancellationToken cancellationToken = default)
+        public void ApplyPendingMigrations()
         {
-            await context.Database.MigrateAsync(cancellationToken);
+            context.Database.Migrate();
         }
 
-        public async Task<IEnumerable<string>> GetPendingMigrations(
-            CancellationToken cancellationToken = default)
+        public IEnumerable<string> GetPendingMigrations()
         {
-            return await context.Database.GetPendingMigrationsAsync(cancellationToken);
+            return context.Database.GetPendingMigrations();
         }
     }
 }

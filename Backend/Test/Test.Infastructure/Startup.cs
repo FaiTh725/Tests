@@ -7,15 +7,12 @@ using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Redis.OM;
-using StackExchange.Redis;
 using System.Text;
 using Test.Application.Common.Interfaces;
 using Test.Application.Consumers.FileConsumers;
@@ -26,8 +23,8 @@ using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.TestSession;
 using Test.Domain.Interfaces;
 using Test.Infrastructure.BackgroundServices;
-using Test.Infrastructure.Configurations;
 using Test.Infrastructure.Implementations;
+using Test.Infrastructure.Configurations;
 
 namespace Test.Infrastructure
 {
@@ -198,6 +195,7 @@ namespace Test.Infrastructure
                 conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                 conf.AddConsumer<TestAccessNotificationConsumer>();
+
 
                 conf.UsingRabbitMq((context, configurator) =>
                 {

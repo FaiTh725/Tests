@@ -47,12 +47,12 @@ namespace Authorization.Domain.Entities
 
             if (!UserValidator.IsValidEmail(email))
             {
-                return Result.Failure<User>("Email is invalid, must contains one letter and one number");
+                return Result.Failure<User>("Email is invalid, must contain @ and a dot after it");
             }
 
             if (string.IsNullOrWhiteSpace(roleName))
             {
-                return Result.Failure<User>("Role is null");
+                return Result.Failure<User>("Role is empty or null");
             }
 
             return Result.Success(new User(

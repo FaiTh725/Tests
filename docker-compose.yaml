@@ -30,8 +30,8 @@ services:
       - "5502:5502"
       - "5501:5501"
     environment:
-      - AllowedUrl=https://localhost:4200
-      # - AllowedUrl=https://localhost:6002
+      # - AllowedUrl=https://localhost:4200
+      - AllowedUrl=https://localhost:6002
       - ASPNETCORE_URLS=https://+:5502;http://+:5501
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -45,7 +45,6 @@ services:
       - testing_testing_api
       - testing_authorization_api
 
-  # disable for local development
   # testing_logstash:
   #   image: logstash:8.16.6
   #   container_name: testing_logstash_service
@@ -286,6 +285,18 @@ services:
       interval: 5s
       timeout: 30s
       retries: 10
+
+  init_mongo_db: 
+    image: mongo
+    container_name: testing_init_mongo-replica
+    entrypoint: ["bash", "-c"]
+    command: >
+      mongosh --host testing_mongo_db -u ${MONGO_USER} -p ${MONGO_PASSWORD} --authenticationDatabase admin --eval "rs.initiate({_id: 'rs0', members: [{ _id: 0, host: 'testing_mongo_db:27017' }]})"
+    networks:
+      - testing_mongo_net
+    depends_on:
+      mongo_db:
+        condition: service_healthy
 
   testing_mongo_express:
     image: mongo-express

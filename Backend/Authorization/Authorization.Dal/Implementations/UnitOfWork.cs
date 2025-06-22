@@ -4,7 +4,6 @@ using Authorization.Domain.Interfaces;
 using Authorization.Domain.Primitives;
 using Authorization.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 
 namespace Authorization.Dal.Implementations
@@ -17,8 +16,6 @@ namespace Authorization.Dal.Implementations
         private readonly Lazy<IRoleRepository> roleRepository;
         private readonly Lazy<IRefreshTokenRepository> refreshTokenRepository;
 
-        // TODO: refactoring - not thread safety
-        private IDbContextTransaction transaction;
         private bool disposed = false;
 
         public UnitOfWork(
@@ -137,7 +134,6 @@ namespace Authorization.Dal.Implementations
             if(!disposed && disposing)
             {
                 context.Dispose();
-                transaction?.Dispose();
             }
             disposed = true;
         }

@@ -6,6 +6,7 @@ using Authorization.Application.Commands.Email.SendConfirmCode;
 using Authorization.Application.Commands.Email.VerifyCode;
 using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
+using Authorization.Domain.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Serilog;
@@ -32,6 +33,7 @@ namespace Authorization.API.Extension
             this IServiceCollection services)
         {
             services.AddFluentValidationAutoValidation();
+
             services.AddScoped<IValidator<RegisterCommand>, RegisterUserValidator>();
             services.AddScoped<IValidator<LoginCommand>, LoginUserValidator>();
 
@@ -84,6 +86,28 @@ namespace Authorization.API.Extension
                 .CreateLogger();
 
             return services;
+        }
+
+        public static void ApplyMigrations(
+            this WebApplication app)
+        {
+            var scope = app.Services.CreateAsyncScope();
+            var migrationService = scope.ServiceProvider
+                .GetRequiredService<IMigrationService>();
+            var logger = scope.ServiceProvider
+                .GetRequiredService<ILogger<Program>>();
+
+            var pendingMigrations = migrationService.GetPendingMigrations();
+
+            if (pendingMigrations.Any())
+            {
+                migrationService.ApplyPendingMigrations();
+                logger.LogInformation("Apply pending migrations");
+            }
+            else
+            {
+                logger.LogInformation("Migrations already applied");
+            }
         }
     }
 }

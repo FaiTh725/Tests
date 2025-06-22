@@ -2,8 +2,8 @@
 {
     public interface IMigrationService
     {
-        Task ApplyPendingMigrations(CancellationToken cancellationToken = default);
+        void ApplyPendingMigrations();
 
-        Task<IEnumerable<string>> GetPendingMigrations(CancellationToken cancellationToken = default);
+        IEnumerable<string> GetPendingMigrations();
     }
 }

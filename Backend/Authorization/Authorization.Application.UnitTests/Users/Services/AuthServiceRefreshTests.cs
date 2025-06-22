@@ -89,6 +89,7 @@ namespace Authorization.Application.UnitTests.Users.Services
             var refreshToken = RefreshToken.Initialize(
                     oldRefreshToken, user, 
                     DateTime.UtcNow.AddDays(1)).Value;
+
             // set expire on date to the past
             var type = typeof(RefreshToken);
             var property = type.GetProperty("ExpireOn");
@@ -146,13 +147,16 @@ namespace Authorization.Application.UnitTests.Users.Services
             // Assert
             newTokensPair.Item1.Should().Be(newAccessToken);
             newTokensPair.Item2.Should().Be(newRefreshToken);
+
             mediatorMock.Verify(x => x.Send(
                 It.IsAny<RefreshRefreshTokenCommand>(), 
                 It.IsAny<CancellationToken>()), 
             Times.Once);
+
             tokenServiceMock.Verify(x => x.GenerateToken(
                 It.IsAny<UserTokenRequest>()), 
             Times.Once);
+
             tokenServiceMock.Verify(x => x.GenerateRefreshToken(), 
             Times.Once);
         }

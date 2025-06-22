@@ -18,7 +18,6 @@ namespace TestRating.Integration.Tests
         protected ISender sender;
         protected HttpClient client;
         protected AppDbContext context;
-        protected IUnitOfWork unitOfWork;
         protected ITestHarness massTransitHarness;
         protected BlobServiceClient blobStorage;
 
@@ -34,7 +33,6 @@ namespace TestRating.Integration.Tests
 
         public async Task DisposeAsync()
         {
-
             await massTransitHarness.InactivityTask;
             await massTransitHarness.Stop();
 
@@ -55,7 +53,6 @@ namespace TestRating.Integration.Tests
 
             context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             sender = scope.ServiceProvider.GetRequiredService<ISender>();
-            unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             blobStorage = scope.ServiceProvider.GetRequiredService<BlobServiceClient>();
 
             dbConnection = new NpgsqlConnection(factory.DbConnectionString);

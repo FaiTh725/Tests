@@ -25,7 +25,7 @@ namespace Test.Integration.Tests.API.Controllers
         }
 
         [Fact]
-        public async Task CreateTest_WhenProfileDoesntExist_ShouldReturns400Status()
+        public async Task CreateTest_WhenProfileDoesntExist_ShouldReturns404Status()
         {
             // Arrange
             var request = new CreateTestRequest()
@@ -48,7 +48,7 @@ namespace Test.Integration.Tests.API.Controllers
             var httpResponse = await client.PostAsUserAsync("/api/Test/CreateTest", request, user);
 
             // Assert
-            httpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            httpResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Theory]
