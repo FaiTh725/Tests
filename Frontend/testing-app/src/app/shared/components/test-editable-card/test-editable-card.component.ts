@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewContainerRef} from '@angular/core';
 import { PrimaryButtonComponent } from "../buttons/primary-button/primary-button.component";
 import { CommonModule, DatePipe } from '@angular/common';
 import { AddQuestionForm, AddQuestionFormComponent } from "../add-question-form/add-question-form.component";
 import { HttpService } from '../../../core/services/Http.service';
 import { TestQuestionCardComponent } from "../test-question-card/test-question-card.component";
 import { TestWithQuestions } from '../../interfaces/tests/TestWithQuestions';
+import { ModalService } from '../../../core/services/Modal.service';
+import { ShareTestComponent } from '../modals/share-test/share-test.component';
 
 @Component({
   selector: 'app-test-editable-card',
@@ -23,7 +25,9 @@ export class TestEditableCardComponent {
   isOpenToEdit = false;
 
   constructor(
-    private httpService: HttpService
+    private httpService: HttpService,
+    private modalService: ModalService,
+    private viewContainerRef: ViewContainerRef
   ) {
     
   }
@@ -79,5 +83,13 @@ export class TestEditableCardComponent {
         console.error("unknown error");
       }
     });
+  }
+
+  handleOpenShareModal() {
+    this.modalService.openModal(
+      this.viewContainerRef, 
+      ShareTestComponent, {
+        testId: this.test?.Id
+      })
   }
 }

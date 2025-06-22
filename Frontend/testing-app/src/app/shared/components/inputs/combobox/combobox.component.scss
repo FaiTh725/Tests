@@ -4,6 +4,10 @@
   border: 2px solid var(--shadow-color);
   padding: 10px;
   width: 100%;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--shadow-color);
 } 
 
 .combobox__selected-item {

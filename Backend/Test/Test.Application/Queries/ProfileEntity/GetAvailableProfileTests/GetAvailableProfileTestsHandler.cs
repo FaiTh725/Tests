@@ -9,35 +9,35 @@ using Test.Application.Queries.TestAccessEntity.Specifications;
 using Test.Domain.Enums;
 using Test.Domain.Interfaces;
 
-namespace Test.Application.Queries.ProfileGroupEntity.GetGroupTests
+namespace Test.Application.Queries.ProfileEntity.GetAvailableProfileTests
 {
-    public class GetGroupTestsHandler :
-        IRequestHandler<GetGroupTestsQuery, PaginationResponse<TestInfo>>
+    public class GetAvailableProfileTestsHandler :
+        IRequestHandler<GetAvailableProfileTestsQuery, PaginationResponse<TestInfo>>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
 
-        public GetGroupTestsHandler(
+        public GetAvailableProfileTestsHandler(
             INoSQLUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
 
         public async Task<PaginationResponse<TestInfo>> Handle(
-            GetGroupTestsQuery request, 
+            GetAvailableProfileTestsQuery request, 
             CancellationToken cancellationToken)
         {
-            var group = await unitOfWork.ProfileGroupRepository
-                .GetProfileGroup(request.GroupId, cancellationToken);
-
-            if(group is null)
+            var profile = await unitOfWork.ProfileRepository
+                .GetProfile(request.ProfileId, cancellationToken);
+        
+            if(profile is null)
             {
-                throw new BadRequestException("Group Doesnt exist");
+                throw new BadRequestException("Profile doesnt exist");
             }
 
             var paginatedAccesses = await unitOfWork.AccessRepository
                 .GetPaginatedAccessesByCriteria(
                 new GetAccessesPaginatedByTargetEntityIdAndTypeSpecification(
-                    request.GroupId, TargetAccessEntityType.Group,
+                    request.ProfileId, TargetAccessEntityType.Profile,
                     request.Page, request.PageSize),
                 cancellationToken);
 
@@ -46,7 +46,7 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetGroupTests
                 .ToList();
 
             var tests = await unitOfWork.TestRepository.GetTestsByCriteria(
-                new GetTestsByIdListSpecification(testsId), 
+                new GetTestsByIdListSpecification(testsId),
                 cancellationToken);
 
             var ownersId = tests
@@ -55,26 +55,26 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetGroupTests
                 .ToList();
 
             var owners = await unitOfWork.ProfileRepository
-                .GetProfilesByCriteria(new GetProfilesByIdListSpecification(ownersId), 
+                .GetProfilesByCriteria(new GetProfilesByIdListSpecification(ownersId),
                 cancellationToken);
 
             var ownersDictinary = owners.ToDictionary(
-                x => x.Id, 
-                x => new ProfileResponse 
-                { 
-                    Name = x.Name, 
-                    Email = x.Email, 
+                x => x.Id,
+                x => new ProfileResponse
+                {
+                    Name = x.Name,
+                    Email = x.Email,
                     Id = x.Id
                 });
 
 
             return new PaginationResponse<TestInfo>
             {
-                PageSize = request.PageSize,
-                Page = request.Page,
                 MaxSize = paginatedAccesses.TotalCount,
-                Data = tests.Select(x => new TestInfo 
-                { 
+                Page = request.Page,
+                PageSize = request.PageSize,
+                Data = tests.Select(x => new TestInfo
+                {
                     Owner = ownersDictinary[x.ProfileId],
                     Id = x.Id,
                     CreatedTime = x.CreatedTime,

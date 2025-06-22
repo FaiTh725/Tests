@@ -3,11 +3,12 @@ import { PrimaryButtonComponent } from "../buttons/primary-button/primary-button
 import { OwnedGroup } from '../../interfaces/groups/OwnedGroup';
 import { GroupMemberManagerComponent } from "../group-member-manager/group-member-manager.component";
 import { HttpService } from '../../../core/services/Http.service';
+import { GroupTestsComponent } from "../group-tests/group-tests.component";
 
 @Component({
   selector: 'app-owned-group',
   standalone: true,
-  imports: [PrimaryButtonComponent, GroupMemberManagerComponent],
+  imports: [PrimaryButtonComponent, GroupMemberManagerComponent, GroupTestsComponent],
   templateUrl: './owned-group.component.html',
   styleUrl: './owned-group.component.scss'
 })
@@ -19,6 +20,7 @@ export class OwnedGroupComponent {
 
   addMemberError: string =  "";
   isOpenEditSection: boolean = false;
+  isOpenTestsSection: boolean = false;
 
   constructor(
     private httpService: HttpService

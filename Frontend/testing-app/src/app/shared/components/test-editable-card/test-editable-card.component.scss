@@ -27,6 +27,9 @@
 .test-card-main-info__btn-wrapper {
   height: 60px;
 }
+.test-card-main-info__btn-wrapper + .test-card-main-info__btn-wrapper{
+  margin-left: 10px;
+}
 
 .test-card-edit {
   position: absolute;

@@ -143,9 +143,8 @@ export class ProfileComponent {
 
   getTests() {
     var requetsUrl = `testing/Profile/GetProfileTests?` +
-      `ProfileEmail=${this.userService.User?.Email}&` +
       `Page=${this.createdTestsPagination.Page}&` +
-      `PageCount=${this.createdTestsPagination.PageSize}`;
+      `PageSize=${this.createdTestsPagination.PageSize}`;
     this.httpService.getRequest(requetsUrl)
       .subscribe({
         next: (data: any) => {

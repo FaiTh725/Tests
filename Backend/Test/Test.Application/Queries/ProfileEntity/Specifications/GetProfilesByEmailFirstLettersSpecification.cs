@@ -9,8 +9,10 @@ namespace Test.Application.Queries.ProfileEntity.Specifications
         public GetProfilesByEmailFirstLettersSpecification(
             string email)
         {
+            var emailLower = email.ToLower();
+
             Criteria = profile => profile.Email.ToLower()
-                .StartsWith(email.ToLower());
+                .StartsWith(emailLower);
         }
     }
 }

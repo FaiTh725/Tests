@@ -1,0 +1,20 @@
+.available-test-card-main {
+  border-radius: 16px;
+  border: 2px solid var(--shadow-color);
+  border-bottom: 6px solid var(--shadow-color);
+  border-right: 6px solid var(--shadow-color);
+  padding: 20px;
+}
+
+.available-test-card-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.available-test-card-info {
+  font-family: var(--font-family);
+  font-size: 18px;
+  color: var(--shadow-color);
+  font-weight: 600;
+}

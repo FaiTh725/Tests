@@ -30,8 +30,8 @@ services:
       - "5502:5502"
       - "5501:5501"
     environment:
-      # - AllowedUrl=https://localhost:4200
-      - AllowedUrl=https://localhost:6002
+      - AllowedUrl=https://localhost:4200
+      # - AllowedUrl=https://localhost:6002
       - ASPNETCORE_URLS=https://+:5502;http://+:5501
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx

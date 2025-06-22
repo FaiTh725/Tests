@@ -6,6 +6,21 @@
         <p class="test-card-main-info__value">{{test?.CreatedTime | date: "dd.MM.yy"}}</p>
       </div>
       <div class="test-card-main-info__btn-wrapper">
+        @if(!test?.IsPublic) {
+          <app-primary-button [btnConfiguration]="{
+            Text: 'Share',
+            BackgroundColor: 'var(--light-blue-color)',
+            BorderColor: '#2c97c9',
+            BorderWith: 2,
+            FontSize: 18,
+            HoverBackgroundColor: '#5ec6f7',
+            HoverColor: 'var(--primary-write-color)',
+            TextColor: 'var(--primary-write-color)'}"
+            (handleClick)="handleOpenShareModal()">
+          </app-primary-button>
+        }
+      </div>
+      <div class="test-card-main-info__btn-wrapper">
         <app-primary-button [btnConfiguration]="{
           Text: 'Delete',
           BackgroundColor: 'var(--error-color)',

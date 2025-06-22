@@ -80,7 +80,7 @@ export class TestComponent {
   }
 
   handleStartTest() {
-    this.modalService.openModa(
+    this.modalService.openModal(
       this.viewContainerRef, WarningBeforeTestComponent)
     .subscribe(result => {
       if(result !== "confirm") {

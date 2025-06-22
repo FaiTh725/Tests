@@ -1,0 +1,45 @@
+<div class="share-test-main">
+  <div class="share-test-wrapper">
+    <div class="share-test-header">
+      <div>
+        <app-clear-button
+          (handleClick)="handleCloseModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="var(--light-blue-color)"><path d="m251.33-204.67-46.66-46.66L433.33-480 204.67-708.67l46.66-46.66L480-526.67l228.67-228.66 46.66 46.66L526.67-480l228.66 228.67-46.66 46.66L480-433.33 251.33-204.67Z"/></svg>
+        </app-clear-button>
+      </div>
+    </div>
+    <div class="share-test-form">
+      <p>Search profile or group to share the test</p>
+      <div class="share-test-form__input share-test-form__input-search">
+        <div class="share-test-form__input-search-wrapper">
+          <app-search
+            [items]="searchResult"
+            [displayProperty]="displayProperty"
+            [returnProperty]="'Id'"
+            (select)="handleSelectTargetEntity($event)"
+            (search)="handleSearch($event)">
+          </app-search>
+        </div>
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Add',
+          BackgroundColor: 'var(--primary-black-color)',
+          BorderColor: 'var(--shadow-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--primary-black-color)',
+          HoverColor: 'var(--light-blue-color)',
+          TextColor: 'var(--light-blue-color)'}"
+          (handleClick)="handleShareTest()">
+        </app-primary-button>
+      </div>
+      <div class="share-test-form__input">
+        <app-combobox 
+          [items]="shareTestEntityTypes" 
+          [selectedItemIndex]="form.TargetEntity"
+          (chooseItem)="form.TargetEntity=$event">
+        </app-combobox>
+      </div>
+      <p>{{errorMesage}}</p>
+    </div>
+  </div>
+</div>

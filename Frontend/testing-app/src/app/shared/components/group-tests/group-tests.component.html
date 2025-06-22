@@ -1,0 +1,30 @@
+@if (sectionIsOpen) {
+  <div class="group-tests">
+    <div class="group-tests-list">
+      @for (test of groupTests; track test.Id) {
+        <app-available-test-card [test]="test">
+        </app-available-test-card>
+      }
+    </div>
+    <div class="group-tests-load">
+      <app-clear-button
+        (handleClick)="handleLoadModeTests()">
+        <p class="group-tests-load-btn-content">Load more tests</p>
+      </app-clear-button>
+    </div>
+    <div class="group-edit-open-btn"
+      (click)="sectionIsOpen=false">
+      <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="m282-225-42-42 240-240 240 240-42 42-198-198-198 198Zm0-253-42-42 240-240 240 240-42 42-198-198-198 198Z"/></svg></p>
+      <p class="group-edit-open-btn__content">Hide</p>
+      <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="m282-225-42-42 240-240 240 240-42 42-198-198-198 198Zm0-253-42-42 240-240 240 240-42 42-198-198-198 198Z"/></svg></p>
+    </div>
+  </div>
+}
+@else {
+  <div class="group-edit-open-btn"
+    (click)="handleOpen()">
+    <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="M480-200 240-440l42-42 198 198 198-198 42 42-240 240Zm0-253L240-693l42-42 198 198 198-198 42 42-240 240Z"/></svg></p>
+    <p class="group-edit-open-btn__content">Tests</p>
+    <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="M480-200 240-440l42-42 198 198 198-198 42 42-240 240Zm0-253L240-693l42-42 198 198 198-198 42 42-240 240Z"/></svg></p>
+  </div>
+}

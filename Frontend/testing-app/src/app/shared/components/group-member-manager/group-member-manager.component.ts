@@ -75,7 +75,7 @@ export class GroupMemberManagerComponent {
       return;
     }
 
-    const requestUrl = `testing/Profile/GetProfileByFistEmail?email=${searchValue}`;
+    const requestUrl = `testing/Profile/GetProfileByFirstEmail?email=${searchValue}`;
     this.httpService.getRequest(requestUrl)
     .subscribe({
       next: (data: any) => {

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Test.API.Contracts.Group;
 using Test.API.Contracts.ProfileGroupEntity;
 using Test.API.Filters;
 using Test.Application.Commands.ProfileGroupEntity.AddGroupMember;
@@ -10,6 +11,8 @@ using Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup;
 using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Queries.ProfileGroupEntity.GetGroupById;
 using Test.Application.Queries.ProfileGroupEntity.GetGroupByIdWithMembers;
+using Test.Application.Queries.ProfileGroupEntity.GetGroupsByFirstLettersName;
+using Test.Application.Queries.ProfileGroupEntity.GetGroupTests;
 
 namespace Test.API.Controllers
 {
@@ -120,6 +123,34 @@ namespace Test.API.Controllers
             cancellationToken);
 
             return Ok(group);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetGroupPrivateTests(
+            [FromQuery]GetGroupTestsRequest request, CancellationToken cancellationToken)
+        {
+            var query = new GetGroupTestsQuery
+            {
+                GroupId = request.GroupId,
+                Page = request.Page,
+                PageSize = request.PageSize,
+            };
+
+            var tests = await mediator.Send(query, cancellationToken);
+
+            return Ok(tests);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetGroupsByFirstName(
+            [FromQuery]GetGroupsByFirstLettersNameQuery request, CancellationToken cancellationToken)
+        {
+            var groups = await mediator
+                .Send(request, cancellationToken);
+
+            return Ok(groups);
         }
     }
 }

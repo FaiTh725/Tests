@@ -27,7 +27,7 @@ export class TestResultCardComponent {
   }
 
   handleOpenDetails() {
-    this.modalService.openModa(this.viewContainerRef, 
+    this.modalService.openModal(this.viewContainerRef, 
       TestResultDetailsComponent, {
         sessionId: this.result?.Id
       });

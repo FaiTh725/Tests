@@ -94,7 +94,7 @@ export class TestPassingComponent {
   
       this.signalRService.HubSessionConnection.connection
       .on("TestStoped", (data: any) => {
-        this.modalService.openModa(this.viewContainerRef, TestResultComponent, {
+        this.modalService.openModal(this.viewContainerRef, TestResultComponent, {
             sessionId: data
           }).subscribe({
             complete: () => {
@@ -122,7 +122,7 @@ export class TestPassingComponent {
           this.signalRService.HubSessionConnection.disconnect();
         }
 
-        this.modalService.openModa(this.viewContainerRef, TestResultComponent, {
+        this.modalService.openModal(this.viewContainerRef, TestResultComponent, {
           sessionId: data
         }).subscribe({
           complete: () => {

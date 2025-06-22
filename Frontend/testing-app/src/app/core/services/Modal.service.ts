@@ -13,7 +13,7 @@ export class ModalService {
   constructor(private injector: EnvironmentInjector) {
   }
 
-  openModa<T>(entry: ViewContainerRef, innerComponent: Type<T>, data?: Partial<T>) {
+  openModal<T>(entry: ViewContainerRef, innerComponent: Type<T>, data?: Partial<T>) {
     this.modalRef = entry.createComponent(ModalComponent, {
       environmentInjector: this.injector
     });
