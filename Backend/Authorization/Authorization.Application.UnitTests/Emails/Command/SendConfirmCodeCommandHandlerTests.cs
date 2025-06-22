@@ -91,6 +91,7 @@ namespace Authorization.Application.UnitTests.Emails.Command
                 It.IsAny<int>(), 
                 It.IsAny<CancellationToken>()),
                 Times.Once);
+
             busMock.Verify(x => x.Publish(
                 It.IsAny<SendEmailRequest>(),
                 It.IsAny<CancellationToken>()),

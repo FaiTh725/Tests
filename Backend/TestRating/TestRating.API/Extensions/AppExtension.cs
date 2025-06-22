@@ -1,6 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Sinks.Network;
 using Test.API.Grpc;
@@ -17,6 +18,7 @@ using TestRating.Application.Common.Constants;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
 using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
+using TestRating.Domain.Interfaces;
 
 namespace TestRating.API.Extensions
 {
@@ -115,6 +117,28 @@ namespace TestRating.API.Extensions
                 .CreateLogger();
 
             return services;
+        }
+
+        public static void ApplyMigrations(
+            this WebApplication app)
+        {
+            var scope = app.Services.CreateAsyncScope();
+            var migrationService = scope.ServiceProvider
+                .GetRequiredService<IMigrationService>();
+            var logger = scope.ServiceProvider
+                .GetRequiredService<ILogger<Program>>();
+
+            var pendingMigrations = migrationService.GetPendingMigrations();
+
+            if (pendingMigrations.Any())
+            {
+                migrationService.ApplyPendingMigrations();
+                logger.LogInformation("Apply pending migrations");
+            }
+            else
+            {
+                logger.LogInformation("Migrations already applied");
+            }
         }
     }
 }

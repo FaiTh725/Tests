@@ -13,6 +13,7 @@ using System.Text.Json;
 
 namespace Authorization.IntegrationTests.API.Controllers
 {
+    [Collection("Integration Tests")]
     public class AuthControllerTests : 
         BaseIntegrationTest
     {
@@ -393,10 +394,10 @@ namespace Authorization.IntegrationTests.API.Controllers
             };
             await cache.SetData("confirmed_email:" + requestToRegister.Email, "Confirmed", 600);
             var registeredResponse = await client.PostAsJsonAsync("/api/Auth/Register", requestToRegister);
-
+            
             var cookies = registeredResponse.Headers.SingleOrDefault(header => header.Key == "Set-Cookie").Value;
 
-            var oldRefreshToken = cookies.FirstOrDefault(x => x.StartsWith("refresh_token="));
+            var oldRefreshToken = cookies?.FirstOrDefault(x => x.StartsWith("refresh_token="));
 
             // Act
             var httpResponse = await client.PostAsync("/api/Auth/Logout", null);

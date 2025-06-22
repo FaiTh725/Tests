@@ -20,8 +20,6 @@ namespace Authorization.Infrastructure.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await WaitDatabase(stoppingToken);
-
             using var scope = scopeFactory.CreateAsyncScope();
             var unitOfWork = scope.ServiceProvider
                 .GetRequiredService<IUnitOfWork>();
@@ -67,24 +65,6 @@ namespace Authorization.Infrastructure.BackgroundServices
                 transaction, stoppingToken);
 
             logger.LogInformation("Added the required roles");
-        }
-
-        private async Task WaitDatabase(CancellationToken cancellationToken)
-        {
-            using var scope = scopeFactory.CreateAsyncScope();
-            var unitOfWork = scope.ServiceProvider
-                .GetRequiredService<IUnitOfWork>();
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-
-                if (await unitOfWork.CanConnectAsync(cancellationToken))
-                {
-                    return;
-                }
-
-                await Task.Delay(3000, cancellationToken);
-            }
         }
     }
 }

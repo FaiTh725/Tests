@@ -1,6 +1,5 @@
 ﻿using Authorization.Application.Common.Interfaces;
 using Authorization.Dal;
-using Authorization.Domain.Interfaces;
 using MassTransit.Testing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +10,7 @@ using System.Data.Common;
 
 namespace Authorization.IntegrationTests
 {
-    public abstract class BaseIntegrationTest :
-        IClassFixture<CustomWebFactory>, IAsyncLifetime
+    public abstract class BaseIntegrationTest : IAsyncLifetime
     {
         protected readonly CustomWebFactory factory;
 
@@ -20,39 +18,41 @@ namespace Authorization.IntegrationTests
         protected HttpClient client;
         protected ICacheService cache;
         protected AppDbContext context;
-        protected IUnitOfWork unitOfWork;
         protected ITestHarness massTransitHarness;
 
         private DbConnection dbConnection;
         private Respawner respawner;
+        private IServiceScope scope;
 
         protected BaseIntegrationTest(
             CustomWebFactory factory)
         {
             this.factory = factory;
+        }
 
-            var scope = factory.Services.CreateScope();
+        public async Task DisposeAsync()
+        {
+            await massTransitHarness.InactivityTask;
+            await massTransitHarness.Stop();
+
+            await respawner.ResetAsync(dbConnection);
+            await dbConnection.CloseAsync();
+
+            await ResetCache();
+
+            scope.Dispose();
+        }
+
+        public async Task InitializeAsync()
+        {
+            scope = factory.Services.CreateScope();
             client = factory.CreateClient();
             massTransitHarness = factory.Services.GetTestHarness();
 
             cache = scope.ServiceProvider.GetRequiredService<ICacheService>();
             context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             sender = scope.ServiceProvider.GetRequiredService<ISender>();
-            unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        }
 
-        public async Task DisposeAsync()
-        {
-            await respawner.ResetAsync(dbConnection);
-
-            await ResetCache();
-
-            await dbConnection.CloseAsync();
-            await massTransitHarness.Stop();
-        }
-
-        public async Task InitializeAsync()
-        {
             dbConnection = new NpgsqlConnection(factory.DbConnectionString);
             await dbConnection.OpenAsync();
 

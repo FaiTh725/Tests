@@ -76,20 +76,22 @@ namespace Authorization.Application.SagaOrchestrator
                         binder => binder.Finalize()),
 
                 When(FeedbackProfileFailedEvent)
-                    .Publish(context => new DeleteFeedbackProfile
-                    {
-                        CorrelationId = context.Message.CorrelationId,
-                        Id = context.Saga.FeedbackProfileId!.Value
-                    })
+                    .If(context => context.Saga.IsTestProfileCreated, 
+                        publisher => publisher.Publish(context => new DeleteTestProfile 
+                        { 
+                            CorrelationId = context.Message.CorrelationId,
+                            Id = context.Saga.TestProfileId!.Value
+                        }))
                     .TransitionTo(Failed)
                     .Finalize(),
 
                 When(TestProfileFailedEvent)
-                    .Publish(context => new DeleteTestProfile
-                    {
-                        CorrelationId = context.Message.CorrelationId,
-                        Id = context.Saga.TestProfileId!.Value
-                    })
+                    .If(context => context.Saga.IsFeedbackProfileCreated,
+                        publisher => publisher.Publish(context => new DeleteFeedbackProfile
+                        {
+                            CorrelationId = context.Message.CorrelationId,
+                            Id = context.Saga.FeedbackProfileId!.Value
+                        }))
                     .TransitionTo(Failed)
                     .Finalize()
             );

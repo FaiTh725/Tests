@@ -54,7 +54,7 @@ namespace TestRating.Application.UnitTests.FeedbackReplies.Behaviors
             // Assert
             await act.Should()
                 .ThrowAsync<BadRequestException>()
-                .WithMessage("Feedback Reply doesnt exist");
+                .WithMessage("Reply doesnt exist");
         }
 
         [Fact]

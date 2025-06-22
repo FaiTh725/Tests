@@ -1,9 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using Hangfire;
 using MassTransit;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -11,17 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using Moq;
-using Newtonsoft.Json;
 using Redis.OM;
 using Test.Application.Consumers.FileConsumers;
 using Test.Application.Consumers.ProfileConsumers;
 using Test.Application.Consumers.QuestionConsumers;
 using Test.Application.Consumers.TestConsumers;
-using Test.Infrastructure.BackgroundServices;
 using Test.Infrastructure.RedisEntities;
 using Test.Integration.Tests.Consumers;
-using Test.Integration.Tests.JwtAuthenticationMock.cs;
+using Test.Integration.Tests.Extensions;
 using Testcontainers.Azurite;
 using Testcontainers.MongoDb;
 using Testcontainers.RabbitMq;
@@ -76,7 +69,6 @@ namespace Test.Integration.Tests
 
             await dbContainer.ExecScriptAsync("rs.initiate();");
 
-
             DbConnectionString = dbContainer.GetConnectionString();
             RedisConnectionString = $"redis://{redisContainer.Hostname}:{redisContainer.GetMappedPublicPort(6379)}"; 
             AzuriteConnectionString = azuriteContainer.GetConnectionString();
@@ -96,42 +88,11 @@ namespace Test.Integration.Tests
         {
             builder.ConfigureTestServices(services =>
             {
-                var dbDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(IMongoClient));
-                var databaseDesciptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(IMongoDatabase));
-                var massTransitDescriptors = services
-                    .Where(x => x.ServiceType.Namespace?.StartsWith("MassTransit") == true)
-                    .ToList();
-                var azuriteDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(BlobServiceClient));
-                var redisDescriptor = services
-                    .SingleOrDefault(x => x.ServiceType == typeof(RedisConnectionProvider));
-
-                if (dbDescriptor is not null)
-                {
-                    services.Remove(dbDescriptor);
-                }
-
-                if (databaseDesciptor is not null)
-                {
-                    services.Remove(databaseDesciptor);
-                }
-
-                if (azuriteDescriptor is not null)
-                {
-                    services.Remove(azuriteDescriptor);
-                }
-
-                if(redisDescriptor is not null)
-                {
-                    services.Remove(redisDescriptor);
-                }
-
-                foreach (var massTransitDescriptor in massTransitDescriptors)
-                {
-                    services.Remove(massTransitDescriptor);
-                }
+                services.RemoveService(typeof(IMongoClient));
+                services.RemoveService(typeof(IMongoDatabase));
+                services.RemoveService(typeof(BlobServiceClient));
+                services.RemoveService(typeof(RedisConnectionProvider));
+                services.RemoveServicesByNamespace("MassTransit");
 
                 var mongoClientSettings = MongoClientSettings
                 .FromConnectionString(DbConnectionString);
@@ -153,10 +114,7 @@ namespace Test.Integration.Tests
 
                 services.AddSingleton(new RedisConnectionProvider(RedisConnectionString));
 
-                // TODO: refactoring
-                ConfigureTestAuthPolicy(services);
-                MockHangFire(services);
-                RemoveBackgroundServices(services);
+                services.ConfigureTestEnvironment();
 
                 services.AddMassTransitTestHarness(conf =>
                 {
@@ -171,7 +129,7 @@ namespace Test.Integration.Tests
 
                     conf.AddConsumer<MessagesConsumer>();
 
-                    conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));
+                    //conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));
                     //conf.SetTestTimeouts(testInactivityTimeout: TimeSpan.FromSeconds(5));
 
                     conf.UsingRabbitMq((context, configurator) =>
@@ -199,81 +157,6 @@ namespace Test.Integration.Tests
             };
 
             await Task.WhenAll(stopTasks);
-        }
-
-        private void ConfigureTestAuthPolicy(IServiceCollection services)
-        {
-            services.AddTransient<IPolicyEvaluator>(serviceProvider =>
-                new TestPolicyEvaluator(ActivatorUtilities
-                    .CreateInstance<PolicyEvaluator>(serviceProvider)));
-
-            services
-             .AddAuthentication(opts =>
-             {
-                 opts.DefaultAuthenticateScheme = "Test";
-             })
-             .AddScheme<JwtBearerOptions, JwtAuthHandler>("Test", opts => { });
-
-            services.AddAuthorization(opts =>
-            {
-                opts.DefaultPolicy = new AuthorizationPolicyBuilder()
-                 .AddAuthenticationSchemes("Test")
-                 .RequireAuthenticatedUser()
-                 .Build();
-            });
-        }
-
-        private void MockHangFire(IServiceCollection services)
-        {
-            var hangfireDescriptors = services
-                .Where(x => x.ServiceType.FullName?
-                    .Contains("hangfire", StringComparison.InvariantCultureIgnoreCase) == true)
-                .ToList();
-            
-            foreach(var descriptor in hangfireDescriptors)
-            {
-                services.Remove(descriptor);
-            }
-
-            var jsonSettings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All
-            };
-
-            services.AddHangfire(x =>
-            {
-
-                x.UseSimpleAssemblyNameTypeSerializer()
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-                .UseInMemoryStorage()
-                .UseSerializerSettings(jsonSettings);
-            });
-            services.AddHangfireServer();
-        }
-
-        private void RemoveBackgroundServices(IServiceCollection services)
-        {
-            var clearInactiveSessionDescriptor = services
-                .SingleOrDefault(x => x.ImplementationType == typeof(ClearInactiveSessionsBackgroundService));
-            var outboxBackgroundServiceDescriptor = services
-                .SingleOrDefault(x => x.ImplementationType == typeof(OutboxBackgroundService));
-            var createRedisOmIndexesDescriptor = services
-                .SingleOrDefault(x => x.ImplementationType == typeof(CreateRedisOmIndexes));
-
-            if(clearInactiveSessionDescriptor is not null)
-            {
-                services.Remove(clearInactiveSessionDescriptor);
-            }
-
-            if(outboxBackgroundServiceDescriptor is not null)
-            {
-                services.Remove(outboxBackgroundServiceDescriptor);
-            }
-
-            if(createRedisOmIndexesDescriptor is not null)
-            {
-                services.Remove(createRedisOmIndexesDescriptor);
-            }
         }
 
         private async Task CreateIndexes()

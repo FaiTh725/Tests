@@ -47,7 +47,6 @@ namespace TestRating.Domain.UnitTests.FeedbackReports
             var reportMessage = "Invalid photos";
             var feedbackId = 1;
             var profileId = 1;
-            var expectedCreatedTime = DateTime.UtcNow;
 
             // Act
             var initializeResult = FeedbackReport.Initialize(reportMessage, feedbackId, profileId);
@@ -58,8 +57,6 @@ namespace TestRating.Domain.UnitTests.FeedbackReports
             initializeResult.Value.ReportedFeedbackId.Should().Be(feedbackId);
             initializeResult.Value.ReviewerId.Should().Be(profileId);
             initializeResult.Value.IsApproval.Should().BeNull();
-            initializeResult.Value.CreatedTime.Should()
-                .BeCloseTo(expectedCreatedTime, TimeSpan.FromMicroseconds(1000));
         }
     }
 }

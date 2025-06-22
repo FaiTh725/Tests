@@ -61,18 +61,6 @@ namespace TestRating.Dal.Services
             return new DbContextTransactionAdapter(transaction);
         }
 
-        public bool CanConnect()
-        {
-            return context.Database.CanConnect();
-        }
-
-        public async Task<bool> CanConnectAsync(
-            CancellationToken cancellationToken = default)
-        {
-            return await context.Database
-                .CanConnectAsync(cancellationToken);
-        }
-
         public void CommitTransaction(IDatabaseTransaction transaction)
         {
             var dbTransaction = transaction as DbContextTransactionAdapter;

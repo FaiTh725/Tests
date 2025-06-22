@@ -171,6 +171,7 @@ namespace Test.Infrastructure
                 conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                 conf.AddConsumer<TestAccessNotificationConsumer>();
 
+
                 conf.UsingRabbitMq((context, configurator) =>
                 {
                     configurator.Host(rabbitMqConf.Host, h =>
