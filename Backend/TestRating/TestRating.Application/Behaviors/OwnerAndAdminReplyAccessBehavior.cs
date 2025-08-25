@@ -2,7 +2,6 @@
 using MediatR;
 using TestRating.Application.Common.BehaviorInterfaces;
 using TestRating.Application.Common.Constants;
-using TestRating.Application.Queries.FeedbackReplyEntity.Specifications;
 using TestRating.Domain.Interfaces;
 
 namespace TestRating.Application.Behaviors
@@ -25,17 +24,15 @@ namespace TestRating.Application.Behaviors
             CancellationToken cancellationToken)
         {
             var reply = await unitOfWork.ReplyRepository
-                .GetReplyByCriteria(new ReplyByIdWithOwnerSpecification(
-                    request.ReplyId), 
-                    cancellationToken);
+                .GetReply(request.ReplyId, cancellationToken);
         
             if(reply is null)
             {
-                throw new BadRequestException("Feedback Reply doesnt exist");
+                throw new BadRequestException("Reply doesnt exist");
             }
 
             if(request.ProfileRole != UserRoles.Administrator &&
-                reply.Owner.Id != request.ProfileId)
+                reply.OwnerId != request.ProfileId)
             {
                 throw new ForbiddenAccessException("Only the owner and an admin have access to the feedback");
             }

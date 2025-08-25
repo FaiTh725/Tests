@@ -19,7 +19,7 @@ builder.Host.UseSerilog();
 
 builder.Services
     .ConfigureApiServices(builder.Configuration)
-    .ConfigureDalServices()
+    .ConfigureDalServices(builder.Configuration)
     .ConfigureAppServices()
     .ConfigureInfrastructureServices(builder.Configuration);
 
@@ -40,3 +40,7 @@ app.ApplyMigrations();
 app.UseExceptionHandler();
 
 app.Run();
+
+
+// For integration tests
+public partial class Program() { }

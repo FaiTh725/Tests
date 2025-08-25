@@ -1,4 +1,4 @@
-﻿using MassTransit;
+using MassTransit;
 using MediatR;
 using Test.Application.Contracts.Question;
 using Test.Domain.Events;

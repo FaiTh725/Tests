@@ -20,7 +20,6 @@ namespace TestRating.Application.Commands.FeedbackEntity.DeleteFeedback
             this.unitOfWork = unitOfWork;
         }
 
-        // TODO when deleting feedback any reports can exist
         public async Task Handle(
             DeleteFeedbackCommand request, 
             CancellationToken cancellationToken)

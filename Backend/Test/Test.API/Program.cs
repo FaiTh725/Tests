@@ -42,3 +42,5 @@ app.ConfigureHangfireDashBoard();
 app.UseExceptionHandler();
 
 app.Run();
+
+public partial class Program { };

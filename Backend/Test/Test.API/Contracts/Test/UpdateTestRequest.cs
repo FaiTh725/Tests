@@ -1,4 +1,6 @@
-﻿namespace Test.API.Contracts.Test
+﻿using Test.Domain.Enums;
+
+namespace Test.API.Contracts.Test
 {
     public class UpdateTestRequest
     {
@@ -9,5 +11,9 @@
         public bool IsPublic { get; set; }
 
         public long TestId { get; set; }
+
+        public TestType TestType { get; set; }
+
+        public double? TestDuration { get; set; }
     }
 }

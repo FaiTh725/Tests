@@ -28,7 +28,7 @@ namespace Test.Application.Behaviors
 
             if (test is null)
             {
-                throw new NotFoundException("Test doesnt exist");
+                throw new BadRequestException("Test doesnt exist");
             }
 
             if (request.Role != UserRoles.Administrator &&

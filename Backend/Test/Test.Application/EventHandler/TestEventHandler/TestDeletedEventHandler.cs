@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Test.Contracts.TestEntity;
-using Test.Application.Contracts.Test;
 using Test.Domain.Events;
 
 namespace Test.Application.EventHandler.TestEventHandler

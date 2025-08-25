@@ -84,7 +84,7 @@ namespace Test.Domain.Entities
                 testQuestion.Length < QuestionValidator.MIN_QUESTION_LENGTH ||
                 testQuestion.Length > QuestionValidator.MAX_QUESTION_LENGTH)
             {
-                return Result.Failure("QUestion is null or white space " +
+                return Result.Failure("Question is null or white space " +
                     $"or length outside of {QuestionValidator.MIN_QUESTION_LENGTH} - {QuestionValidator.MAX_QUESTION_LENGTH}");
             }
 

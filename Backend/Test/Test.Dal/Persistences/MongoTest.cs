@@ -41,7 +41,6 @@ namespace Test.Dal.Persistences
             setMethod!.Invoke(testEntity.Value, [Id]);
 
             // set CreatedTime
-            type = typeof(TestEntity);
             property = type.GetProperty("CreatedTime");
             setMethod = property!.GetSetMethod(true);
             setMethod!.Invoke(testEntity.Value, [CreatedTime]);

@@ -30,7 +30,6 @@ namespace Test.Application.Commands.Test.StartTest
             StartTestCommand request, 
             CancellationToken cancellationToken)
         {
-            await unitOfWork.BeginTransactionAsync(cancellationToken);
             var test = await unitOfWork.TestRepository
                 .GetTest(request.TestId, cancellationToken);
 

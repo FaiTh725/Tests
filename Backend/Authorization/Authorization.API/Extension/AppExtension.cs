@@ -1,6 +1,9 @@
 ﻿using Application.Shared.Exceptions;
 using Authorization.API.Configurations;
+using Authorization.API.Validators.EmailCode;
 using Authorization.API.Validators.UserEntity;
+using Authorization.Application.Commands.Email.SendConfirmCode;
+using Authorization.Application.Commands.Email.VerifyCode;
 using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
 using Authorization.Domain.Interfaces;
@@ -30,8 +33,12 @@ namespace Authorization.API.Extension
             this IServiceCollection services)
         {
             services.AddFluentValidationAutoValidation();
+
             services.AddScoped<IValidator<RegisterCommand>, RegisterUserValidator>();
             services.AddScoped<IValidator<LoginCommand>, LoginUserValidator>();
+
+            services.AddScoped<IValidator<SendConfirmCodeCommand>, SendEmailConfirmCodeValidator>();
+            services.AddScoped<IValidator<VerifyCodeCommand>, VerifyCodeValidator>();
 
             return services;
         }
@@ -39,6 +46,8 @@ namespace Authorization.API.Extension
         private static IServiceCollection AddRateLimits(
             this IServiceCollection services)
         {
+            const int RATE_LIMIT = 60;
+
             services.AddRateLimiter(options =>
              {
                  options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -48,7 +57,7 @@ namespace Authorization.API.Extension
                          partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
                          factory: partition => new FixedWindowRateLimiterOptions
                          {
-                             Window = TimeSpan.FromSeconds(60),
+                             Window = TimeSpan.FromSeconds(RATE_LIMIT),
                              PermitLimit = 1
                          })
                  );
@@ -93,7 +102,7 @@ namespace Authorization.API.Extension
             if (pendingMigrations.Any())
             {
                 migrationService.ApplyPendingMigrations();
-                logger.LogInformation("Apply Migrations");
+                logger.LogInformation("Apply pending migrations");
             }
             else
             {

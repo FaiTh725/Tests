@@ -2,27 +2,27 @@
 using Azure.Storage.Blobs;
 using Hangfire;
 using Hangfire.Mongo;
-using Hangfire.Mongo.Migration.Strategies.Backup;
 using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo.Migration.Strategies.Backup;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Redis.OM;
 using System.Text;
 using Test.Application.Common.Interfaces;
-using Test.Application.Contracts.ProfileEntity;
-using Test.Infrastructure.Configurations;
-using Test.Infrastructure.Implementations;
-using MassTransit;
 using Test.Application.Consumers.FileConsumers;
-using Redis.OM;
 using Test.Infrastructure.BackgroundServices;
 using Test.Application.Contracts.TestSession;
 using Test.Application.Consumers.ProfileConsumers;
 using Test.Application.Consumers.TestConsumers;
 using Test.Domain.Interfaces;
 using Test.Application.Consumers.QuestionConsumers;
+using Test.Infrastructure.Implementations;
+using Test.Infrastructure.Configurations;
+using Test.Application.Contracts.ProfileEntity;
 
 namespace Test.Infrastructure
 {

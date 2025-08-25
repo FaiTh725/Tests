@@ -8,14 +8,10 @@ namespace Authorization.Dal
 {
     public class AppDbContext : DbContext
     {
-        private readonly IConfiguration configuration;  
-
         public AppDbContext(
-            DbContextOptions options, 
-            IConfiguration configuration) :
+            DbContextOptions options) :
             base(options)
         {
-            this.configuration = configuration;
         }
 
         public DbSet<User> Users { get; set; }
@@ -29,15 +25,6 @@ namespace Authorization.Dal
             modelBuilder.ApplyConfiguration(new RefreshTokenConfigurations());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var npgConnection = configuration
-                .GetConnectionString("NpgConnection") ??
-                throw new AppConfigurationException("Postgress ConnectionString");
-
-            optionsBuilder.UseNpgsql(npgConnection);
         }
     }
 }

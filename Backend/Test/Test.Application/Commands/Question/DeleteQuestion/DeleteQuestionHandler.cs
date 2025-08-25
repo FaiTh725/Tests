@@ -28,7 +28,7 @@ namespace Test.Application.Commands.Question.DeleteQuestion
 
             if(question is null)
             {
-                throw new NotFoundException("Question doesnt exist");
+                throw new BadRequestException("Question doesnt exist");
             }
 
             using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);

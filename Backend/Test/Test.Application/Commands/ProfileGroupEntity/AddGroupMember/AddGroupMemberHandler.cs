@@ -42,6 +42,7 @@ namespace Test.Application.Commands.ProfileGroupEntity.AddGroupMember
             }
 
             group.AddMember(newMember.Id);
+
             unitOfWork.TrackEntity(group);
             
             await unitOfWork.ProfileGroupRepository

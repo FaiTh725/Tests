@@ -100,7 +100,7 @@ namespace Authorization.API.Controllers
             Response.Cookies.Append("token", accessToken, cookieOptions);
             Response.Cookies.Append("refresh_token", newRefreshToken, cookieOptions);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("[action]")]

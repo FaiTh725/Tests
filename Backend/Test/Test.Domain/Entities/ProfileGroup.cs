@@ -32,8 +32,13 @@ namespace Test.Domain.Entities
             MembersId = membersId;
         }
 
-        public void AddMember(long memberId)
+        public Result AddMember(long memberId)
         {
+            if (MembersId.Contains(memberId))
+            {
+                return Result.Failure("Member already in group");
+            }
+
             MembersId.Add(memberId);
 
             RaiseDomainEvent(new AddedNewGroupMember
@@ -41,6 +46,8 @@ namespace Test.Domain.Entities
                 ProfileId = memberId,
                 GroupId = Id
             });
+
+            return Result.Success();
         }
 
         public Result DeleteMembers(List<long> membersId)

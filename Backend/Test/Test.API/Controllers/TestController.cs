@@ -101,7 +101,9 @@ namespace Test.API.Controllers
                 IsPublic = request.IsPublic,
                 Name = request.Name,
                 OwnerId = profile.Id,
-                Role = profile.Role
+                Role = profile.Role,
+                TestType = request.TestType,    
+                DurationInMinutes = request.TestDuration
             }, cancellationToken);
 
             var test = await mediator.Send(new GetTestInfoByIdQuery
