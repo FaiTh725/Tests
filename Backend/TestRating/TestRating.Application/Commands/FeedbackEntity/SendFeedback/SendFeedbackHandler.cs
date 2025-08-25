@@ -1,6 +1,9 @@
 ﻿using Application.Shared.Exceptions;
+using MassTransit;
+using MassTransit.Transports;
 using MediatR;
 using TestRating.Application.Common.Interfaces;
+using TestRating.Application.Contacts.Feedback;
 using TestRating.Application.Queries.FeedbackEntity.Specifications;
 using TestRating.Domain.Entities;
 using TestRating.Domain.Interfaces;
@@ -12,13 +15,16 @@ namespace TestRating.Application.Commands.FeedbackEntity.SendFeedback
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBlobService blobService;
+        private readonly IPublishEndpoint publishEndpoint;
 
         public SendFeedbackHandler(
             IUnitOfWork unitOfWork,
-            IBlobService blobService)
+            IBlobService blobService,
+            IPublishEndpoint publishEndpoint)
         {
             this.unitOfWork = unitOfWork;
             this.blobService = blobService;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public async Task<long> Handle(
@@ -56,6 +62,12 @@ namespace TestRating.Application.Commands.FeedbackEntity.SendFeedback
 
             var feedbackDb = await unitOfWork.FeedbackRepository
                 .AddFeedback(feedbackEntity.Value, cancellationToken);
+
+            await publishEndpoint.Publish(new FeedbackCreatedRequest
+            {
+                TestId = feedbackDb.TestId,
+                FeedbackOwnerId = feedbackDb.OwnerId
+            }, cancellationToken);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
             

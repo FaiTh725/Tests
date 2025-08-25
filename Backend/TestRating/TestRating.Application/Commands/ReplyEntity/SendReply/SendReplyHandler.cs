@@ -1,5 +1,7 @@
 ﻿using Application.Shared.Exceptions;
+using MassTransit;
 using MediatR;
+using TestRating.Application.Contacts.FeedbackReply;
 using TestRating.Application.Queries.FeedbackReplyEntity.Specifications;
 using TestRating.Domain.Entities;
 using TestRating.Domain.Interfaces;
@@ -10,11 +12,14 @@ namespace TestRating.Application.Commands.ReplyEntity.SendReply
         IRequestHandler<SendReplyCommand, long>
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IPublishEndpoint publishEndpoint;
 
         public SendReplyHandler(
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IPublishEndpoint publishEndpoint)
         {
             this.unitOfWork = unitOfWork;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public async Task<long> Handle(
@@ -52,6 +57,13 @@ namespace TestRating.Application.Commands.ReplyEntity.SendReply
 
             var replyDb = await unitOfWork.ReplyRepository
                 .AddReply(replyEntity.Value, cancellationToken);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            
+            await publishEndpoint.Publish(new ReplySentRequest
+            {
+                ReplyId = replyDb.Id
+            }, cancellationToken);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
 

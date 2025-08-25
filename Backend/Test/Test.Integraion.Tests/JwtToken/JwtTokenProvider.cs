@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Test.Integration.Tests.JwtToken
 {
-    public class JwtTokenProvider
+    public static class JwtTokenProvider
     {
         public static string CreateJwt(JwtUserData jwtUser)
         {

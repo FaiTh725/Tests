@@ -97,20 +97,6 @@ namespace TestRating.Dal.Repositories
                     cancellationToken);
         }
 
-        public async Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(
-            Specification<Feedback> specification, 
-            int page, 
-            int pageSize, 
-            CancellationToken cancellationToken = default)
-        {
-            return await SpecificationEvaluator.GetQuery(
-                context.Feedbacks,
-                specification)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync(cancellationToken);
-        }
-
         public async Task<IEnumerable<Feedback>> GetFeedbacks(
             CancellationToken cancellationToken = default)
         {
@@ -137,6 +123,16 @@ namespace TestRating.Dal.Repositories
         {
             return await SpecificationEvaluator.GetQuery(
                 context.Feedbacks.IgnoreQueryFilters(),
+                specification)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(
+            Specification<Feedback> specification,
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetQuery(
+                context.Feedbacks,
                 specification)
                 .ToListAsync(cancellationToken);
         }

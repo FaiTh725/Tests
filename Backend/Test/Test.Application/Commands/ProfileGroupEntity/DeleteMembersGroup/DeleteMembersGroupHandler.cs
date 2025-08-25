@@ -36,6 +36,8 @@ namespace Test.Application.Commands.ProfileGroupEntity.DeleteMembersGroup
 
             await unitOfWork.ProfileGroupRepository
                 .UpdateGroup(group.Id, group, cancellationToken: cancellationToken);
+
+            unitOfWork.TrackEntity(group);
         }
     }
 }

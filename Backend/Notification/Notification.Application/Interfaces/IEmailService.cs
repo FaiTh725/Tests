@@ -1,4 +1,4 @@
-﻿using Notification.Application.DTO;
+﻿using Notification.Application.DTOs.Emails;
 
 namespace Notification.Application.Interfaces
 {

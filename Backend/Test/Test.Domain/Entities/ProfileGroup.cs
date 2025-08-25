@@ -41,7 +41,7 @@ namespace Test.Domain.Entities
 
             MembersId.Add(memberId);
 
-            RaiseDomainEvent(new AddedNewGroupMember
+            RaiseDomainEvent(new AddedNewGroupMemberEvent
             {
                 ProfileId = memberId,
                 GroupId = Id
@@ -60,7 +60,13 @@ namespace Test.Domain.Entities
             }
 
             MembersId = [.. MembersId.Where(x => !membersId.Contains(x))];
-        
+
+            RaiseDomainEvent(new MembersDeletedEvent
+            {
+                GroupId = Id,
+                MembersId = membersId
+            });
+
             return Result.Success();
         }
 

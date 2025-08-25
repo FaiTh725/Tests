@@ -43,10 +43,10 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
                         cancellationToken);
 
                 var feedbackReplies = await unitOfWork.ReplyRepository
-                    .GetRepliesByCriteria(new RepliesByFeedbackIdWithOwnerSpecification(
-                        request.FeedbackId),
-                    request.Page,
-                    request.PageSize,
+                    .GetRepliesByCriteria(new RepliesPaginationByFeedbackIdWithOwnerSpecification(
+                        request.FeedbackId,
+                        request.Page,
+                        request.PageSize),
                     cancellationToken);
 
                 await unitOfWork.CommitTransactionAsync(

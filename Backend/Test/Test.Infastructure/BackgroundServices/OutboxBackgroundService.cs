@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Test.Application.Common.Interfaces;
-using Test.Application.Common.Wrappers;
 using Test.Domain.Interfaces;
 
 namespace Test.Infrastructure.BackgroundServices

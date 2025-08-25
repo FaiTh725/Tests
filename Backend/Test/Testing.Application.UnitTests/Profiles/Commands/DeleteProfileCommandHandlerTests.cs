@@ -73,7 +73,7 @@ namespace Testing.Application.UnitTests.Profiles.Commands
             // Assert
             profileRepositoryMock.Verify(x => x
                 .DeleteProfile(
-                    It.IsAny<long>(), 
+                    It.IsAny<long>(),
                     It.IsAny<IDatabaseSession>(),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);

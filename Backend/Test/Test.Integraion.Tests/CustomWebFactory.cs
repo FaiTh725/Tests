@@ -125,7 +125,8 @@ namespace Test.Integration.Tests
                     conf.AddConsumer<DeleteTestProfileConsumer>();
                     conf.AddConsumer<DeleteDependentsTestEntitiesConsumer>();
                     conf.AddConsumer<DeleteDependentsQuestionEntitiesConsumer>();
-                    
+                    conf.AddConsumer<TestAccessNotificationConsumer>();
+
                     conf.AddConsumer<MessagesConsumer>();
 
                     //conf.SetTestTimeouts(testTimeout: TimeSpan.FromSeconds(3));

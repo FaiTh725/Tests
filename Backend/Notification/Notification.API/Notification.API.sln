@@ -9,6 +9,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Contracts", "..\Notification.Contracts\Notification.Contracts.csproj", "{0714F741-5D8C-4A83-8641-FAAEAF5A3553}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Domain", "..\Notification.Domain\Notification.Domain.csproj", "{758A9187-C925-45CE-9247-5FC6988E15D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Infrastructure", "..\Notification.Infastructure\Notification.Infrastructure.csproj", "{260BE336-35E2-4BC7-958B-CDFE0F54FE21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Domain.UnitTests", "..\Notification.Domain.UnitTests\Notification.Domain.UnitTests.csproj", "{C67A63B1-BF1A-40DD-B7F2-430B760EB1A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Application.UnitTests", "..\Notification.Application.UnitTests\Notification.Application.UnitTests.csproj", "{C1CDCFA7-2FCD-4EB8-BBB0-603AAB462508}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.IntegrationTests", "..\Notification.IntegrationTests\Notification.IntegrationTests.csproj", "{1BF03D7D-41E6-47E4-B514-53A444535A99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +39,34 @@ Global
 		{0714F741-5D8C-4A83-8641-FAAEAF5A3553}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0714F741-5D8C-4A83-8641-FAAEAF5A3553}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0714F741-5D8C-4A83-8641-FAAEAF5A3553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{758A9187-C925-45CE-9247-5FC6988E15D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260BE336-35E2-4BC7-958B-CDFE0F54FE21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C67A63B1-BF1A-40DD-B7F2-430B760EB1A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C67A63B1-BF1A-40DD-B7F2-430B760EB1A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C67A63B1-BF1A-40DD-B7F2-430B760EB1A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C67A63B1-BF1A-40DD-B7F2-430B760EB1A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1CDCFA7-2FCD-4EB8-BBB0-603AAB462508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1CDCFA7-2FCD-4EB8-BBB0-603AAB462508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1CDCFA7-2FCD-4EB8-BBB0-603AAB462508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1CDCFA7-2FCD-4EB8-BBB0-603AAB462508}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF03D7D-41E6-47E4-B514-53A444535A99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF03D7D-41E6-47E4-B514-53A444535A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF03D7D-41E6-47E4-B514-53A444535A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF03D7D-41E6-47E4-B514-53A444535A99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C67A63B1-BF1A-40DD-B7F2-430B760EB1A7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C1CDCFA7-2FCD-4EB8-BBB0-603AAB462508} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1BF03D7D-41E6-47E4-B514-53A444535A99} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08563039-3304-41A3-AB10-5DE7EDE6149A}

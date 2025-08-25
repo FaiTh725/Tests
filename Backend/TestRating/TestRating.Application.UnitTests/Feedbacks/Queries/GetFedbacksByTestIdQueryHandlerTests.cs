@@ -145,9 +145,7 @@ namespace TestRating.Application.UnitTests.Feedbacks.Queries
 
             feedbackRepositoryMock.Setup(x => x
                 .GetFeedbacksByCriteria(
-                    It.IsAny<FeedbacksByTestIdWithOwnerAndReviewsSpecification>(), 
-                    It.IsAny<int>(), 
-                    It.IsAny<int>(), 
+                    It.IsAny<FeedbacksPaginationByTestIdWithOwnerAndReviewsSpecification>(), 
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(feedbacksFromDb);
 

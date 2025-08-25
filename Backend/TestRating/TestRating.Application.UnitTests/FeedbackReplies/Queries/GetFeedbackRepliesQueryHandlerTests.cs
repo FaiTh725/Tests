@@ -138,9 +138,7 @@ namespace TestRating.Application.UnitTests.FeedbackReplies.Queries
 
             replyRepositoryMock.Setup(x => x
                 .GetRepliesByCriteria(
-                    It.IsAny<RepliesByFeedbackIdWithOwnerSpecification>(),
-                    It.IsAny<int>(),
-                    It.IsAny<int>(),
+                    It.IsAny<RepliesPaginationByFeedbackIdWithOwnerSpecification>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(replies);
 

@@ -3,7 +3,7 @@ using TestRating.Domain.Primitives;
 
 namespace TestRating.Application.Queries.FeedbackReplyEntity.Specifications
 {
-    public class RepliesByFeedbackIdWithOwnerSpecification :
+    public class RepliesByFeedbackIdWithOwnerSpecification : 
         Specification<FeedbackReply>
     {
         public RepliesByFeedbackIdWithOwnerSpecification(

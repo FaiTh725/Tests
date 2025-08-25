@@ -67,6 +67,18 @@ namespace TestRating.API.Extensions
             return services;
         }
 
+        private static IServiceCollection AddCustomPolicies(
+            this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole(UserRoles.Administrator));
+            });
+
+            return services;
+        }
+
         private static IServiceCollection ConfigureFluentValidation(
             this IServiceCollection services)
         {
@@ -103,17 +115,6 @@ namespace TestRating.API.Extensions
                     logstashConf.Port,
                     new Serilog.Formatting.Json.JsonFormatter())
                 .CreateLogger();
-
-            return services;
-        }
-        private static IServiceCollection AddCustomPolicies(
-            this IServiceCollection services)
-        {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdminOnly", policy =>
-                    policy.RequireRole(UserRoles.Administrator));
-            });
 
             return services;
         }

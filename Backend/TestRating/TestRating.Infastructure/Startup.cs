@@ -8,8 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Consumers.Blobs;
+using TestRating.Application.Consumers.FeedbacksConsumers;
 using TestRating.Application.Consumers.ProfileConsumers;
-using TestRating.Application.Consumers.TestConsumer;
+using TestRating.Application.Consumers.ReplyConsumers;
+using TestRating.Application.Consumers.TestConsumers;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Dal;
 using TestRating.Infrastructure.Configurations;
@@ -111,6 +113,8 @@ namespace TestRating.Infrastructure
                 conf.AddConsumer<DeleteFeedbackProfileConsumer>();
                 conf.AddConsumer<DeleteTestFeedbacksConsumer>();
                 conf.AddConsumer<ClearBlobsConsumer>();
+                conf.AddConsumer<NotifyReplyCreatedConsumer>();
+                conf.AddConsumer<NotifyFeedbackCreatedConsumer>();
 
                 conf.AddEntityFrameworkOutbox<AppDbContext>(x =>
                 {

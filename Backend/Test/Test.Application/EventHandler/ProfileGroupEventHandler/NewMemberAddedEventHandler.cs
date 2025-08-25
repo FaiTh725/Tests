@@ -1,18 +1,18 @@
 ﻿using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Notification.Contracts.Email;
+using Notification.Contracts.Notification;
 using Test.Domain.Events;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.EventHandler.ProfileGroupEventHandler
 {
     public class NewMemberAddedEventHandler :
-        INotificationHandler<AddedNewGroupMember>
+        INotificationHandler<AddedNewGroupMemberEvent>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
         private readonly ILogger<NewMemberAddedEventHandler> logger;
-        private readonly IPublishEndpoint bus;
+        private readonly IPublishEndpoint publishEndpoint;
 
         public NewMemberAddedEventHandler(
             INoSQLUnitOfWork unitOfWork,
@@ -21,11 +21,11 @@ namespace Test.Application.EventHandler.ProfileGroupEventHandler
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;
-            this.bus = bus;
+            this.publishEndpoint = bus;
         }
 
         public async Task Handle(
-            AddedNewGroupMember notification, 
+            AddedNewGroupMemberEvent notification, 
             CancellationToken cancellationToken)
         {
             var profile = await unitOfWork.ProfileRepository
@@ -47,11 +47,11 @@ namespace Test.Application.EventHandler.ProfileGroupEventHandler
                 return;
             }
 
-            await bus.Publish(new SendEmailRequest
+            await publishEndpoint.Publish(new SendNotificationRequest
             {
-                Consumer = profile.Email,
-                Subject = "Testing Groups",
-                Message = $"You've been added to the group {group.GroupName}"
+                UserEmail = profile.Email,
+                Message = $"You've been added to the group {group.GroupName}",
+                Title = $"Welcome to {group.GroupName}"
             },
             cancellationToken);
         }

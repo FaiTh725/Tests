@@ -1,9 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using Test.Domain.Enums;
+using Test.Domain.Events;
+using Test.Domain.Primitives;
 
 namespace Test.Domain.Entities
 {
-    public class TestAccess: Entity
+    public class TestAccess: DomainEventEntity
     {
         public long TestId { get; private set; }
 
@@ -13,12 +15,20 @@ namespace Test.Domain.Entities
 
         private TestAccess(
             long testId,
-            long availableId,
+            long targetEntityId,
             TargetAccessEntityType targetAccessEntityType)
         {
             TestId = testId;
-            TargetEntityId = availableId;
+            TargetEntityId = targetEntityId;
             TargetAccessEntityType = targetAccessEntityType;
+        }
+
+        public void ProvideAccess()
+        {
+            RaiseDomainEvent(new NewTestAccessCreated
+            {
+                TestAccessId = Id
+            });
         }
 
         public static Result<TestAccess> Initialize(

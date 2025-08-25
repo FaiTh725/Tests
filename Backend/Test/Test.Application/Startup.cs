@@ -11,7 +11,7 @@ namespace Test.Application
         public static IServiceCollection ConfigureAppServices(
             this IServiceCollection services)
         {
-            services.AddMediatorProvider();
+            services.AddMediatrProvider();
 
             services.AddScoped<MediatorWrapper>();
 
@@ -21,7 +21,7 @@ namespace Test.Application
             return services;
         }
 
-        private static IServiceCollection AddMediatorProvider(
+        private static IServiceCollection AddMediatrProvider(
             this IServiceCollection services)
         {
             services.AddMediatR(cfg =>

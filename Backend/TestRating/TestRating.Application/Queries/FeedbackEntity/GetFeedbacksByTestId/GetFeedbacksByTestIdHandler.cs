@@ -47,9 +47,10 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId
             {
                 var feedbacks = await unitOfWork.FeedbackRepository
                     .GetFeedbacksByCriteria(
-                    new FeedbacksByTestIdWithOwnerAndReviewsSpecification(request.TestId), 
-                    request.Page,
-                    request.PageSize,
+                    new FeedbacksPaginationByTestIdWithOwnerAndReviewsSpecification(
+                        request.TestId, 
+                        request.Page,
+                        request.PageSize),
                     cancellationToken);
 
                 var allFeedbacks = await unitOfWork.FeedbackRepository

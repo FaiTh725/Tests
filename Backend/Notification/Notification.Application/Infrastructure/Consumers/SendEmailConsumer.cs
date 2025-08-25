@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using Notification.Application.DTO;
+using Notification.Application.DTOs.Emails;
 using Notification.Application.Interfaces;
 using Notification.Contracts.Email;
 

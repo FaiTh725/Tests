@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Notification.Contracts.Email;
+using TestRating.Application.Contacts.Feedback;
 using TestRating.Domain.Events;
 using TestRating.Domain.Interfaces;
 
@@ -10,50 +11,27 @@ namespace TestRating.Application.EventHandlers.FeedbackEntity
     public class FeedbackDeletedEventHandler :
         INotificationHandler<FeedbackDeletedEvent>
     {
+        private readonly IPublishEndpoint publishEndpoint;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IPublishEndpoint bus;
-        private readonly ILogger<FeedbackDeletedEventHandler> logger;
 
         public FeedbackDeletedEventHandler(
-            IUnitOfWork unitOfWork,
-            IPublishEndpoint bus,
-            ILogger<FeedbackDeletedEventHandler> logger)
+            IPublishEndpoint publishEndpoint, 
+            IUnitOfWork unitOfWork)
         {
+            this.publishEndpoint = publishEndpoint;
             this.unitOfWork = unitOfWork;
-            this.bus = bus;
-            this.logger = logger;
         }
 
         public async Task Handle(
             FeedbackDeletedEvent notification, 
             CancellationToken cancellationToken)
         {
-            var feedback = await unitOfWork.FeedbackRepository
-                .GetFeedbackExcludeFiltersById(notification.FeedbackId, cancellationToken);
-
-            if( feedback is null)
+            await publishEndpoint.Publish(new FeedbackDeletedRequest
             {
-                logger.LogError($"Feedback with id = {notification.FeedbackId} doesnt exist. " +
-                    $"Feedback Deleted Event Handler doesnt processing");
-                return;
-            }
-
-            var feedbackOwner = await unitOfWork.ProfileRepository
-                .GetProfileById(feedback.OwnerId, cancellationToken);
-
-            if(feedbackOwner is null)
-            {
-                logger.LogError($"Feedback owner doesnt not exist");
-                return;
-            }
-
-            await bus.Publish(new SendEmailRequest
-            {
-                Consumer = feedbackOwner.Email,
-                Subject = "Feedback is deleted",
-                Message = "Administrator decided to delete your feedback, " +
-                "because it violate the rules"
+                FeedbackId = notification.FeedbackId
             }, cancellationToken);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

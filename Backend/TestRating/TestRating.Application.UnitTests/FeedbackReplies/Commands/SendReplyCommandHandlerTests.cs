@@ -1,5 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using FluentAssertions;
+using MassTransit;
 using Moq;
 using System.Reflection;
 using TestRating.Application.Commands.ReplyEntity.SendReply;
@@ -15,6 +16,7 @@ namespace TestRating.Application.UnitTests.FeedbackReplies.Commands
         private readonly Mock<IUnitOfWork> unitOfWorkMock;
         private readonly Mock<IFeedbackRepository> feedbackRepositoryMock;
         private readonly Mock<IFeedbackReplyRepository> replyRepositoryMock;
+        private readonly Mock<IPublishEndpoint> publishEndpointMock;
 
         private readonly SendReplyHandler handler;
 
@@ -23,8 +25,11 @@ namespace TestRating.Application.UnitTests.FeedbackReplies.Commands
             unitOfWorkMock = new();
             feedbackRepositoryMock = new();
             replyRepositoryMock = new();
+            publishEndpointMock = new();
 
-            handler = new SendReplyHandler(unitOfWorkMock.Object);
+            handler = new SendReplyHandler(
+                unitOfWorkMock.Object,
+                publishEndpointMock.Object);
 
             unitOfWorkMock.Setup(x => x.FeedbackRepository)
                 .Returns(feedbackRepositoryMock.Object);
