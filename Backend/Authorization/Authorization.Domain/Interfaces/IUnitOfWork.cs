@@ -27,9 +27,5 @@ namespace Authorization.Domain.Interfaces
         void RollBackTransaction(IDatabaseTransaction transaction);
 
         Task RollBackTransactionAsync(IDatabaseTransaction transaction, CancellationToken cancellationToken = default);
-
-        bool CanConnect();
-
-        Task<bool> CanConnectAsync(CancellationToken cancellationToken = default);
     }
 }

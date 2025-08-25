@@ -2,6 +2,7 @@ using Authorization.API.Extension;
 using Authorization.API.Middlewares;
 using Authorization.Application;
 using Authorization.Dal;
+using Serilog;
 using Authorization.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +15,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionMiddlewareHandler>();
 
+builder.Host.UseSerilog();
+
 builder.Services
     .ConfigureApiServices(builder.Configuration)
     .ConfigureDalServices()
     .ConfigureAppServices()
     .ConfigureInfrastructureServices(builder.Configuration);
-
 
 
 var app = builder.Build();
@@ -32,6 +34,8 @@ app.UseHttpsRedirection();
 app.UseRateLimiter();
 
 app.MapControllers();
+
+app.ApplyMigrations();
 
 app.UseExceptionHandler();
 

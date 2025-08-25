@@ -26,7 +26,6 @@ namespace Authorization.Infrastructure
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<IJwtService<UserTokenRequest, UserTokenResponse>, JwtUserService>();
 
-            services.AddHostedService<ApplyMigrationsBackgroundService>();
             services.AddHostedService<InitializeRolesBackgroundService>();
 
             return services;

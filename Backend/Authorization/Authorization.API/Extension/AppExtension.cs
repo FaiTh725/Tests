@@ -1,8 +1,13 @@
-﻿using Authorization.API.Validators.UserEntity;
+﻿using Application.Shared.Exceptions;
+using Authorization.API.Configurations;
+using Authorization.API.Validators.UserEntity;
 using Authorization.Application.Commands.UserEntity.Login;
 using Authorization.Application.Commands.UserEntity.Register;
+using Authorization.Domain.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Serilog;
+using Serilog.Sinks.Network;
 using System.Threading.RateLimiting;
 
 namespace Authorization.API.Extension
@@ -14,6 +19,7 @@ namespace Authorization.API.Extension
             IConfiguration configuration)
         {
             services
+                .AddLogstashLoging(configuration)
                 .AddFlientValidation()
                 .AddRateLimits();
 
@@ -49,6 +55,50 @@ namespace Authorization.API.Extension
              });
 
             return services;
+        }
+
+        private static IServiceCollection AddLogstashLoging(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var logstashConf = configuration
+                .GetSection("LogstashSettings")
+                .Get<LogstashConf>() ?? 
+                throw new AppConfigurationException("Logstash settings");
+
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.Debug()
+                .WriteTo.TCPSink(
+                    logstashConf.Host,
+                    logstashConf.Port,
+                    new Serilog.Formatting.Json.JsonFormatter())
+                .CreateLogger();
+
+            return services;
+        }
+
+        public static void ApplyMigrations(
+            this WebApplication app)
+        {
+            var scope = app.Services.CreateAsyncScope();
+            var migrationService = scope.ServiceProvider
+                .GetRequiredService<IMigrationService>();
+            var logger = scope.ServiceProvider
+                .GetRequiredService<ILogger<Program>>();
+
+            var pendingMigrations = migrationService.GetPendingMigrations();
+
+            if (pendingMigrations.Any())
+            {
+                migrationService.ApplyPendingMigrations();
+                logger.LogInformation("Apply Migrations");
+            }
+            else
+            {
+                logger.LogInformation("Migrations already applied");
+            }
         }
     }
 }

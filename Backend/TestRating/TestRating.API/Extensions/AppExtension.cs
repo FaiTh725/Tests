@@ -1,7 +1,11 @@
 ﻿using Application.Shared.Exceptions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Sinks.Network;
 using Test.API.Grpc;
+using TestRating.API.Configurations;
 using TestRating.API.Contracts.Feedback;
 using TestRating.API.Contracts.FeedbackReply;
 using TestRating.API.Contracts.FeedbackReport;
@@ -14,6 +18,7 @@ using TestRating.Application.Common.Constants;
 using TestRating.Application.Common.Interfaces;
 using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
 using TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies;
+using TestRating.Domain.Interfaces;
 
 namespace TestRating.API.Extensions
 {
@@ -24,6 +29,7 @@ namespace TestRating.API.Extensions
             IConfiguration configuration)
         {
             services
+                .AddLogstashLoging(configuration)
                 .AddGrpcProvider(configuration)
                 .ConfigureFluentValidation();
 
@@ -79,6 +85,27 @@ namespace TestRating.API.Extensions
             return services;
         }
 
+        private static IServiceCollection AddLogstashLoging(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var logstashConf = configuration
+                .GetSection("LogstashSettings")
+                .Get<LogstashConf>() ??
+                throw new AppConfigurationException("Logstash settings");
+
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.Debug()
+                .WriteTo.TCPSink(
+                    logstashConf.Host,
+                    logstashConf.Port,
+                    new Serilog.Formatting.Json.JsonFormatter())
+                .CreateLogger();
+
+            return services;
+        }
         private static IServiceCollection AddCustomPolicies(
             this IServiceCollection services)
         {
@@ -89,6 +116,28 @@ namespace TestRating.API.Extensions
             });
 
             return services;
+        }
+
+        public static void ApplyMigrations(
+            this WebApplication app)
+        {
+            var scope = app.Services.CreateAsyncScope();
+            var migrationService = scope.ServiceProvider
+                .GetRequiredService<IMigrationService>();
+            var logger = scope.ServiceProvider
+                .GetRequiredService<ILogger<Program>>();
+
+            var pendingMigrations = migrationService.GetPendingMigrations();
+
+            if (pendingMigrations.Any())
+            {
+                migrationService.ApplyPendingMigrations();
+                logger.LogInformation("Apply pending migrations");
+            }
+            else
+            {
+                logger.LogInformation("Migrations already applied");
+            }
         }
     }
 }
