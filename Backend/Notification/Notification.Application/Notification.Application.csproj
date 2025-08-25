@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Notification.Contracts\Notification.Contracts.csproj" />
-    <ProjectReference Include="..\Notification.Domain\Notification.Domain.csproj" />
-    <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
+	  <ProjectReference Include="..\Notification.Contracts\Notification.Contracts.csproj" />
+	  <ProjectReference Include="..\Notification.Domain\Notification.Domain.csproj" />
+	  <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
   </ItemGroup>
 
 </Project>

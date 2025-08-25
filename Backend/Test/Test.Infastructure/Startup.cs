@@ -23,8 +23,8 @@ using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.TestSession;
 using Test.Domain.Interfaces;
 using Test.Infrastructure.BackgroundServices;
-using Test.Infrastructure.Implementations;
 using Test.Infrastructure.Configurations;
+using Test.Infrastructure.Implementations;
 
 namespace Test.Infrastructure
 {
