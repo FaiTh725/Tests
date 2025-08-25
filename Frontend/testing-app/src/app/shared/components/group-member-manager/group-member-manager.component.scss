@@ -1,0 +1,50 @@
+.group-manager-add-member {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.group-manager-add-member__search-wrapper {
+  flex: 1;
+  margin: 20px;
+}
+
+.group-manager-add-member__error {
+  margin-left: 25px;
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--error-color);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.group-manager-members {
+  margin: 20px 0;
+}
+
+.group-manager-members__member + .group-manager-members__member {
+  margin-top: 10px;
+}
+
+.group-manager-members__member {
+  display: flex;
+  align-items: center;
+
+}
+
+.group-manager-members__member-info {
+  flex: 1;
+  font-family: var(--font-family);
+  color: var(--shadow-color);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.group-manager-click-btn {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  height: 60px;
+}
+

@@ -1,13 +1,16 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
+using Test.Application.Contracts.Common;
+using Test.Application.Contracts.ProfileEntity;
 using Test.Application.Contracts.ProfileGroupEntity;
+using Test.Application.Queries.ProfileEntity.Specifications;
 using Test.Application.Queries.ProfileGroupEntity.Specifications;
 using Test.Domain.Interfaces;
 
 namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
 {
     public class GetProfileCreatedGroupHandler :
-        IRequestHandler<GetProfileCreatedGroupQuery, IEnumerable<GroupInfo>>
+        IRequestHandler<GetProfileCreatedGroupQuery, PaginationResponse<GroupWithMembers>>
     {
         private readonly INoSQLUnitOfWork unitOfWork;
 
@@ -17,12 +20,12 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<GroupInfo>> Handle(
+        public async Task<PaginationResponse<GroupWithMembers>> Handle(
             GetProfileCreatedGroupQuery request, 
             CancellationToken cancellationToken)
         {
             var profile = await unitOfWork.ProfileRepository
-                .GetProfile(request.ProfileId, cancellationToken);
+                .GetProfile(request.ProfileEmail, cancellationToken);
 
             if(profile is null)
             {
@@ -30,15 +33,48 @@ namespace Test.Application.Queries.ProfileGroupEntity.GetProfileCreatedGroup
             }
 
             var groups = await unitOfWork.ProfileGroupRepository
-                .GetProfileGroupsByCriteria(
-                    new GroupsByProfileIdSpecification(profile.Id), 
+                .GetPaginatedProfileGroupsByCriteria(
+                    new GroupsByProfileIdPaginationSpecification(
+                        profile.Id,
+                        request.Page,
+                        request.PageSize), 
                     cancellationToken);
 
-            return groups.Select(groups => new GroupInfo
-            {
-                Id = groups.Id,
-                Name = groups.GroupName
-            });
+            var profilesId = groups.Items
+                .SelectMany(x => x.MembersId)
+                .Distinct()
+                .ToList();
+
+            var uniquesProfilesInGroups = await unitOfWork.ProfileRepository
+                .GetProfilesByCriteria(
+                    new GetProfilesByIdListSpecification(profilesId),
+                cancellationToken);
+
+            var profilesDictionary = uniquesProfilesInGroups
+                .ToDictionary(
+                    x => x.Id, 
+                    x => new ProfileResponse 
+                    { 
+                        Id = x.Id,
+                        Email = x.Email,
+                        Name = x.Name,   
+                    });
+
+            return new PaginationResponse<GroupWithMembers> 
+            { 
+                Data = groups.Items.Select(group => new GroupWithMembers
+                {
+                    Id = group.Id,
+                    Name = group.GroupName,
+                    Members = group.MembersId
+                    .Where(profilesDictionary.ContainsKey)
+                    .Select(id => profilesDictionary[id])
+                }),
+                PageSize = request.PageSize,
+                Page = request.Page,
+                MaxSize = groups.TotalCount
+            };
+
         }
     }
 }

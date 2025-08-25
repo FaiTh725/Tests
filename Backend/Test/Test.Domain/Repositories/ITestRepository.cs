@@ -7,14 +7,18 @@ namespace Test.Domain.Repositories
     {
         Task<TestEntity> AddTest(TestEntity test, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
+        Task<IEnumerable<TestEntity>> GetTests(CancellationToken cancellationToken = default); 
+
         Task<TestEntity?> GetTest(long id, CancellationToken cancellationToken = default);
 
         Task DeleteTest(long id, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
         Task UpdateTest(long id, TestEntity updatedTest, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 
-        Task<TestEntity?> GetTestByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken);
+        Task<TestEntity?> GetTestByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<TestEntity>> GetTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken);
+        Task<PaginatedList<TestEntity>> GetPaginatedTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<TestEntity>> GetTestsByCriteria(BaseSpecification<TestEntity> specification, CancellationToken cancellationToken = default);
     }
 }

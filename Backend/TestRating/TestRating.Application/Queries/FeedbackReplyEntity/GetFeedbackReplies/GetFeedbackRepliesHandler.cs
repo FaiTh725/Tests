@@ -32,53 +32,34 @@ namespace TestRating.Application.Queries.FeedbackReplyEntity.GetFeedbackReplies
                 throw new NotFoundException("Feedback doesnt exist");
             }
 
-            var transaction = await unitOfWork.BeginTransactionAsync(
-                IsolationLevel.RepeatableRead, 
+            var paginatedFeedbackReplies = await unitOfWork.ReplyRepository
+                .GetPaginatedRepliesByCriteria(new RepliesPaginationByFeedbackIdWithOwnerSpecification(
+                    request.FeedbackId,
+                    request.Page,
+                    request.PageSize),
                 cancellationToken);
-            try
+
+            return new BasePaginationResponse<FeedbackReplyWithOwner>
             {
-                var allReplies = await unitOfWork.ReplyRepository
-                    .GetRepliesByCriteria(new RepliesByFeedbackIdWithOwnerSpecification(
-                        request.FeedbackId),
-                        cancellationToken);
-
-                var feedbackReplies = await unitOfWork.ReplyRepository
-                    .GetRepliesByCriteria(new RepliesPaginationByFeedbackIdWithOwnerSpecification(
-                        request.FeedbackId,
-                        request.Page,
-                        request.PageSize),
-                    cancellationToken);
-
-                await unitOfWork.CommitTransactionAsync(
-                    transaction, cancellationToken);
-
-                return new BasePaginationResponse<FeedbackReplyWithOwner>
+                Page = request.Page,
+                PageCount = request.PageSize,
+                MaxCount = paginatedFeedbackReplies.TotalCount,
+                Items = paginatedFeedbackReplies.Items.Select(x => 
+                new FeedbackReplyWithOwner
                 {
-                    Page = request.Page,
-                    PageCount = request.PageSize,
-                    MaxCount = allReplies.Count(),
-                    Items = feedbackReplies.Select(x => new FeedbackReplyWithOwner 
-                    { 
-                        Id = x.Id,
-                        FeedbackId = x.FeedbackId,
-                        SendTime = x.SendTime,
-                        UpdateTime = x.UpdateTime,
-                        Text = x.Text,
-                        Owner = new BaseProfileResponse
-                        {
-                           Id = x.Owner.Id,
-                           Email = x.Owner.Email,
-                           Name = x.Owner.Name
-                        }
-                    })
-                };
-            }
-            catch
-            {
-                await unitOfWork.RollBackTransactionAsync(
-                    transaction, cancellationToken);
-                throw;
-            }
+                    Id = x.Id,
+                    FeedbackId = x.FeedbackId,
+                    SendTime = x.SendTime,
+                    UpdateTime = x.UpdateTime,
+                    Text = x.Text,
+                    Owner = new BaseProfileResponse
+                    {
+                        Id = x.Owner.Id,
+                        Email = x.Owner.Email,
+                        Name = x.Owner.Name
+                    }
+                })
+            };
         }
     }
 }

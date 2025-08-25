@@ -19,12 +19,13 @@ namespace Test.Domain.Entities
 
         private TestSession(
             long testId,
-            long profileId)
+            long profileId,
+            DateTime startTime)
         {
             TestId = testId;
             ProfileId = profileId;
+            StartTime = startTime;
 
-            StartTime = DateTime.UtcNow;
             IsEnded = false;
         }
 
@@ -52,11 +53,13 @@ namespace Test.Domain.Entities
 
         public static Result<TestSession> Initialize(
             long testId,
-            long profileId)
+            long profileId,
+            DateTime startTime)
         {
             return Result.Success(new TestSession(
                 testId,
-                profileId));
+                profileId,
+                startTime));
         }
     }
 }

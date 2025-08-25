@@ -1,0 +1,18 @@
+<div class="test-result-main">
+  <div class="test-result-wrapper">
+    <div class="test-result-header">
+      <div>
+        <app-clear-button
+          (handleClick)="handleCloseModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="var(--light-blue-color)"><path d="m251.33-204.67-46.66-46.66L433.33-480 204.67-708.67l46.66-46.66L480-526.67l228.67-228.66 46.66 46.66L526.67-480l228.66 228.67-46.66 46.66L480-433.33 251.33-204.67Z"/></svg>
+        </app-clear-button>
+      </div>
+    </div>
+    <h2 class="test-result-result">
+      Your test scope is {{sessionResult?.Percent}}%
+    </h2>
+    <div class="test-result-img-wrapper">
+      <img src="images/congratulating_cat.png" height="400" alt="congratulating cat">
+    </div>
+  </div>
+</div>

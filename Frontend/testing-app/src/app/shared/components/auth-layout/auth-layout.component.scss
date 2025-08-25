@@ -1,0 +1,26 @@
+.auth-main {
+  font-size: 16px;
+  background-color: var(--primary-black-color);
+  font-weight: 800;
+  font-family: var(--font-family);
+  height: 100vh;
+  padding: 30px;
+}
+
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  height: 100px;
+}
+
+.auth-header__btn-wrapper {
+  margin-right: 20px;
+}
+
+.auth-body {
+  margin-top: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

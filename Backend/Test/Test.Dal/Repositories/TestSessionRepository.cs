@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using Test.Dal.Adapters;
 using Test.Dal.Persistences;
+using Test.Dal.Specifications;
 using Test.Domain.Entities;
 using Test.Domain.Primitives;
 using Test.Domain.Repositories;
@@ -50,6 +51,37 @@ namespace Test.Dal.Repositories
             }
 
             return mongoTestSession.ConvertToDomainEntity();
+        }
+
+        public async Task<TestSession?> GetFinishedTest(
+            long testSessionId, 
+            CancellationToken cancellationToken = default)
+        {
+            var mongoTestSession = await context.Sessions
+                .Find(x => x.Id == testSessionId && x.IsEnded)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return mongoTestSession?.ConvertToDomainEntity();
+        }
+
+        public async Task<PaginatedList<TestSession>> GetPaginatedSessionsByCriteria(
+            BaseSpecification<TestSession> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetPaginatedQueryAsync(
+                context.Sessions, 
+                specification, 
+                cancellationToken);
+        }
+
+        public async Task<IEnumerable<TestSession>> GetSessionsByCriteria(
+            BaseSpecification<TestSession> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetQueryAsync(
+                context.Sessions, 
+                specification, 
+                cancellationToken);
         }
 
         public async Task<TestSession?> GetTestSession(

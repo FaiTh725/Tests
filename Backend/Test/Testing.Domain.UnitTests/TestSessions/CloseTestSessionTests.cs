@@ -10,7 +10,7 @@ namespace Testing.Domain.UnitTests.TestSessions
         public void CloseSession_IfCloseAlreadyClosedSession_ShouldReturnFailedResult()
         {
             // Arrange
-            var testSession = TestSession.Initialize(1, 1);
+            var testSession = TestSession.Initialize(1, 1, new DateTime(2025, 5, 5, 0, 0, 0, DateTimeKind.Utc));
             var percent = 12;
             testSession.Value.CloseSession(percent);
 
@@ -26,7 +26,7 @@ namespace Testing.Domain.UnitTests.TestSessions
         public void CloseSession_WhenOutSideOfRangePercent_ShouldReturnFailedResult()
         {
             // Arrange
-            var testSession = TestSession.Initialize(1, 1);
+            var testSession = TestSession.Initialize(1, 1, new DateTime(2025, 5, 5, 0, 0, 0, DateTimeKind.Utc));
             var percent = 112;
 
             // Act
@@ -42,7 +42,7 @@ namespace Testing.Domain.UnitTests.TestSessions
         public void CloseSession_CorrectParameters_ShouldReturnSuccessResult()
         {
             // Arrange
-            var testSession = TestSession.Initialize(1, 1);
+            var testSession = TestSession.Initialize(1, 1, new DateTime(2025, 5, 5, 0, 0, 0, DateTimeKind.Utc));
             var percent = 50;
             var expectedEndTime = DateTime.UtcNow;
 

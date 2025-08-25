@@ -30,12 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestRating.API\TestRating.API.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Application.Shared">
-      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

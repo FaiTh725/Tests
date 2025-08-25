@@ -136,5 +136,40 @@ namespace TestRating.Dal.Repositories
                 specification)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<Dictionary<int, int>> GetRatingDistribution(
+            long testId, CancellationToken cancellationToken = default)
+        {
+            return await context.Feedbacks
+                .Where(x => x.TestId == testId)
+                .GroupBy(g => g.Rating)
+                .Select(x => new
+                {
+                    Rating = x.Key,
+                    Count = x.Count()
+                })
+                .ToDictionaryAsync(x => x.Rating, x => x.Count, 
+                    cancellationToken);
+        }
+
+        public async Task<double> GetAverageRating(
+            long testId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await context.Feedbacks
+                .Where(x => x.TestId == testId)
+                .AverageAsync(x => x.Rating, 
+                cancellationToken);
+        }
+
+        public async Task<PaginatedList<Feedback>> GetPaginatedFeedbacksByCriteria(
+            Specification<Feedback> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetPaginatedQuery(
+                context.Feedbacks, 
+                specification, 
+                cancellationToken);
+        }
     }
 }

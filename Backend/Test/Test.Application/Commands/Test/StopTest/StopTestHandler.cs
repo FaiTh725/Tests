@@ -1,5 +1,6 @@
 ﻿using Application.Shared.Exceptions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Test.Application.Common.Interfaces;
 using Test.Application.Contracts.TestSession;
 using Test.Domain.Entities;
@@ -14,17 +15,23 @@ namespace Test.Application.Commands.Test.StopTest
         private readonly ITempDbService<TempTestSession> tempDbService;
         private readonly ITestEvaluatorService testEvaluatorService;
         private readonly IBackgroundJobService backgroundJobService;
+        private readonly ITestNotificationService testNotificationService;
+        private readonly ILogger<StopTestHandler> logger;
 
         public StopTestHandler(
             INoSQLUnitOfWork unitOfWork,
             ITempDbService<TempTestSession> tempDbService,
             ITestEvaluatorService testEvaluatorService,
-            IBackgroundJobService backgroundJobService)
+            IBackgroundJobService backgroundJobService,
+            ITestNotificationService testNotificationService,
+            ILogger<StopTestHandler> logger)
         {
             this.unitOfWork = unitOfWork;
             this.tempDbService = tempDbService;
             this.testEvaluatorService = testEvaluatorService;
             this.backgroundJobService = backgroundJobService;
+            this.testNotificationService = testNotificationService;
+            this.logger = logger;
         }
 
         public async Task<long> Handle(
@@ -40,7 +47,7 @@ namespace Test.Application.Commands.Test.StopTest
             }
 
             var testSession = TestSession.Initialize(
-                session.TestId, session.ProfileId);
+                session.TestId, session.ProfileId, session.StartTime);
 
             if(testSession.IsFailure)
             {
@@ -91,8 +98,23 @@ namespace Test.Application.Commands.Test.StopTest
 
                 await unitOfWork.CommitTransactionAsync(transaction, cancellationToken);
 
-                if(session.TestDuration is not null)
+                if (session.TestDuration is not null)
                 {
+                    var profile = await unitOfWork.ProfileRepository
+                            .GetProfile(session.ProfileId, cancellationToken);
+
+                    if (profile is not null)
+                    {
+                        logger.LogInformation("Send notification of the end of the test");
+
+                        await testNotificationService
+                            .NotifyTestOver(profile.Email, dbTestSession.Id);
+                    }
+                    else
+                    {
+                        logger.LogCritical("Session with invalid profileId that doesnt exist");
+                    }
+
                     backgroundJobService.CancelJob(session.JobId!);
                 }
 

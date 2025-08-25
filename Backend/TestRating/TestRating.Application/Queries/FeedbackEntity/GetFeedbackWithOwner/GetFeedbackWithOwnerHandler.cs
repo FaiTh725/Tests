@@ -9,7 +9,7 @@ using TestRating.Domain.Interfaces;
 namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbackWithOwner
 {
     public class GetFeedbackWithOwnerHandler :
-        IRequestHandler<GetFeedbackWithOwnerQuery, FeedbackResponse>
+        IRequestHandler<GetFeedbackWithOwnerQuery, FeedbackWithReviewsResponse>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBlobService blobService;
@@ -22,13 +22,13 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbackWithOwner
             this.blobService = blobService;
         }
 
-        public async Task<FeedbackResponse> Handle(
+        public async Task<FeedbackWithReviewsResponse> Handle(
             GetFeedbackWithOwnerQuery request, 
             CancellationToken cancellationToken)
         {
             var feedback = await unitOfWork.FeedbackRepository
                 .GetFeedbackByCriteria(
-                new FeedbackByIdWithOwnerSpecification(request.Id), 
+                new FeedbackByIdWithOwnerAndReviewsSpecification(request.Id), 
                 cancellationToken);
         
             if(feedback is null)
@@ -40,8 +40,7 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbackWithOwner
                 feedback.ImageFolder,
                 cancellationToken);
 
-            // TODO in this situation maybe automapper could be helpful
-            return new FeedbackResponse 
+            return new FeedbackWithReviewsResponse
             { 
                 Id = feedback.Id,
                 Rating = feedback.Rating,
@@ -50,6 +49,8 @@ namespace TestRating.Application.Queries.FeedbackEntity.GetFeedbackWithOwner
                 Text = feedback.Text,
                 TestId = feedback.TestId,
                 FeedbackImages = feedbackImages.ToList(),
+                CountNegativeReviews = feedback.Reviews.Where(x => !x.IsPositive).Count(),
+                CountPositiveReviews = feedback.Reviews.Where(x => x.IsPositive).Count(),
                 Profile = new BaseProfileResponse
                 {
                     Id = feedback.Owner.Id,

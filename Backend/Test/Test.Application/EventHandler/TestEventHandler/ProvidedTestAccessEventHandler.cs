@@ -17,6 +17,7 @@ namespace Test.Application.EventHandler.TestEventHandler
             IPublishEndpoint publishEndpoint)
         {
             this.logger = logger;
+            this.publishEndpoint = publishEndpoint;
         }
 
         public async Task Handle(

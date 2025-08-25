@@ -29,6 +29,11 @@ namespace Test.Application.Commands.TestAccessEntity.GiveAccessTest
                 throw new BadRequestException("Test doesnt exist");
             }
 
+            if (test.IsPublic)
+            {
+                throw new BadRequestException("Current test is public");
+            }
+
             var existedTestAccess = await unitOfWork.AccessRepository
                 .GetTestAccess(
                 request.TestId, 

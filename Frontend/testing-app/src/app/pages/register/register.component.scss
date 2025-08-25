@@ -1,0 +1,25 @@
+.register-form__input + .register-form__input {
+  margin-top: 30px;
+}
+
+.register-form__input {
+  min-width: 350px;
+  margin-top: 50px;
+} 
+
+.register-header {
+  text-align: center;
+  font-size: 30px;
+  color: var(--primary-write-color);
+}
+
+.register-submit-form {
+  margin-top: 30px;
+}
+
+.register-link {
+  color: var(--shadow-color);
+  text-decoration: underline;
+  margin-top: 10px;
+  cursor: pointer;
+} 

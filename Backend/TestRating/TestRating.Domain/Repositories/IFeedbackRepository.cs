@@ -15,6 +15,8 @@ namespace TestRating.Domain.Repositories
 
         Task<IEnumerable<Feedback>> GetFeedbacksByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
         
+        Task<PaginatedList<Feedback>> GetPaginatedFeedbacksByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
+        
         Task<IEnumerable<Feedback>> GetFeedbacksExcludeFiltersByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<Feedback>> GetFeedbacks(CancellationToken cancellationToken = default);
@@ -26,5 +28,8 @@ namespace TestRating.Domain.Repositories
         Task HardDeleteFeedback(long id, CancellationToken cancellationToken = default);
 
         Task HardDeleteByCriteria(Specification<Feedback> specification, CancellationToken cancellationToken = default);
+
+        Task<Dictionary<int, int>> GetRatingDistribution(long testId, CancellationToken cancellationToken = default);
+        Task<double> GetAverageRating(long testId, CancellationToken cancellationToken = default); 
     }
 }

@@ -10,7 +10,9 @@ using TestRating.Application.Commands.FeedbackReviewEntity.SendFeedbackReview;
 using TestRating.Application.Contacts.File;
 using TestRating.Application.Contacts.Profile;
 using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestId;
+using TestRating.Application.Queries.FeedbackEntity.GetFeedbacksByTestIdAndRating;
 using TestRating.Application.Queries.FeedbackEntity.GetFeedbackWithOwner;
+using TestRating.Application.Queries.FeedbackEntity.GetTestStatisticsByFeedbacks;
 
 namespace TestRating.API.Controllers
 {
@@ -28,11 +30,48 @@ namespace TestRating.API.Controllers
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTestFeedbacks(
-            [FromQuery]GetFeedbacksByTestIdQuery request, CancellationToken cancellationToken)
+            [FromQuery] GetFeedbacksByTestIdQuery request, CancellationToken cancellationToken)
         {
             var feedbacks = await mediator
                 .Send(request, cancellationToken);
         
+            return Ok(feedbacks);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetFeedback(
+            long feedbackId, 
+            CancellationToken cancellationToken)
+        {
+            var feedback = await mediator.Send(new GetFeedbackWithOwnerQuery 
+            { 
+                Id = feedbackId
+            }, cancellationToken);
+
+            return Ok(feedback);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetTestStatistics(
+            long testId, CancellationToken cancellationToken)
+        {
+            var testStatistics = await mediator.Send(new GetTestStatisticsByFeedbacksQuery
+            {
+                TestId = testId
+            }, cancellationToken);
+
+            return Ok(testStatistics);
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> GetFeebacksByFilter(
+            [FromQuery]GetFeedbacksByTestIdAndRatingQuery request, CancellationToken cancellationToken)
+        {
+            var feedbacks = await mediator.Send(request, cancellationToken);
+
             return Ok(feedbacks);
         }
 

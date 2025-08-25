@@ -1,6 +1,7 @@
 ﻿using Application.Shared.Exceptions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
@@ -96,18 +97,7 @@ namespace Notification.API.Extensions
                     {
                         OnMessageReceived = ctx =>
                         {
-                            var isHubRequest = ctx.Request.Path.StartsWithSegments("/hub");
-                            var token = string.Empty;
-
-                            // if request is through hub and pass token in query
-                            if (isHubRequest)
-                            {
-                                token = ctx.Request.Query["token"];
-                            }
-                            else
-                            {
-                                token = ctx.Request.Cookies["token"];
-                            }
+                            var token = ctx.Request.Cookies["token"];
 
                             if (!string.IsNullOrEmpty(token))
                             {

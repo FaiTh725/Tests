@@ -12,7 +12,6 @@ COPY ["Backend/TestRating/TestRating.Contracts", "TestRating/TestRating.Contract
 
 RUN dotnet restore 'Authorization/Authorization.API/Authorization.API.csproj'
 
-COPY . .
 
 WORKDIR /src/Authorization/Authorization.API
 RUN dotnet build "Authorization.API.csproj" -c Release -o /app/build

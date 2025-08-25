@@ -12,6 +12,8 @@ namespace Test.Application.Contracts.Test
 
         public string TestType { get; set; } = string.Empty;
 
+        public double? DurationInMinutes { get; set; }
+
         public List<QuestionToPassTest> Questions { get; set; } = new List<QuestionToPassTest>();
     }
 }

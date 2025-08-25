@@ -77,6 +77,17 @@ namespace Test.Dal.Repositories
             }
         }
 
+        public async Task<PaginatedList<TestEntity>> GetPaginatedTestsByCriteria(
+            BaseSpecification<TestEntity> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator
+                .GetPaginatedQueryAsync(
+                    context.Tests,
+                    specification,
+                    cancellationToken);
+        }
+
         public async Task<TestEntity?> GetTest(
             long id, CancellationToken cancellationToken = default)
         {
@@ -89,32 +100,36 @@ namespace Test.Dal.Repositories
 
         public async Task<TestEntity?> GetTestByCriteria(
             BaseSpecification<TestEntity> specification, 
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
-            var filter = specification.Criteria is null ?
-                Builders<MongoTest>.Filter.Empty :
-                new ExpressionConverter<TestEntity, MongoTest>().Rewrite(specification.Criteria);
+            var tests = await SpecificationEvaluator
+                    .GetQueryAsync(
+                    context.Tests,
+                    specification,
+                    cancellationToken);
 
-            var test = await context.Tests
-                .Find(filter)
-                .FirstOrDefaultAsync(cancellationToken);
+            return tests.FirstOrDefault();
+        }
 
-            return test?.ConvertToDomainEntity();
+        public async Task<IEnumerable<TestEntity>> GetTests(
+            CancellationToken cancellationToken = default)
+        {
+            var mongoTests = await context.Tests
+                .Find(_ => true)
+                .ToListAsync();
+
+            return mongoTests.Select(x => x.ConvertToDomainEntity());
         }
 
         public async Task<IEnumerable<TestEntity>> GetTestsByCriteria(
             BaseSpecification<TestEntity> specification, 
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
-            var filter = specification.Criteria is null ?
-                Builders<MongoTest>.Filter.Empty :
-                new ExpressionConverter<TestEntity, MongoTest>().Rewrite(specification.Criteria);
-
-            var tests = await context.Tests
-                .Find(filter)
-                .ToListAsync(cancellationToken);
-
-            return tests.Select(x => x.ConvertToDomainEntity());
+            return await SpecificationEvaluator
+                .GetQueryAsync(
+                    context.Tests,
+                    specification,
+                    cancellationToken);
         }
 
         public async Task UpdateTest(

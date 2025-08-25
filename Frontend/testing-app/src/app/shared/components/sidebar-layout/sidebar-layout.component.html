@@ -1,0 +1,28 @@
+<div class="sidebar-main">
+  <div class="sidebar-navigation">
+    <a class="sidebar-navigation__logo" routerLink="/" routerLinkActive="router-link-active">
+      <img src="/images/full logo.png" height="80" alt="full logo">
+    </a>
+    <div class="sidebar-navigation__links">
+      @for (navigate of navigationLinks; track $index) {
+        <div class="sidebar-navigation__links-item"
+          [ngClass]="{'sidebar-navigation__links-selected': selectedNavigate == navigate.Url}"
+          (click)="handleSelectNavigate(navigate.Url)">
+          <div class="sidebar-navigation__links-icon">
+            <img [src]="navigate.Icon" height="50" alt="navigate icon">
+          </div>
+          <div class="sidebar-navigation__links-name"
+          [style.color]="(selectedNavigate == navigate.Url) ? '#49c0f8' : '#fdf7e6'">
+            {{navigate.Text}}
+          </div>
+        </div>
+      }
+    </div>
+    <div class="sidebar-notifications">
+      <app-notifications></app-notifications>
+    </div>
+  </div>
+  <div class="sidebar-view">
+    <router-outlet></router-outlet>
+  </div>
+</div>

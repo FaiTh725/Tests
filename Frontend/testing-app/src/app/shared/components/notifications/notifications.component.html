@@ -1,0 +1,40 @@
+<div class="notifications-main">
+  <div class="notifications-wrapper">
+    <div class="notifications-active"
+      (click)="notificationIsOpen=!notificationIsOpen">
+      <div class="notifications-img-wrapper">
+        <img [src]="notifications.length === 0 ? '/icons/bell_inactive.png' : '/icons/bell.png'" height="50" alt="notification icon">
+      </div>
+      <p class="notifications-text">Notifications</p>
+    </div>
+    <div class="notifications-list" 
+      [ngClass]="{'notifications-hidden': !notificationIsOpen}">
+      @if (notifications.length === 0) {
+        <div class="notifications-empty">
+          <p>Noting to read</p>
+          <div>
+            <img src="/images/cat_bowl.png" height="300" alt="cat near bowl">
+          </div>
+        </div>
+      }
+      @else {
+        <div class="notifications-list__header">
+          <app-clear-button
+            (handleClick)="handleReadAll()">
+            <p class="notifications-list__btn-content">Read all</p>
+          </app-clear-button>
+        </div>
+        <div class="notifications-list__content">
+          @for (notification of notifications; track notification.Id) {
+            <div class="notifications-list__content-item-wrapper">
+              <app-notification-card 
+                [notification]="notification"
+                (read)="handleReadNotification($event)">
+              </app-notification-card>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

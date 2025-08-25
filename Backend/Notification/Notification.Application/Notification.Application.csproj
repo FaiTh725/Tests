@@ -17,14 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Notification.Contracts\Notification.Contracts.csproj" />
-    <ProjectReference Include="..\Notification.Domain\Notification.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Application.Shared">
-      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
-    </Reference>
+	  <ProjectReference Include="..\Notification.Contracts\Notification.Contracts.csproj" />
+	  <ProjectReference Include="..\Notification.Domain\Notification.Domain.csproj" />
+	  <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
   </ItemGroup>
 
 </Project>

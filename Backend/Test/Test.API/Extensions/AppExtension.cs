@@ -6,11 +6,11 @@ using Serilog.Sinks.Network;
 using Test.API.Configurations;
 using Hangfire;
 using Microsoft.OpenApi.Models;
-using Test.API.Contracts.Question;
-using Test.API.Contracts.Test;
 using Test.API.Filters;
-using Test.API.Validators.QuestionValidators;
-using Test.API.Validators.TestValidators;
+using Test.API.Hubs;
+using Test.API.Services;
+using Test.Application.Common.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Test.API.Extensions
 {
@@ -37,7 +37,13 @@ namespace Test.API.Extensions
                 .AddGrpcProvider()
                 .AddFluentValidation();
 
+            services.AddSignalR();
+
             services.AddScoped<VerifyProfileFilter>();
+            services.AddScoped<SessionRequiredFilter>();
+            services.AddScoped<ITestNotificationService, SignalRTestNotificationService>();
+
+            services.AddSingleton<IUserIdProvider, EmailBaseUserIdProvider>();
 
             return services;
         }
@@ -67,10 +73,7 @@ namespace Test.API.Extensions
         {
             services.AddFluentValidationAutoValidation();
 
-            services.AddScoped<IValidator<CreateTestRequest>, CreateTestValidator>();
-            services.AddScoped<IValidator<UpdateTestRequest>, UpdateTestValidator>();
-            services.AddScoped<IValidator<CreateQuestionRequest>, CreateQuestionValidator>();
-            services.AddScoped<IValidator<UpdateQuestionRequest>, UpdateQuestionValidator>();
+            services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
             return services;
         }

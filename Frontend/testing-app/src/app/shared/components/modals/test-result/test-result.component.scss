@@ -1,0 +1,26 @@
+.test-result-main {
+  border-radius: 16px;
+  border: 2px solid var(--shadow-color);
+  background-color: var(--primary-black-color);
+  padding: 20px 40px;
+
+}
+
+.test-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.test-result-result {
+  margin: 30px 0;
+  font-family: var(--font-family);
+  font-size: 24px;
+  color: var(--light-blue-color);
+}
+
+.test-result-img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

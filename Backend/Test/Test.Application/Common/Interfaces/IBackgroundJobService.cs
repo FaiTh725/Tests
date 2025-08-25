@@ -15,5 +15,7 @@ namespace Test.Application.Common.Interfaces
         void CreateSchedulingJob<T>(string jobId, Expression<Func<T, Task>> methodCall, string cronExpression);
 
         void CancelJob(string jobId);
+
+        bool JobIsComplete(string jobId);
     }
 }

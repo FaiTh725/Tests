@@ -15,7 +15,7 @@ namespace Testing.Domain.UnitTests.TestSessions
             var expectedStartTime = DateTime.UtcNow;
 
             // Act
-            var testSession = TestSession.Initialize(testId, profileId);
+            var testSession = TestSession.Initialize(testId, profileId, new DateTime(2025, 5, 5, 0, 0, 0, DateTimeKind.Utc));
 
             // Assert
             testSession.IsSuccess.Should().BeTrue();

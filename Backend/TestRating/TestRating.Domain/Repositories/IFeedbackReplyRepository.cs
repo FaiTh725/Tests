@@ -12,6 +12,8 @@ namespace TestRating.Domain.Repositories
         Task<FeedbackReply?> GetReplyByCriteria(Specification<FeedbackReply> specification, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<FeedbackReply>> GetRepliesByCriteria(Specification<FeedbackReply> specification, CancellationToken cancellationToken = default);
+        
+        Task<PaginatedList<FeedbackReply>> GetPaginatedRepliesByCriteria(Specification<FeedbackReply> specification, CancellationToken cancellationToken = default);
 
         Task UpdateReply(long replyId, FeedbackReply updatedReply, CancellationToken cancellationToken = default);
 

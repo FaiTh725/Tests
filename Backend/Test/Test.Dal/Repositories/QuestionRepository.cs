@@ -135,16 +135,11 @@ namespace Test.Dal.Repositories
             BaseSpecification<Question> specification, 
             CancellationToken cancellationToken = default)
         {
-            var filter = specification.Criteria is null ?
-                Builders<MongoQuestion>.Filter.Empty :
-                new ExpressionConverter<Question, MongoQuestion>().Rewrite(specification.Criteria);
-
-            var mongoQuestions = await context.Questions
-                .Find(filter)
-                .ToListAsync(cancellationToken);
-
-            return mongoQuestions
-                .Select(x => x.ConvertToDomainEntity());
+            return await SpecificationEvaluator
+                .GetQueryAsync(
+                    context.Questions,
+                    specification,
+                    cancellationToken);
         }
 
         public async Task UpdateQuestion(

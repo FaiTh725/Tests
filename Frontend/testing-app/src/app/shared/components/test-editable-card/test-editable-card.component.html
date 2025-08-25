@@ -1,0 +1,66 @@
+<div class="test-card-main">
+  <div class="test-card-wrapper">
+    <div class="test-card-main-info">
+      <div class="test-card-main-info__text">
+        <p class="test-card-main-info__value">{{test?.Name}}</p>
+        <p class="test-card-main-info__value">{{test?.CreatedTime | date: "dd.MM.yy"}}</p>
+      </div>
+      <div class="test-card-main-info__btn-wrapper">
+        @if(!test?.IsPublic) {
+          <app-primary-button [btnConfiguration]="{
+            Text: 'Share',
+            BackgroundColor: 'var(--light-blue-color)',
+            BorderColor: '#2c97c9',
+            BorderWith: 2,
+            FontSize: 18,
+            HoverBackgroundColor: '#5ec6f7',
+            HoverColor: 'var(--primary-write-color)',
+            TextColor: 'var(--primary-write-color)'}"
+            (handleClick)="handleOpenShareModal()">
+          </app-primary-button>
+        }
+      </div>
+      <div class="test-card-main-info__btn-wrapper">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Delete',
+          BackgroundColor: 'var(--error-color)',
+          BorderColor: 'var(--dark-error-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--error-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleDelete()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="test-card-edit"
+      (click)="handleOpenEditSection($event)"
+      [style.position]="isOpenToEdit ? 'relative' : 'absolute'"
+      [ngClass]="{'test-card-opened': isOpenToEdit}">
+      @if (isOpenToEdit) {
+        <div class="test-card-edit__existed-questions">
+          @for (question of test?.Questions; track question.Id) {
+            <app-test-question-card
+              [question]="question"
+              (delete)="handleDeleteQuestion($event)">
+            </app-test-question-card>
+          }
+        </div>
+        <div class="test-card-edit__form-wrapper"
+          (click)="$event.stopPropagation()">
+          <app-add-question-form
+            (addQuestion)="addQuestion.emit($event)">
+          </app-add-question-form>
+          <p class="test-card-edit__stop-edit"
+            (click)="isOpenToEdit=false; $event.stopPropagation()">
+            Stop edit
+          </p>
+        </div>
+      }
+      @else {
+        <p>Edit</p>
+      }
+    </div>
+  </div>
+</div>

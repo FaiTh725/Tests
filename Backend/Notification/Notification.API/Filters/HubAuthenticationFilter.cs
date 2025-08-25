@@ -33,13 +33,10 @@ namespace Notification.API.Filters
 
             if (!context.User!.Identity!.IsAuthenticated)
             {
-                // TODO: implement specific classes for hub exceptions
                 throw new HubUnauthorizedException("User isnt authorized");
             }
 
-            var userEmail = context.User.Claims
-                .FirstOrDefault(x => x.Type == ClaimTypes.Email)?
-                .Value;
+            var userEmail = context.UserIdentifier;
 
             if (userEmail is null)
             {

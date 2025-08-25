@@ -86,9 +86,10 @@ namespace TestRating.API.Controllers
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetFeedbackReplies(
-            [FromQuery]GetFeedbackRepliesQuery request, CancellationToken cancellationToken)
+            [FromQuery] GetFeedbackRepliesQuery request, CancellationToken cancellationToken)
         {
-            var replies = await mediator.Send(request, cancellationToken);
+            var replies = await mediator
+                .Send(request, cancellationToken);
 
             return Ok(replies);
         }

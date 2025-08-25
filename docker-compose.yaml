@@ -3,6 +3,24 @@ version: "3.8"
 name: "Testing"
 
 services:
+  testing_frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.Frontend
+    container_name: testing_frontend_client
+    ports:
+      - "6001:6001"
+      - "6002:6002"
+    volumes:
+      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./conf/nginx/server.conf:/etc/nginx/nginx.conf:ro
+      - ./certs/cert.crt:/etc/certs/cert.crt:ro
+      - ./certs/key_without_pass.key:/etc/certs/key.key:ro
+    networks:
+      - client_net
+    depends_on:
+      - testing_gateway
+
   testing_gateway:
     build:
       context: .
@@ -12,7 +30,8 @@ services:
       - "5502:5502"
       - "5501:5501"
     environment:
-      - AllowedUrl="https://localhost:5173"
+      # - AllowedUrl=https://localhost:4200
+      - AllowedUrl=https://localhost:6002
       - ASPNETCORE_URLS=https://+:5502;http://+:5501
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${SERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
@@ -20,6 +39,7 @@ services:
       - ./certs:/https:ro
     networks:
       - application_net
+      - client_net
     depends_on:
       - testing_feedback_api
       - testing_testing_api
@@ -89,7 +109,9 @@ services:
       - "5402:5402"
     environment:
       - ConnectionStrings__PostgressConnection=Host=postgres_db;UserName=${PG_USER};Password=${PG_PASSWORD};Database=Feedback;Port=5432
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - AzuriteSetting__Url=https://azurite_storage:10000/${AZURITE_USER}
+      - AzuriteSetting__Password=${AZURITE_PASSWORD}
+      - AzuriteSetting__AccountName=${AZURITE_USER}
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
       - JwtSettings__Audience=${JWT_AUDIENCE}
@@ -126,8 +148,11 @@ services:
       - "5302:5302"
     environment:
       - ConnectionStrings__RedisConnection=redis://:${REDIS_PASSWORD}@redis:6379
+      - ConnectionStrings__RedisCacheConnection=redis:6379,password=${REDIS_PASSWORD}
       - ConnectionStrings__MongoDbConnection=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo_db:27017/?authSource=admin&replicaSet=rs0&directConnection=true
-      - ConnectionStrings__AzuriteBlobStorage=DefaultEndpointsProtocol=http;BlobEndpoint=http://azurite_storage:10000/${AZURITE_USER};AccountName=${AZURITE_USER};AccountKey=${AZURITE_PASSWORD}
+      - AzuriteSetting__Url=https://azurite_storage:10000/${AZURITE_USER}
+      - AzuriteSetting__Password=${AZURITE_PASSWORD}
+      - AzuriteSetting__AccountName=${AZURITE_USER}
       - JwtSettings__SecretKey=${JWT_SECRET_KEY}
       - JwtSettings__Issuer=${JWT_ISSUER}
       - JwtSettings__Audience=${JWT_AUDIENCE}
@@ -225,6 +250,7 @@ services:
       - ./certs:/https:ro
     networks:
       - message_broker_net
+      - application_net
       - loging_net
       - testing_mongo_net
     depends_on:
@@ -259,6 +285,18 @@ services:
       interval: 5s
       timeout: 30s
       retries: 10
+
+  init_mongo_db: 
+    image: mongo
+    container_name: testing_init_mongo-replica
+    entrypoint: ["bash", "-c"]
+    command: >
+      mongosh --host testing_mongo_db -u ${MONGO_USER} -p ${MONGO_PASSWORD} --authenticationDatabase admin --eval "rs.initiate({_id: 'rs0', members: [{ _id: 0, host: 'testing_mongo_db:27017' }]})"
+    networks:
+      - testing_mongo_net
+    depends_on:
+      mongo_db:
+        condition: service_healthy
 
   testing_mongo_express:
     image: mongo-express
@@ -306,6 +344,8 @@ services:
       - "AZURITE_ACCOUNTS=${AZURITE_USER}:${AZURITE_PASSWORD}"
     volumes:
       - testing_blob_volume:/data
+      - ./certs:/certs:ro
+    command: azurite --oauth basic --cert /certs/aspnetapp.pfx --pwd ${SERTIFICATE_PASSWORD} --blobHost 0.0.0.0
     networks:
       - azurite_net
 
@@ -355,6 +395,8 @@ networks:
   azurite_net:
     driver: bridge
   application_net:
+    driver: bridge
+  client_net:
     driver: bridge
   elastic_net:
     driver: bridge

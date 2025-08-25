@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+  --font-family: "Ubuntu", sans-serif;
+  --primary-green-color: #339e86;
+  --primary-black-color: #173145;
+  --primary-write-color: #fdf7e6;
+  --light-blue-color: #49c0f8;
+  --light-green-color: #58cc02;
+  --dark-green-color: #52a813;
+  --error-color: #ee5555;
+  --dark-error-color: #d13838;
+  --shadow-color: #446373;
+  background-color: var(--primary-black-color);
+}

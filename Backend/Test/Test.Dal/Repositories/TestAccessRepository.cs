@@ -94,6 +94,16 @@ namespace Test.Dal.Repositories
                 .Select(x => x.ConvertToDomainEntity());
         }
 
+        public async Task<PaginatedList<TestAccess>> GetPaginatedAccessesByCriteria(
+            BaseSpecification<TestAccess> specification, 
+            CancellationToken cancellationToken = default)
+        {
+            return await SpecificationEvaluator.GetPaginatedQueryAsync(
+                context.Accesses, 
+                specification, 
+                cancellationToken);
+        }
+
         public async Task<TestAccess?> GetTestAccess(
             long testId, 
             long targetEntityId, 

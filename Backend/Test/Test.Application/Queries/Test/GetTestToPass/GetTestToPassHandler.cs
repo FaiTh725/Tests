@@ -67,6 +67,7 @@ namespace Test.Application.Queries.Test.GetTestToPass
                 Description = test.Description,
                 Name = test.Name,
                 TestType = test.TestType.ToString(),
+                DurationInMinutes = test.DurationInMinutes,
                 Questions = questionsToPass.ToList()
             };
         }

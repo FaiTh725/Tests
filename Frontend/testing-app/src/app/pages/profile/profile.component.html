@@ -1,0 +1,69 @@
+<div class="profile-main">
+  <div class="profile-wrapper">
+    <div class="profile-header">
+      <div class="profile-header__user-info">
+        <p>Hello {{userService.User?.Name}}!!!</p>
+        <p>{{userService.User?.Email}}</p>
+      </div>
+      <div class="profile-header__exit-btn">
+        <app-primary-button [btnConfiguration]="{
+          Text: 'Exit',
+          BackgroundColor: 'var(--primary-black-color)',
+          BorderColor: 'var(--shadow-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--primary-black-color)',
+          HoverColor: 'var(--light-blue-color)',
+          TextColor: 'var(--light-blue-color)'}"
+          (handleClick)="handleExit()">
+        </app-primary-button>
+      </div>
+    </div>
+    <div class="profile-tabs">
+      <div class="profile-tabs-header">
+        <p class="profile-tabs-header__tab"
+          (click)="handleSwitchTab('Tests')"
+          [ngClass]="{'profile-tabs-header__tab-selected': currentTab === 'Tests'}">
+          Tests
+        </p>
+        <p class="profile-tabs-header__tab"
+          (click)="handleSwitchTab('Results')"
+          [ngClass]="{'profile-tabs-header__tab-selected': currentTab === 'Results'}">
+          Results
+        </p>
+      </div>
+      <div class="profile-tabs-content" #profileTabs>
+        <div class="profile-tabs-tab">
+          <div class="profile-tests-tests-list">
+            @for (test of profileCreatedTests; track test.Id) {
+              <div class="profile-tests-tests__list-item">
+                <app-test-editable-card
+                  [test]="test"
+                  (addQuestion)="handleAddTestQuestion(test.Id, $event)"
+                  (delete)="handleDeleteTest(test.Id)"
+                  (testUpdated)="handleUpdateTest($event)">
+                </app-test-editable-card>
+              </div>
+            }
+          </div>
+          <app-pagination [paginationConf]="createdTestsPagination"
+            (paginationChanged)="executeTestsPagination($event)">
+          </app-pagination>
+        </div>
+        <div class="profile-tabs-tab">
+          <div class="profile-results-list">
+            @for (result of profileResults; track result.Id) {
+              <div class="profile-results-item">
+                <app-test-result-card [result]="result">
+                </app-test-result-card>
+              </div>
+            }
+          </div>
+          <app-pagination [paginationConf]="resultPagination"
+            (paginationChanged)="executeResultsPagination($event)">
+          </app-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

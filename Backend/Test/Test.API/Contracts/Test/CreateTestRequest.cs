@@ -1,4 +1,5 @@
-﻿using Test.Domain.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Test.Domain.Enums;
 
 namespace Test.API.Contracts.Test
 {
@@ -6,6 +7,7 @@ namespace Test.API.Contracts.Test
     {
         public string Name { get; set; } = string.Empty;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string Description { get; set; } = string.Empty;
 
         public bool IsPublic { get; set; }

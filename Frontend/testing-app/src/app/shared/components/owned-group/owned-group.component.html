@@ -1,0 +1,44 @@
+<div class="group-main">
+  <div class="group-wrapper">
+    <div class="group-info">
+      <p class="group-info__name">{{group?.Name}}</p>
+      <div>
+        <app-primary-button [btnConfiguration]="{
+          Text: '🗙',
+          BackgroundColor: 'var(--error-color)',
+          BorderColor: 'var(--dark-error-color)',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--error-color)',
+          HoverColor: 'var(--primary-write-color)',
+          TextColor: 'var(--primary-write-color)'}"
+          (handleClick)="handleDelete()">
+        </app-primary-button>
+      </div>
+    </div>
+    @if (isOpenEditSection) {
+      <div class="group-edit-manager">
+        <app-group-member-manager
+          [members]="group?.Members ?? []"
+          (addMember)="handleAddMemmber($event)"
+          (kickMembers)="handleKickMembers($event)">
+        </app-group-member-manager>
+        <div class="group-edit-open-btn"
+          (click)="isOpenEditSection=false">
+          <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="m282-225-42-42 240-240 240 240-42 42-198-198-198 198Zm0-253-42-42 240-240 240 240-42 42-198-198-198 198Z"/></svg></p>
+          <p class="group-edit-open-btn__content">Roll up</p>
+          <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="m282-225-42-42 240-240 240 240-42 42-198-198-198 198Zm0-253-42-42 240-240 240 240-42 42-198-198-198 198Z"/></svg></p>
+        </div>
+      </div>
+    }
+    @else {
+      <div class="group-edit-open-btn"
+        (click)="isOpenEditSection=true">
+        <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="M480-200 240-440l42-42 198 198 198-198 42 42-240 240Zm0-253L240-693l42-42 198 198 198-198 42 42-240 240Z"/></svg></p>
+        <p class="group-edit-open-btn__content">Members</p>
+        <p><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#446373"><path d="M480-200 240-440l42-42 198 198 198-198 42 42-240 240Zm0-253L240-693l42-42 198 198 198-198 42 42-240 240Z"/></svg></p>
+      </div>
+    }
+    <app-group-tests [groupId]="group?.Id"></app-group-tests>
+  </div>
+</div>

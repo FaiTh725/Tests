@@ -67,7 +67,7 @@ namespace Authorization.Application.Common.Implementations
             await mediator.Send(new RefreshRefreshTokenCommand
             {
                 Id = existedRefreshToken.Id,
-                NewToken = accessToken,
+                NewToken = newRefreshToken,
             }, cancellationToken);
 
             return (accessToken, newRefreshToken);

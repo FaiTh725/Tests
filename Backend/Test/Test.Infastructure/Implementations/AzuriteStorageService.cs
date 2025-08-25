@@ -90,7 +90,7 @@ namespace Test.Infrastructure.Implementations
                 UploadBlob( 
                     new FileModel { 
                         Stream = x.Stream,
-                        Name = Path.Combine(pathFolder, x.Name),
+                        Name = $"{pathFolder}/{x.Name}-{Guid.NewGuid()}",
                         ContentType = x.ContentType
                     }, 
                     cancellationToken))

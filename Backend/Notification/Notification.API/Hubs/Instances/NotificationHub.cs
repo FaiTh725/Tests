@@ -1,7 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Notification.Application.DTOs.Notifications;
 using Notification.Application.Queries.Notifications.GetUnreadNotifications;
 using IHubNotification = Notification.API.Hubs.Interfaces.INotification;
 

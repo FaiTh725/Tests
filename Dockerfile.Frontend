@@ -1,0 +1,18 @@
+FROM node:24.2.0 AS build
+
+
+COPY ["Frontend/testing-app/", "/usr/app/"]
+
+WORKDIR /usr/app
+RUN npm install -g @angular/cli
+RUN npm ci
+
+RUN ng build
+
+FROM nginx
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=build /usr/app/dist/testing-app/browser .
+
+EXPOSE 6001
+EXPOSE 6002

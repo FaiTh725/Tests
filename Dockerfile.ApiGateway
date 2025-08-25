@@ -9,7 +9,6 @@ COPY ["Backend/Application.Shared/", "Application.Shared/"]
 
 RUN dotnet restore 'ApiGateway/ApiGateway.csproj'
 
-COPY . .
 
 WORKDIR /src/ApiGateway
 RUN dotnet build "ApiGateway.csproj" -c Release -o /app/build

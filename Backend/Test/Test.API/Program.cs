@@ -1,10 +1,11 @@
-using Test.Dal;
-using Test.API.Middlewares;
-using Test.API.Grpc.Services;
-using Test.API.Extensions;
-using Test.Application;
-using Test.Infrastructure;
 using Serilog;
+using Test.API.Extensions;
+using Test.API.Grpc.Services;
+using Test.API.Hubs.Instance;
+using Test.API.Middlewares;
+using Test.Application;
+using Test.Dal;
+using Test.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<TestSessionHub>("/hub/test-session");
 
 app.ConfigureHangfireDashBoard();
 

@@ -24,7 +24,8 @@ namespace Test.Dal.Persistences
         {
             var testSessionEntity = TestSession.Initialize(
                 TestId,
-                ProfileId);
+                ProfileId,
+                StartTime);
 
             if(testSessionEntity.IsFailure)
             {
@@ -36,11 +37,6 @@ namespace Test.Dal.Persistences
             var property = type.GetProperty("Id");
             var setMethod = property!.GetSetMethod(true);
             setMethod?.Invoke(testSessionEntity.Value, [Id]);
-
-            // set StartTime
-            property = type.GetProperty("StartTime");
-            setMethod = property!.GetSetMethod(true);
-            setMethod?.Invoke(testSessionEntity.Value, [StartTime]);
 
             // set EndTime
             property = type.GetProperty("EndTime");

@@ -133,15 +133,11 @@ namespace Test.Dal.Repositories
 
         public async Task<IEnumerable<QuestionAnswer>> GetQuestionAnswersByCriteria(BaseSpecification<QuestionAnswer> specification, CancellationToken cancellationToken = default)
         {
-            var filter = specification.Criteria is null ?
-                Builders<MongoQuestionAnswer>.Filter.Empty :
-                new ExpressionConverter<QuestionAnswer, MongoQuestionAnswer>().Rewrite(specification.Criteria);
-
-            var answers = await context.Answers
-                .Find(filter)
-                .ToListAsync(cancellationToken);
-
-            return answers.Select(x => x.ConvertToDomainEntity());
+            return await SpecificationEvaluator
+                .GetQueryAsync(
+                    context.Answers,
+                    specification,
+                    cancellationToken);
         }
     }
 }

@@ -1,0 +1,12 @@
+<div class="timer-main">
+  <div class="timer-wapper">
+    <div class="timer-progress">
+      <canvas #canvas_progress height="100" width="100"
+        class="timer-progress__canvas">
+      </canvas>
+    </div>
+    <p class="timer-time">
+      {{curMinutes}}:{{curSeconds | number: '2.0'}}
+    </p>
+  </div>
+</div>

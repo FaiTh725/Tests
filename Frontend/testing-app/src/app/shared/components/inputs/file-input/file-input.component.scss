@@ -1,0 +1,41 @@
+.file-input-main {
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  color: var(--txt-color);
+  transition: all .3s;
+  background-color: var(--bg-color);
+  position: relative;
+  z-index: 100;
+}
+
+.file-input-focus {
+  color: var(--txt-focus-color);
+  border: 2px solid var(--border-focus-color);
+  background-color: var(--bg-focus-color);
+}
+
+.file-input-action-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-input-input {
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.file-input-text {
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--txt-color);
+}

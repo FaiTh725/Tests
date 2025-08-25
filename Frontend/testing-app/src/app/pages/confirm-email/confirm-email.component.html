@@ -1,0 +1,59 @@
+<app-auth-layout [headerNavigation]="
+  {
+    BtnName: 'Sign-Up', 
+    NavigateUrl: '/authorization/sign-up'
+  }"
+  >
+  <div class="confirm-email-content">
+    <h2 class="confirm-email-header">Confirm email</h2>
+    <div class="confirm-email-form" action="">
+      <div class="confirm-email-form__input">
+        <app-primary-input [inputConfiguration]="{
+          Value: form.Email,
+          IsReadonly: isCodeSend,
+          InputName: 'email',
+          PlaceHolder: 'Email',
+          ErrorMessage: formError.EmailError}"
+          (onChange)="form.Email = $event"
+          (clearError)="handleClearErrorForm()">
+        </app-primary-input>
+      </div>
+      @if (isCodeSend) {
+        <div class="confirm-email-form__code">
+          <div class="confirm-email-form__input">
+            <app-primary-input [inputConfiguration]="{
+              Value: form.Code,
+              IsReadonly: false,
+              InputName: 'code',
+              PlaceHolder: 'Code',
+              ErrorMessage: formError.CodeError}"
+              (onChange)="form.Code = $event"
+              (clearError)="handleClearErrorForm()">
+            </app-primary-input>
+          </div>
+          <div class="confirm-email-form__reset-code">
+            <p (click)="handleRewriteEmail()">Change email</p>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="confirm-email-submit-form">
+      @if (isTimeoutActive) {
+        <p class="confirm-email-submit__banned-text">please, wait 60 seconds</p>
+      }
+      @else {
+        <app-primary-button [btnConfiguration]="{
+          Text: 'SignIn',
+          BackgroundColor: 'var(--light-blue-color)',
+          BorderColor: '#2da0d6',
+          BorderWith: 2,
+          FontSize: 18,
+          HoverBackgroundColor: 'var(--light-blue-color)',
+          HoverColor: 'var(--primary-black-color)',
+          TextColor: 'var(--primary-black-color)'}"
+          (handleClick)="btnAction()">
+        </app-primary-button>
+      }
+    </div>
+  </div>
+</app-auth-layout>

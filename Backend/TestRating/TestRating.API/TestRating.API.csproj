@@ -25,15 +25,8 @@
     <ProjectReference Include="..\TestRating.Dal\TestRating.Dal.csproj" />
     <ProjectReference Include="..\TestRating.Domain\TestRating.Domain.csproj" />
     <ProjectReference Include="..\TestRating.Infastructure\TestRating.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Application.Shared">
-      <HintPath>..\..\Application.Shared\bin\Debug\net8.0\Application.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="Notification.Contracts">
-      <HintPath>..\..\Notification\Notification.Contracts\bin\Debug\net8.0\Notification.Contracts.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\Application.Shared\Application.Shared.csproj" />
+    <ProjectReference Include="..\..\Notification\Notification.Contracts\Notification.Contracts.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

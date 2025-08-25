@@ -1,5 +1,4 @@
 ﻿using Test.Application.Contracts.ProfileEntity;
-using Test.Domain.Enums;
 
 namespace Test.Application.Contracts.Test
 {

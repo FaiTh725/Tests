@@ -10,9 +10,11 @@ namespace Test.Domain.Repositories
 
         Task<ProfileGroup?> GetProfileGroup(long id, CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<ProfileGroup>> GetProfileGroupsByCriteria(
-            BaseSpecification<ProfileGroup> specification, 
-            CancellationToken cancellationToken = default);
+        Task<IEnumerable<ProfileGroup>> GetGroups(CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<ProfileGroup>> GetProfileGroupsByCriteria(BaseSpecification<ProfileGroup> specification, CancellationToken cancellationToken = default);
+        
+        Task<PaginatedList<ProfileGroup>> GetPaginatedProfileGroupsByCriteria(BaseSpecification<ProfileGroup> specification, CancellationToken cancellationToken = default);
 
         Task UpdateGroup(long groupId, ProfileGroup updatedGroup, IDatabaseSession? session = null, CancellationToken cancellationToken = default);
 

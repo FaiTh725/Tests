@@ -42,5 +42,18 @@ namespace Test.Dal.Specifications
             var newBody = Visit(original.Body);
             return Expression.Lambda<Func<TOut, bool>>(newBody, mongoParam);
         }
+
+        public Expression<Func<TOut, object>> Rewrite(
+            Expression<Func<TIn, object>> original)
+        {
+            var newBody = Visit(original.Body);
+
+            if (newBody.Type.IsValueType)
+            {
+                newBody = Expression.Convert(newBody, typeof(object));
+            }
+
+            return Expression.Lambda<Func<TOut, object>>(newBody, mongoParam);
+        }
     }
 }

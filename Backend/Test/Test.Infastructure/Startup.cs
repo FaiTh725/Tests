@@ -1,4 +1,6 @@
 ﻿using Application.Shared.Exceptions;
+using Azure.Core.Pipeline;
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using Hangfire;
 using Hangfire.Mongo;
@@ -37,7 +39,8 @@ namespace Test.Infrastructure
                 .AddJwtAuthorization(configuration)
                 .AddHangfireProvider(configuration)
                 .AddMasstransitProvider(configuration)
-                .AddRedisProvider(configuration);
+                .AddRedisProvider(configuration)
+                .AddRedisCache(configuration);
 
             services.AddScoped<IBackgroundJobService, HangFireJobService>();
             services.AddScoped<IMessagePublisher, RabbitMessagePublisher>();
@@ -45,6 +48,7 @@ namespace Test.Infrastructure
 
             services.AddSingleton<IBlobService, AzuriteStorageService> ();
             services.AddSingleton<ITokenService<ProfileToken>, ProfileTokenService> ();
+            services.AddSingleton<ICacheService, RedisCacheService>();
 
             services.AddHostedService<CreateRedisOmIndexes>();
             services.AddHostedService<ClearInactiveSessionsBackgroundService>();
@@ -103,11 +107,32 @@ namespace Test.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var azuriteConnection = configuration
-                .GetConnectionString("AzuriteBlobStorage") ??
+            var azuriteConf = configuration
+                .GetSection("AzuriteSetting")
+                .Get<AzuriteConf>() ??
                 throw new AppConfigurationException("Azurite connection string");
 
-            services.AddSingleton(new BlobServiceClient(azuriteConnection));
+            var httpClientHandler = new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            var blobOptions = new BlobClientOptions
+            {
+                Transport = new HttpClientTransport(httpClientHandler)
+            };
+
+            var blobCredentials = new StorageSharedKeyCredential(
+                azuriteConf.AccountName,
+                azuriteConf.Password);
+
+            var blobServiceClient = new BlobServiceClient(
+                new Uri(azuriteConf.Url),
+                blobCredentials,
+                blobOptions);
+
+            services.AddSingleton(blobServiceClient);
 
             return services;
         }
@@ -196,6 +221,23 @@ namespace Test.Infrastructure
                 throw new AppConfigurationException("Connection string to redis");
 
             services.AddSingleton(new RedisConnectionProvider(redisConnection));
+
+            return services;
+        }
+
+        private static IServiceCollection AddRedisCache(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var redisCacheConnection = configuration
+                .GetConnectionString("RedisCacheConnection") ?? 
+                throw new AppConfigurationException("Redis cache connection string");
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisCacheConnection;
+                options.InstanceName = "Testing";
+            });
 
             return services;
         }
